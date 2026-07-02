@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ShieldCheck, Plus, Minus, ZoomIn, ChevronDown, Award, Sprout } from 'lucide-react';
+import { Star, ShieldCheck, Plus, Minus, ZoomIn, ChevronDown, Award, Sprout, Heart } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const galleryImages = [
@@ -14,9 +14,13 @@ const galleryImages = [
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, addToCart, loadingProducts } = useApp();
+  const { products, addToCart, loadingProducts, wishlist, toggleWishlist } = useApp();
   
   const product = products.find(p => (p._id || p.id) === id);
+
+  const isInWishlist = product && (wishlist || []).some(
+    item => (item._id || item.id || item) === (product._id || product.id)
+  );
 
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
   const [selectedSize, setSelectedSize] = useState(product?.volume || '500ml');
@@ -204,9 +208,21 @@ const ProductDetail = () => {
                 <div className="flex-grow flex gap-4">
                   <button 
                     onClick={() => addToCart(product, quantity)}
-                    className="flex-grow bg-primary hover:bg-primary-container text-white py-4 rounded-full font-label-lg text-label-lg uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-xs font-bold"
+                    className="flex-grow bg-primary hover:bg-primary-container text-white py-4 rounded-full font-label-lg text-label-lg uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-xs font-bold cursor-pointer"
                   >
                     Add to Cart
+                  </button>
+
+                  <button 
+                    onClick={() => toggleWishlist(product._id || product.id)}
+                    className={`px-5 border-2 rounded-full transition-all focus:outline-none flex items-center justify-center cursor-pointer ${
+                      isInWishlist 
+                        ? 'border-primary bg-primary/10 text-primary' 
+                        : 'border-outline-variant text-outline hover:text-primary hover:border-primary'
+                    }`}
+                    aria-label="Toggle Wishlist"
+                  >
+                    <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-primary' : ''}`} />
                   </button>
                 </div>
               </div>

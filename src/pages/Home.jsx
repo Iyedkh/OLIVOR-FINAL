@@ -1,10 +1,11 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Heart, ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const Home = () => {
-  const { products, addToCart } = useApp();
+  const { products, addToCart, wishlist, toggleWishlist } = useApp();
   const scrollerRef = useRef(null);
 
   const scrollLeft = () => {
@@ -181,43 +182,76 @@ const Home = () => {
         >
           {products && products.slice(0, 6).map((product) => {
             const productId = product._id || product.id;
+            const isInWishlist = (wishlist || []).some(
+              item => (item._id || item.id || item) === productId
+            );
             return (
               <motion.div 
                 key={productId}
                 variants={fadeIn}
-                className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
+                className="w-[280px] md:w-[340px] flex-shrink-0 bg-white rounded-[1.5rem] p-4 group cursor-pointer snap-start border border-outline-variant/20 hover:border-primary/30 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between"
               >
-                <Link to={`/product/${productId}`}>
-                  <div className="relative overflow-hidden rounded-lg mb-3 aspect-square bg-surface-container/50 flex items-center justify-center p-2">
-                    <img 
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-700" 
-                      alt={product.title}
-                      src={product.image}
-                    />
-                    {product.badge && (
-                      <div className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container font-label-sm px-1.5 py-0.5 rounded text-[8px] tracking-wide">
-                        {product.badge}
-                      </div>
-                    )}
-                  </div>
-                  <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold truncate">{product.title}</h4>
-                  <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md line-clamp-2">
-                    {product.description}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="font-headline-md text-sm text-primary font-bold">${product.price.toFixed(2)}</span>
+                <div className="relative text-left">
+                  {/* Image frame */}
+                  <Link to={`/product/${productId}`}>
+                    <div className="relative overflow-hidden rounded-2xl mb-4 aspect-[4/5] bg-surface-container-low border border-outline-variant/10">
+                      <img 
+                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out" 
+                        alt={product.title}
+                        src={product.image}
+                      />
+                      {product.badge && (
+                        <div className="absolute top-3 left-3 bg-secondary text-white font-label-sm px-2.5 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase">
+                          {product.badge}
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                  
+                  {/* Quick wishlist button */}
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleWishlist(productId);
+                    }}
+                    className="absolute top-3 right-3 z-10 w-9 h-9 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-primary shadow-sm hover:scale-110 active:scale-95 transition-all focus:outline-none cursor-pointer"
+                    aria-label="Toggle Wishlist"
+                  >
+                    <Heart className={`h-4.5 w-4.5 ${isInWishlist ? 'fill-primary text-primary' : 'text-outline hover:text-primary'}`} />
+                  </button>
+
+                  <Link to={`/product/${productId}`}>
+                    <span className="font-label-sm text-[10px] text-secondary font-bold uppercase tracking-wider block mb-1">
+                      {product.region || 'Sahel, Tunisia'}
+                    </span>
+                    <h4 className="font-headline-md text-base md:text-lg text-primary mb-2 font-bold group-hover:text-secondary transition-colors truncate">
+                      {product.title}
+                    </h4>
+                    <p className="text-on-surface-variant text-xs mb-4 leading-relaxed font-body-md line-clamp-2 font-light">
+                      {product.description}
+                    </p>
+                  </Link>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center pt-4 border-t border-outline-variant/10">
+                    <div className="flex flex-col text-left">
+                      <span className="text-[9px] text-outline font-bold uppercase tracking-widest">Price</span>
+                      <span className="font-body-lg text-base text-primary font-bold">${product.price.toFixed(2)}</span>
+                    </div>
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         addToCart(product, 1);
                       }}
-                      className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold"
+                      className="bg-primary hover:bg-primary-container text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm hover:shadow-md cursor-pointer hover:scale-[1.02] active:scale-95"
                     >
-                      Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
+                      Add <ShoppingBag className="h-3.5 w-3.5" />
                     </button>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             );
           })}

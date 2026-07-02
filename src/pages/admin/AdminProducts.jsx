@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, Edit2, Trash2, X, AlertTriangle, Upload, Trash } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
 import { useApp } from '../../context/AppContext';
+import axios from 'axios';
 
 const AdminProducts = () => {
   const { products, createProduct, updateProduct, deleteProduct, token } = useApp();
@@ -81,31 +82,25 @@ const AdminProducts = () => {
     });
 
     try {
-      const res = await fetch('http://localhost:5000/api/upload', {
-        method: 'POST',
+      const { data } = await axios.post('http://localhost:5000/api/upload', formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
-        body: formData,
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        // Append all uploaded images.
-        // If there's no main image set yet, use the first uploaded image.
-        setFormState((prev) => {
-          const newImages = [...(prev.images || []), ...data.urls];
-          return {
-            ...prev,
-            image: prev.image || data.urls[0] || '',
-            images: newImages,
-          };
-        });
-      } else {
-        setUploadError(data.message || 'Upload failed');
-      }
+      // Append all uploaded images.
+      // If there's no main image set yet, use the first uploaded image.
+      setFormState((prev) => {
+        const newImages = [...(prev.images || []), ...data.urls];
+        return {
+          ...prev,
+          image: prev.image || data.urls[0] || '',
+          images: newImages,
+        };
+      });
     } catch (err) {
-      setUploadError(err.message || 'Upload failed');
+      setUploadError(err.response?.data?.message || err.message || 'Upload failed');
     } finally {
       setUploading(false);
     }

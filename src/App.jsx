@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Home from './pages/Home';
 
 // Lazy/Stub imports for other pages
@@ -47,6 +49,7 @@ function App() {
           <Route path="/admin/customers" element={<AdminCustomers />} />
         </Routes>
       </Layout>
+      <ToastContainer position="top-right" autoClose={2000} theme="light" />
     </Router>
   );
 }

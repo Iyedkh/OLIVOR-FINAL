@@ -1,21 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Mail, Award, UserCheck, Calendar, X, ShoppingBag, ChevronRight } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
-
-const initialCustomers = [
-  { id: 'CUST-1002', name: 'Alessandro Rossi', email: 'alessandro@rossi.it', level: 'Connoisseur', levelBg: 'bg-secondary/10 text-secondary border-secondary/20', joined: 'Oct 2021', totalOrders: 14, spent: 1240.00, points: 3250 },
-  { id: 'CUST-1045', name: 'Eleanor M.', email: 'eleanor@connoisseur.com', level: 'Connoisseur', levelBg: 'bg-secondary/10 text-secondary border-secondary/20', joined: 'Jan 2022', totalOrders: 9, spent: 848.00, points: 1980 },
-  { id: 'CUST-1192', name: 'Julian D.', email: 'julian@chef.com', level: 'Collector', levelBg: 'bg-primary/10 text-primary border-primary/20', joined: 'May 2022', totalOrders: 5, spent: 432.00, points: 1120 },
-  { id: 'CUST-1248', name: 'Marie S.', email: 'marie@sommelier.fr', level: 'Explorer', levelBg: 'bg-slate-400/10 text-slate-500 border-slate-400/20', joined: 'Aug 2023', totalOrders: 2, spent: 185.00, points: 450 }
-];
+import { useApp } from '../../context/AppContext';
 
 const AdminCustomers = () => {
-  const [customers, setCustomers] = useState(initialCustomers);
+  const { adminUsers, fetchAllUsers, adminOrders, fetchAllOrders } = useApp();
   const [search, setSearch] = useState('');
   const [viewingCustomer, setViewingCustomer] = useState(null);
 
-  const filteredCustomers = customers.filter(c => 
+  useEffect(() => {
+    fetchAllUsers();
+    fetchAllOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Compute stats for each user dynamically based on orders
+  const customersData = (adminUsers || []).map((user) => {
+    const userOrders = (adminOrders || []).filter(
+      (order) => order.user === user._id || (order.user && order.user._id === user._id)
+    );
+    const totalOrders = userOrders.length;
+    const spent = userOrders.reduce((sum, order) => sum + (order.totalPrice || 0), 0);
+    const points = Math.round(spent * 10);
+
+    let level = 'Novice';
+    let levelBg = 'bg-outline-variant/10 text-outline border-outline-variant/20';
+
+    if (spent >= 500) {
+      level = 'Connoisseur';
+      levelBg = 'bg-secondary/10 text-secondary border-secondary/20';
+    } else if (spent >= 200) {
+      level = 'Collector';
+      levelBg = 'bg-primary/10 text-primary border-primary/20';
+    } else if (spent > 0) {
+      level = 'Explorer';
+      levelBg = 'bg-slate-400/10 text-slate-500 border-slate-400/20';
+    }
+
+    const joinedStr = user.createdAt 
+      ? new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+      : 'N/A';
+
+    return {
+      id: user._id,
+      name: user.name || 'Anonymous User',
+      email: user.email || 'N/A',
+      level,
+      levelBg,
+      joined: joinedStr,
+      totalOrders,
+      spent,
+      points,
+    };
+  });
+
+  const filteredCustomers = customersData.filter(c => 
     c.name.toLowerCase().includes(search.toLowerCase()) || 
     c.email.toLowerCase().includes(search.toLowerCase())
   );
@@ -69,7 +109,7 @@ const AdminCustomers = () => {
               <tbody className="divide-y divide-outline-variant/10 font-light font-sans">
                 {filteredCustomers.map((cust) => (
                   <tr key={cust.id} className="hover:bg-surface-container-low transition-colors">
-                    <td className="py-4 px-6 font-bold text-outline-variant">{cust.id}</td>
+                    <td className="py-4 px-6 font-bold text-outline-variant">#{cust.id.slice(-6).toUpperCase()}</td>
                     <td className="py-4 px-6 font-bold text-primary">{cust.name}</td>
                     <td className="py-4 px-6">{cust.email}</td>
                     <td className="py-4 px-6">
@@ -90,6 +130,13 @@ const AdminCustomers = () => {
                     </td>
                   </tr>
                 ))}
+                {filteredCustomers.length === 0 && (
+                  <tr>
+                    <td colSpan="8" className="py-8 text-center text-on-surface-variant font-light">
+                      No members matching the query found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -132,7 +179,7 @@ const AdminCustomers = () => {
                       </div>
                       <div>
                         <h4 className="font-bold text-base text-on-surface">{viewingCustomer.name}</h4>
-                        <span className="text-[10px] text-outline font-bold uppercase tracking-widest block mt-0.5">{viewingCustomer.id}</span>
+                        <span className="text-[10px] text-outline font-bold uppercase tracking-widest block mt-0.5">#{viewingCustomer.id.toUpperCase()}</span>
                       </div>
                     </div>
 

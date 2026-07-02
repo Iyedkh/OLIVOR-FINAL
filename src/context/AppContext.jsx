@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const AppContext = createContext();
 
@@ -26,11 +28,8 @@ export const AppProvider = ({ children }) => {
   const fetchProducts = async () => {
     try {
       setLoadingProducts(true);
-      const res = await fetch(`${API_URL}/products`);
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data);
-      }
+      const { data } = await axios.get(`${API_URL}/products`);
+      setProducts(data);
     } catch (err) {
       console.error('Error fetching products:', err);
     } finally {
@@ -42,11 +41,8 @@ export const AppProvider = ({ children }) => {
   const fetchRecipes = async () => {
     try {
       setLoadingRecipes(true);
-      const res = await fetch(`${API_URL}/recipes`);
-      if (res.ok) {
-        const data = await res.json();
-        setRecipes(data);
-      }
+      const { data } = await axios.get(`${API_URL}/recipes`);
+      setRecipes(data);
     } catch (err) {
       console.error('Error fetching recipes:', err);
     } finally {
@@ -59,44 +55,41 @@ export const AppProvider = ({ children }) => {
     if (!authToken) return;
     try {
       setLoadingUser(true);
-      const res = await fetch(`${API_URL}/users/profile`, {
+      const { data } = await axios.get(`${API_URL}/users/profile`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
-      if (res.ok) {
-        const data = await res.json();
-        setUser({
-          _id: data._id,
-          name: data.name,
-          email: data.email,
-          isAdmin: data.isAdmin,
-        });
-        
-        // Sync wishlist
-        if (data.wishlist) {
-          setWishlist(data.wishlist);
-        }
-        
-        // Sync cart
-        if (data.cart && data.cart.length > 0) {
-          const formattedCart = data.cart.map(item => ({
-            id: item.product._id,
-            title: item.product.title,
-            price: item.product.price,
-            quantity: item.qty,
-            image: item.product.image,
-            volume: item.product.volume,
-            region: item.product.region
-          }));
-          setCart(formattedCart);
-        }
-      } else {
-        // Token might be invalid/expired
-        logout();
+
+      setUser({
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        isAdmin: data.isAdmin,
+      });
+      
+      // Sync wishlist
+      if (data.wishlist) {
+        setWishlist(data.wishlist);
+      }
+      
+      // Sync cart
+      if (data.cart && data.cart.length > 0) {
+        const formattedCart = data.cart.map(item => ({
+          id: item.product?._id,
+          title: item.product?.title,
+          price: item.product?.price,
+          quantity: item.qty,
+          image: item.product?.image,
+          volume: item.product?.volume,
+          region: item.product?.region
+        }));
+        setCart(formattedCart);
       }
     } catch (err) {
       console.error('Error fetching user profile:', err);
+      // Token might be invalid/expired
+      logout();
     } finally {
       setLoadingUser(false);
     }
@@ -144,13 +137,10 @@ export const AppProvider = ({ children }) => {
         product: item.id,
         qty: item.quantity
       }));
-      await fetch(`${API_URL}/users/cart`, {
-        method: 'PUT',
+      await axios.put(`${API_URL}/users/cart`, { cartItems }, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${activeToken}`,
         },
-        body: JSON.stringify({ cartItems }),
       });
     } catch (err) {
       console.error('Error syncing cart:', err);
@@ -159,17 +149,9 @@ export const AppProvider = ({ children }) => {
 
   // Login
   const login = async (email, password) => {
-    const res = await fetch(`${API_URL}/users/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
+    try {
+      const { data } = await axios.post(`${API_URL}/users/login`, { email, password });
+      
       localStorage.setItem('token', data.token);
       setToken(data.token);
       setUser({
@@ -186,21 +168,22 @@ export const AppProvider = ({ children }) => {
 
       // Sync backend cart with local cart if local cart has items
       if (cart.length > 0) {
-        // Merge or replace. Let's merge
         const mergedCart = [...cart];
         if (data.cart) {
           data.cart.forEach(item => {
-            const exists = mergedCart.find(x => x.id === item.product._id);
-            if (!exists) {
-              mergedCart.push({
-                id: item.product._id,
-                title: item.product.title,
-                price: item.product.price,
-                quantity: item.qty,
-                image: item.product.image,
-                volume: item.product.volume,
-                region: item.product.region
-              });
+            if (item.product) {
+              const exists = mergedCart.find(x => x.id === item.product._id);
+              if (!exists) {
+                mergedCart.push({
+                  id: item.product._id,
+                  title: item.product.title,
+                  price: item.product.price,
+                  quantity: item.qty,
+                  image: item.product.image,
+                  volume: item.product.volume,
+                  region: item.product.region
+                });
+              }
             }
           });
         }
@@ -208,35 +191,30 @@ export const AppProvider = ({ children }) => {
         await syncCartToBackend(mergedCart, data.token);
       } else if (data.cart) {
         const formattedCart = data.cart.map(item => ({
-          id: item.product._id,
-          title: item.product.title,
-          price: item.product.price,
+          id: item.product?._id,
+          title: item.product?.title,
+          price: item.product?.price,
           quantity: item.qty,
-          image: item.product.image,
-          volume: item.product.volume,
-          region: item.product.region
+          image: item.product?.image,
+          volume: item.product?.volume,
+          region: item.product?.region
         }));
         setCart(formattedCart);
       }
+      toast.success(`Welcome back, ${data.name}!`, { toastId: 'login-success' });
       return { success: true, isAdmin: data.isAdmin };
-    } else {
-      return { success: false, message: data.message || 'Login failed' };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Login failed';
+      toast.error(message, { toastId: 'login-error' });
+      return { success: false, message };
     }
   };
 
   // Register
   const register = async (name, email, password) => {
-    const res = await fetch(`${API_URL}/users`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
+    try {
+      const { data } = await axios.post(`${API_URL}/users`, { name, email, password });
 
-    const data = await res.json();
-
-    if (res.ok) {
       localStorage.setItem('token', data.token);
       setToken(data.token);
       setUser({
@@ -251,14 +229,18 @@ export const AppProvider = ({ children }) => {
       if (cart.length > 0) {
         await syncCartToBackend(cart, data.token);
       }
+      toast.success(`Welcome, ${data.name}! Your account has been created.`, { toastId: 'register-success' });
       return { success: true };
-    } else {
-      return { success: false, message: data.message || 'Registration failed' };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Registration failed';
+      toast.error(message, { toastId: 'register-error' });
+      return { success: false, message };
     }
   };
 
   // Logout
   const logout = () => {
+    const wasLoggedIn = !!token;
     localStorage.removeItem('token');
     localStorage.removeItem('cart');
     localStorage.removeItem('wishlist');
@@ -269,24 +251,28 @@ export const AppProvider = ({ children }) => {
     setOrders([]);
     setAdminOrders([]);
     setAdminUsers([]);
+    if (wasLoggedIn) {
+      toast.info('Logged out successfully.', { toastId: 'logout-success' });
+    }
   };
 
   // Wishlist toggle
   const toggleWishlist = async (productId) => {
+    const isAdded = !wishlist.some(item => (item._id || item.id || item) === productId);
+    if (isAdded) {
+      toast.success('Added to wishlist!', { toastId: `wishlist-toggle-${productId}` });
+    } else {
+      toast.info('Removed from wishlist', { toastId: `wishlist-toggle-${productId}` });
+    }
+
     if (token) {
       try {
-        const res = await fetch(`${API_URL}/users/wishlist`, {
-          method: 'POST',
+        const { data } = await axios.post(`${API_URL}/users/wishlist`, { productId }, {
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ productId }),
         });
-        if (res.ok) {
-          const data = await res.json();
-          setWishlist(data); // returns populated wishlist or product ids
-        }
+        setWishlist(data); // returns populated wishlist or product ids
       } catch (err) {
         console.error('Error toggling wishlist:', err);
       }
@@ -328,16 +314,41 @@ export const AppProvider = ({ children }) => {
           }
         ];
       }
-      if (token) syncCartToBackend(updatedCart);
       return updatedCart;
+    });
+
+    if (token) {
+      setTimeout(() => {
+        setCart(currentCart => {
+          syncCartToBackend(currentCart);
+          return currentCart;
+        });
+      }, 0);
+    }
+
+    toast.success(`${product.title} added to bag!`, {
+      toastId: `add-to-cart-${product._id}`
     });
   };
 
   const removeFromCart = (productId) => {
+    const item = cart.find(i => i.id === productId);
     setCart(prev => {
       const updatedCart = prev.filter(item => item.id !== productId);
-      if (token) syncCartToBackend(updatedCart);
       return updatedCart;
+    });
+
+    if (token) {
+      setTimeout(() => {
+        setCart(currentCart => {
+          syncCartToBackend(currentCart);
+          return currentCart;
+        });
+      }, 0);
+    }
+
+    toast.info(`${item ? item.title : 'Item'} removed from bag.`, {
+      toastId: `remove-from-cart-${productId}`
     });
   };
 
@@ -355,26 +366,21 @@ export const AppProvider = ({ children }) => {
   const placeOrder = async (orderData) => {
     if (!token) return { success: false, message: 'Must be logged in to order' };
     try {
-      const res = await fetch(`${API_URL}/orders`, {
-        method: 'POST',
+      const { data } = await axios.post(`${API_URL}/orders`, orderData, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(orderData),
       });
-      const data = await res.json();
-      if (res.ok) {
-        // Clear cart
-        setCart([]);
-        if (token) await syncCartToBackend([]);
-        setOrders(prev => [data, ...prev]);
-        return { success: true, order: data };
-      } else {
-        return { success: false, message: data.message };
-      }
+      // Clear cart
+      setCart([]);
+      if (token) await syncCartToBackend([]);
+      setOrders(prev => [data, ...prev]);
+      toast.success('Order placed successfully! Thank you.');
+      return { success: true, order: data };
     } catch (err) {
-      return { success: false, message: err.message };
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
     }
   };
 
@@ -382,15 +388,12 @@ export const AppProvider = ({ children }) => {
   const fetchMyOrders = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${API_URL}/orders/myorders`, {
+      const { data } = await axios.get(`${API_URL}/orders/myorders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (res.ok) {
-        const data = await res.json();
-        setOrders(data);
-      }
+      setOrders(data);
     } catch (err) {
       console.error('Error fetching orders:', err);
     }
@@ -400,22 +403,17 @@ export const AppProvider = ({ children }) => {
   const payOrder = async (orderId) => {
     if (!token) return { success: false };
     try {
-      const res = await fetch(`${API_URL}/orders/${orderId}/pay`, {
-        method: 'PUT',
+      const { data } = await axios.put(`${API_URL}/orders/${orderId}/pay`, {}, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({}),
       });
-      const data = await res.json();
-      if (res.ok) {
-        setOrders(prev => prev.map(o => o._id === orderId ? data : o));
-        return { success: true, order: data };
-      }
-      return { success: false };
+      setOrders(prev => prev.map(o => o._id === orderId ? data : o));
+      toast.success('Payment completed successfully!');
+      return { success: true, order: data };
     } catch (err) {
       console.error('Error paying order:', err);
+      toast.error('Payment processing failed.');
       return { success: false };
     }
   };
@@ -424,15 +422,12 @@ export const AppProvider = ({ children }) => {
   const fetchAllOrders = async () => {
     if (!token || !user?.isAdmin) return;
     try {
-      const res = await fetch(`${API_URL}/orders`, {
+      const { data } = await axios.get(`${API_URL}/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (res.ok) {
-        const data = await res.json();
-        setAdminOrders(data);
-      }
+      setAdminOrders(data);
     } catch (err) {
       console.error('Error fetching admin orders:', err);
     }
@@ -441,15 +436,12 @@ export const AppProvider = ({ children }) => {
   const fetchAllUsers = async () => {
     if (!token || !user?.isAdmin) return;
     try {
-      const res = await fetch(`${API_URL}/users`, {
+      const { data } = await axios.get(`${API_URL}/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (res.ok) {
-        const data = await res.json();
-        setAdminUsers(data);
-      }
+      setAdminUsers(data);
     } catch (err) {
       console.error('Error fetching admin users:', err);
     }
@@ -458,22 +450,17 @@ export const AppProvider = ({ children }) => {
   const updateOrderStatus = async (orderId, status) => {
     if (!token || !user?.isAdmin) return { success: false };
     try {
-      const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
-        method: 'PUT',
+      const { data } = await axios.put(`${API_URL}/orders/${orderId}/status`, { status }, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ status }),
       });
-      const data = await res.json();
-      if (res.ok) {
-        setAdminOrders(prev => prev.map(o => o._id === orderId ? data : o));
-        return { success: true, order: data };
-      }
-      return { success: false };
+      setAdminOrders(prev => prev.map(o => o._id === orderId ? data : o));
+      toast.success(`Order status updated to: ${status}`);
+      return { success: true, order: data };
     } catch (err) {
       console.error('Error updating order status:', err);
+      toast.error(err.response?.data?.message || 'Failed to update order status');
       return { success: false };
     }
   };
@@ -481,64 +468,55 @@ export const AppProvider = ({ children }) => {
   const createProduct = async (productData) => {
     if (!token || !user?.isAdmin) return { success: false };
     try {
-      const res = await fetch(`${API_URL}/products`, {
-        method: 'POST',
+      const { data } = await axios.post(`${API_URL}/products`, productData, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(productData),
       });
-      const data = await res.json();
-      if (res.ok) {
-        setProducts(prev => [data, ...prev]);
-        return { success: true, product: data };
-      }
-      return { success: false, message: data.message };
+      setProducts(prev => [data, ...prev]);
+      toast.success(`Product "${data.title}" created successfully!`);
+      return { success: true, product: data };
     } catch (err) {
-      return { success: false, message: err.message };
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
     }
   };
 
   const updateProduct = async (productId, productData) => {
     if (!token || !user?.isAdmin) return { success: false };
     try {
-      const res = await fetch(`${API_URL}/products/${productId}`, {
-        method: 'PUT',
+      const { data } = await axios.put(`${API_URL}/products/${productId}`, productData, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(productData),
       });
-      const data = await res.json();
-      if (res.ok) {
-        setProducts(prev => prev.map(p => p._id === productId ? data : p));
-        return { success: true, product: data };
-      }
-      return { success: false, message: data.message };
+      setProducts(prev => prev.map(p => p._id === productId ? data : p));
+      toast.success(`Product "${data.title}" updated successfully!`);
+      return { success: true, product: data };
     } catch (err) {
-      return { success: false, message: err.message };
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
     }
   };
 
   const deleteProduct = async (productId) => {
     if (!token || !user?.isAdmin) return { success: false };
     try {
-      const res = await fetch(`${API_URL}/products/${productId}`, {
-        method: 'DELETE',
+      await axios.delete(`${API_URL}/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (res.ok) {
-        setProducts(prev => prev.filter(p => p._id !== productId));
-        return { success: true };
-      }
-      return { success: false };
+      setProducts(prev => prev.filter(p => p._id !== productId));
+      toast.success('Product removed from catalog');
+      return { success: true };
     } catch (err) {
       console.error('Error deleting product:', err);
-      return { success: false };
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
     }
   };
 

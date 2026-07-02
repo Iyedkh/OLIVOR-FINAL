@@ -1,42 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Eye, X, MapPin } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
-
-const initialOrders = [
-  { id: '#ORD-94042', customer: 'Eleanor M.', email: 'eleanor@connoisseur.com', phone: '+1 555 0192', address: '456 luxury Blvd, Apt 2C, NY, 10001', date: 'Oct 15, 2023', total: 48.00, status: 'Processing', statusColor: 'text-amber-600 bg-amber-500/10 border border-amber-500/20', items: [{ name: 'Reserve Collection', qty: 1, size: '500ml', price: 48.00 }] },
-  { id: '#ORD-88902', customer: 'Alessandro R.', email: 'alessandro@rossi.it', phone: '+39 06 1234', address: 'Via dei Condotti, 12, Roma, 00187', date: 'Oct 12, 2023', total: 120.00, status: 'In Transit', statusColor: 'text-primary bg-primary/10 border border-primary/20', items: [{ name: 'Heritage Blend', qty: 1, size: '750ml', price: 120.00 }] },
-  { id: '#ORD-77215', customer: 'Julian D.', email: 'julian@chef.com', phone: '+33 1 4567', address: '78 Rue de Grenelle, Paris, 75007', date: 'Sep 28, 2023', total: 82.00, status: 'Delivered', statusColor: 'text-emerald-600 bg-emerald-500/10 border border-emerald-500/20', items: [{ name: 'Tasting Trio', qty: 1, size: '3x250ml', price: 82.00 }] },
-  { id: '#ORD-65123', customer: 'Marie S.', email: 'marie@sommelier.fr', phone: '+33 2 9876', address: '14 Quai de la Loire, Nantes, 44000', date: 'Sep 15, 2023', total: 185.00, status: 'Delivered', statusColor: 'text-emerald-600 bg-emerald-500/10 border border-emerald-500/20', items: [{ name: 'Carthage Amphora', qty: 1, size: '1000ml', price: 185.00 }] }
-];
+import { useApp } from '../../context/AppContext';
 
 const AdminOrders = () => {
-  const [orders, setOrders] = useState(initialOrders);
+  const { adminOrders, fetchAllOrders, updateOrderStatus } = useApp();
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [viewingOrder, setViewingOrder] = useState(null);
 
-  const handleStatusChange = (id, newStatus) => {
-    setOrders(prev => prev.map(order => {
-      if (order.id === id) {
-        let statusColor = 'text-slate-500 bg-slate-500/10 border border-slate-500/20';
-        if (newStatus === 'Processing') statusColor = 'text-amber-600 bg-amber-500/10 border border-amber-500/20';
-        else if (newStatus === 'In Transit') statusColor = 'text-primary bg-primary/10 border border-primary/20';
-        else if (newStatus === 'Delivered') statusColor = 'text-emerald-600 bg-emerald-500/10 border border-emerald-500/20';
-        
-        return {
-          ...order,
-          status: newStatus,
-          statusColor
-        };
-      }
-      return order;
-    }));
+  useEffect(() => {
+    fetchAllOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    const result = await updateOrderStatus(orderId, newStatus);
+    if (!result.success) {
+      alert('Failed to update order status');
+    }
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.id.toLowerCase().includes(search.toLowerCase()) || 
-                          order.customer.toLowerCase().includes(search.toLowerCase());
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Delivered':
+        return 'text-emerald-600 bg-emerald-500/10 border border-emerald-500/20';
+      case 'Shipped':
+      case 'In Transit':
+        return 'text-primary bg-primary/10 border border-primary/20';
+      case 'Processing':
+        return 'text-amber-600 bg-amber-500/10 border border-amber-500/20';
+      case 'Cancelled':
+        return 'text-red-600 bg-red-500/10 border border-red-500/20';
+      default:
+        return 'text-outline-variant bg-surface-container-low border border-outline-variant/20';
+    }
+  };
+
+  const filteredOrders = (adminOrders || []).filter(order => {
+    const orderId = order._id || order.id || '';
+    const customerName = order.shippingAddress 
+      ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}` 
+      : (order.user?.name || 'Guest');
+
+    const matchesSearch = orderId.toLowerCase().includes(search.toLowerCase()) || 
+                          customerName.toLowerCase().includes(search.toLowerCase());
     const matchesFilter = activeFilter === 'All' || order.status === activeFilter;
     return matchesSearch && matchesFilter;
   });
@@ -73,7 +82,7 @@ const AdminOrders = () => {
           </div>
 
           <div className="flex flex-wrap gap-2 select-none">
-            {['All', 'Processing', 'In Transit', 'Delivered'].map((filter) => (
+            {['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map((filter) => (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
@@ -104,34 +113,51 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10 font-light font-sans">
-                {filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-surface-container-low transition-colors">
-                    <td className="py-4 px-6 font-bold text-primary">{order.id}</td>
-                    <td className="py-4 px-6">{order.date}</td>
-                    <td className="py-4 px-6 font-semibold">{order.customer}</td>
-                    <td className="py-4 px-6 font-bold text-secondary">${order.total.toFixed(2)}</td>
-                    <td className="py-4 px-6">
-                      <select 
-                        value={order.status}
-                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                        className={`px-3 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-wider bg-surface focus:outline-none focus:ring-1 focus:ring-primary ${order.statusColor}`}
-                      >
-                        <option value="Processing">Processing</option>
-                        <option value="In Transit">In Transit</option>
-                        <option value="Delivered">Delivered</option>
-                      </select>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <button 
-                        onClick={() => setViewingOrder(order)}
-                        className="p-2 hover:bg-surface-container text-outline hover:text-primary rounded-lg transition-colors focus:outline-none"
-                        aria-label="View Details"
-                      >
-                        <Eye className="h-4.5 w-4.5" />
-                      </button>
+                {filteredOrders.map((order) => {
+                  const orderId = order._id || order.id;
+                  const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+                  const customerName = order.shippingAddress 
+                    ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}` 
+                    : (order.user?.name || 'Guest');
+
+                  return (
+                    <tr key={orderId} className="hover:bg-surface-container-low transition-colors">
+                      <td className="py-4 px-6 font-bold text-primary">#{orderId.slice(-6).toUpperCase()}</td>
+                      <td className="py-4 px-6">{dateStr}</td>
+                      <td className="py-4 px-6 font-semibold">{customerName}</td>
+                      <td className="py-4 px-6 font-bold text-secondary">${(order.totalPrice || 0).toFixed(2)}</td>
+                      <td className="py-4 px-6">
+                        <select 
+                          value={order.status}
+                          onChange={(e) => handleStatusChange(orderId, e.target.value)}
+                          className={`px-3 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-wider bg-surface focus:outline-none focus:ring-1 focus:ring-primary ${getStatusColor(order.status)}`}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+                      </td>
+                      <td className="py-4 px-6 text-right">
+                        <button 
+                          onClick={() => setViewingOrder(order)}
+                          className="p-2 hover:bg-surface-container text-outline hover:text-primary rounded-lg transition-colors focus:outline-none"
+                          aria-label="View Details"
+                        >
+                          <Eye className="h-4.5 w-4.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {filteredOrders.length === 0 && (
+                  <tr>
+                    <td colSpan="6" className="py-8 text-center text-on-surface-variant font-light">
+                      No matching transaction logs found.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -139,93 +165,106 @@ const AdminOrders = () => {
 
         {/* View Details Drawer */}
         <AnimatePresence>
-          {viewingOrder && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-end bg-black/60 backdrop-blur-sm"
-            >
+          {viewingOrder && (() => {
+            const orderId = viewingOrder._id || viewingOrder.id;
+            const customerName = viewingOrder.shippingAddress 
+              ? `${viewingOrder.shippingAddress.firstName} ${viewingOrder.shippingAddress.lastName}` 
+              : (viewingOrder.user?.name || 'Guest');
+            const contactEmail = viewingOrder.shippingAddress?.email || viewingOrder.user?.email || 'N/A';
+            const contactPhone = viewingOrder.shippingAddress?.phone || 'N/A';
+            
+            const shippingStr = viewingOrder.shippingAddress
+              ? `${viewingOrder.shippingAddress.address}, ${viewingOrder.shippingAddress.apartment || ''}, ${viewingOrder.shippingAddress.city}, ${viewingOrder.shippingAddress.postalCode}, ${viewingOrder.shippingAddress.country}`
+              : 'Digital / In Store pickup';
+
+            return (
               <motion.div 
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'tween', duration: 0.3 }}
-                className="w-full max-w-md bg-surface h-screen border-l border-outline-variant/30 p-8 flex flex-col justify-between shadow-2xl overflow-y-auto text-left text-on-surface font-sans"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-end bg-black/60 backdrop-blur-sm"
               >
-                <div>
-                  <div className="flex justify-between items-center mb-8 pb-4 border-b border-outline-variant/20 select-none">
-                    <h3 className="font-headline-md text-headline-md text-primary text-xl font-bold font-serif">
-                      Order Details
-                    </h3>
+                <motion.div 
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ type: 'tween', duration: 0.3 }}
+                  className="w-full max-w-md bg-surface h-screen border-l border-outline-variant/30 p-8 flex flex-col justify-between shadow-2xl overflow-y-auto text-left text-on-surface font-sans"
+                >
+                  <div>
+                    <div className="flex justify-between items-center mb-8 pb-4 border-b border-outline-variant/20 select-none">
+                      <h3 className="font-headline-md text-headline-md text-primary text-xl font-bold font-serif">
+                        Order Details
+                      </h3>
+                      <button 
+                        onClick={() => setViewingOrder(null)}
+                        className="p-2 text-outline-variant hover:text-on-surface hover:bg-surface-container rounded-full transition-all focus:outline-none"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-6">
+                      {/* Status & ID */}
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-bold text-outline uppercase tracking-widest block">Order ID</span>
+                          <span className="text-sm font-bold text-primary">#{orderId.toUpperCase()}</span>
+                        </div>
+                        <div className={`px-4 py-1.5 border rounded-full text-xs font-bold uppercase tracking-wider ${getStatusColor(viewingOrder.status)}`}>
+                          {viewingOrder.status}
+                        </div>
+                      </div>
+
+                      {/* Contact details */}
+                      <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/20">
+                        <h4 className="font-bold text-[10px] uppercase tracking-widest text-outline">Customer Info</h4>
+                        <p className="text-sm font-semibold">{customerName}</p>
+                        <p className="text-xs text-on-surface-variant">{contactEmail}</p>
+                        <p className="text-xs text-on-surface-variant">{contactPhone}</p>
+                      </div>
+
+                      {/* Delivery address */}
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 shrink-0 text-primary" />
+                          <span className="font-bold text-[10px] uppercase tracking-widest text-outline">Shipping Address</span>
+                        </div>
+                        <p className="text-xs leading-relaxed text-on-surface-variant font-light pl-6">
+                          {shippingStr}
+                        </p>
+                      </div>
+
+                      {/* Items table */}
+                      <div className="space-y-3">
+                        <h4 className="font-bold text-[10px] uppercase tracking-widest text-outline">Items Ordered</h4>
+                        <div className="divide-y divide-outline-variant/10">
+                          {viewingOrder.orderItems.map((item, idx) => (
+                            <div key={idx} className="py-3 flex justify-between text-xs font-light">
+                              <div>
+                                <p className="font-semibold text-on-surface">{item.title}</p>
+                                <p className="text-on-surface-variant text-[10px]">Qty {item.qty}</p>
+                              </div>
+                              <span className="font-bold text-secondary">${(item.price * item.qty).toFixed(2)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-outline-variant/20 pt-6 mt-8 flex justify-end">
                     <button 
                       onClick={() => setViewingOrder(null)}
-                      className="p-2 text-outline-variant hover:text-on-surface hover:bg-surface-container rounded-full transition-all focus:outline-none"
+                      className="w-full py-3 bg-surface-container hover:bg-primary-container text-primary hover:text-white rounded-lg transition-colors font-bold uppercase text-xs tracking-wider"
                     >
-                      <X className="h-5 w-5" />
+                      Done
                     </button>
                   </div>
-
-                  <div className="space-y-8">
-                    {/* Status & ID */}
-                    <div className="flex justify-between items-center">
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-bold text-outline uppercase tracking-widest block">Order ID</span>
-                        <span className="text-lg font-bold text-primary">{viewingOrder.id}</span>
-                      </div>
-                      <div className={`px-4 py-1.5 border rounded-full text-xs font-bold uppercase tracking-wider ${viewingOrder.statusColor}`}>
-                        {viewingOrder.status}
-                      </div>
-                    </div>
-
-                    {/* Contact details */}
-                    <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/20">
-                      <h4 className="font-bold text-[10px] uppercase tracking-widest text-outline">Customer Info</h4>
-                      <p className="text-sm font-semibold">{viewingOrder.customer}</p>
-                      <p className="text-xs text-on-surface-variant">{viewingOrder.email}</p>
-                      <p className="text-xs text-on-surface-variant">{viewingOrder.phone}</p>
-                    </div>
-
-                    {/* Delivery address */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 shrink-0 text-primary" />
-                        <span className="font-bold text-[10px] uppercase tracking-widest text-outline">Shipping Address</span>
-                      </div>
-                      <p className="text-xs leading-relaxed text-on-surface-variant font-light pl-6">
-                        {viewingOrder.address}
-                      </p>
-                    </div>
-
-                    {/* Items table */}
-                    <div className="space-y-3">
-                      <h4 className="font-bold text-[10px] uppercase tracking-widest text-outline">Items Ordered</h4>
-                      <div className="divide-y divide-outline-variant/10">
-                        {viewingOrder.items.map((item, idx) => (
-                          <div key={idx} className="py-3 flex justify-between text-xs font-light">
-                            <div>
-                              <p className="font-semibold text-on-surface">{item.name}</p>
-                              <p className="text-on-surface-variant text-[10px]">{item.size} • Qty {item.qty}</p>
-                            </div>
-                            <span className="font-bold text-secondary">${(item.price * item.qty).toFixed(2)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-outline-variant/20 pt-6 mt-8 flex justify-end">
-                  <button 
-                    onClick={() => setViewingOrder(null)}
-                    className="w-full py-3 bg-surface-container hover:bg-primary-container text-primary hover:text-white rounded-lg transition-colors font-bold uppercase text-xs tracking-wider"
-                  >
-                    Done
-                  </button>
-                </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )}
+            );
+          })()}
         </AnimatePresence>
 
       </div>

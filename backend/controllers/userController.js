@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import User from '../models/User.js';
+import Product from '../models/Product.js';
 import generateToken from '../utils/generateToken.js';
 
 // @desc    Auth user & get token
@@ -128,7 +130,16 @@ const updateUserProfile = async (req, res) => {
 const toggleWishlist = async (req, res) => {
   const { productId } = req.body;
 
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ message: 'Invalid product ID' });
+  }
+
   try {
+    const productExists = await Product.exists({ _id: productId });
+    if (!productExists) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
     const user = await User.findById(req.user._id);
 
     if (user) {
@@ -161,7 +172,18 @@ const updateCart = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (user) {
-      user.cart = cartItems;
+      // Filter out any cart items that have invalid ObjectIds or refer to deleted products
+      const validCartItems = [];
+      for (const item of cartItems) {
+        if (item.product && mongoose.Types.ObjectId.isValid(item.product)) {
+          const productExists = await Product.exists({ _id: item.product });
+          if (productExists) {
+            validCartItems.push(item);
+          }
+        }
+      }
+
+      user.cart = validCartItems;
       await user.save();
       const updatedUser = await User.findById(req.user._id).populate('cart.product');
       res.json(updatedUser.cart);

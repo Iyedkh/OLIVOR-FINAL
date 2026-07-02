@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Search, Heart, ShoppingBag, User } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { cart, wishlist } = useApp();
+
+  const cartCount = cart ? cart.reduce((total, item) => total + item.quantity, 0) : 0;
+  const wishlistCount = wishlist ? wishlist.length : 0;
 
   const activeClass = (path) => {
     return location.pathname === path
@@ -61,11 +66,21 @@ const Navbar = () => {
             <button className="hover:scale-110 transition-transform focus:outline-none" aria-label="Search">
               <Search className="h-5 w-5" />
             </button>
-            <Link to="/wishlist" className="hover:scale-110 transition-transform focus:outline-none" aria-label="Wishlist">
+            <Link to="/wishlist" className="hover:scale-110 transition-transform focus:outline-none relative" aria-label="Wishlist">
               <Heart className="h-5 w-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-[#F6BE3C] text-primary text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center border border-white">
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
             <Link to="/bag" className="hover:scale-110 transition-transform focus:outline-none relative" aria-label="Shopping Bag">
               <ShoppingBag className="h-5 w-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-[#F6BE3C] text-primary text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center border border-white">
+                  {cartCount}
+                </span>
+              )}
             </Link>
             <Link to="/dashboard" className="hover:scale-110 transition-transform focus:outline-none" aria-label="User Account">
               <User className="h-5 w-5" />
@@ -129,7 +144,14 @@ const Navbar = () => {
               className="flex flex-col items-center gap-1 flex-1 text-center"
               aria-label="Wishlist"
             >
-              <Heart className="h-5 w-5 mx-auto" />
+              <div className="relative inline-block">
+                <Heart className="h-5 w-5 mx-auto" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-[#F6BE3C] text-primary text-[8px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center border border-white">
+                    {wishlistCount}
+                  </span>
+                )}
+              </div>
               <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Wishlist</span>
             </Link>
             <Link 
@@ -138,7 +160,14 @@ const Navbar = () => {
               className="flex flex-col items-center gap-1 flex-1 text-center"
               aria-label="Shopping Bag"
             >
-              <ShoppingBag className="h-5 w-5 mx-auto" />
+              <div className="relative inline-block">
+                <ShoppingBag className="h-5 w-5 mx-auto" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-[#F6BE3C] text-primary text-[8px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center border border-white">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
               <span className="text-[9px] font-bold uppercase tracking-widest text-outline">Bag</span>
             </Link>
             <Link 
