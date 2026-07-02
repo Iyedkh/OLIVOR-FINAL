@@ -2,22 +2,33 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     
-    // Simulate API request and redirect to Dashboard
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/dashboard');
-    }, 1500);
+    const res = await login(email, password);
+    setLoading(false);
+    
+    if (res.success) {
+      if (res.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
+    } else {
+      setError(res.message || 'Invalid credentials');
+    }
   };
 
   return (
@@ -75,6 +86,12 @@ const Login = () => {
             {/* Auth Form */}
             <div className="space-y-8">
               <form onSubmit={handleSubmit} className="space-y-6">
+                
+                {error && (
+                  <div className="p-4 bg-error-container/20 text-error border border-error/25 rounded-lg text-xs font-semibold text-center text-red-600 bg-red-50">
+                    {error}
+                  </div>
+                )}
                 
                 {/* Email Field */}
                 <div className="flex flex-col gap-2">

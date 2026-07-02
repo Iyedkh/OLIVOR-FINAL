@@ -1,94 +1,174 @@
 import React, { useState } from 'react';
-import { motion as dMotion, AnimatePresence as dAnimatePresence } from 'framer-motion';
-import { Search, Plus, Edit2, Trash2, X, AlertTriangle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Plus, Edit2, Trash2, X, AlertTriangle, Upload, Trash } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
-
-const initialProducts = [
-  { id: 'reserve-collection', title: 'Reserve Collection', price: 48.00, size: '500ml', stock: 124, region: 'Tunisia', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4ByUjGacuLxWtbDxcz4kGpUSx7s01qJl4bI33eIxuKBrwC76UFi2MgK_xviAlXB2_mM3HKzLcbcD6IXwo6k3Nm5EElOq0YtkV5ed6S1Jiy7V6BEV2C6n1cKVZ3E1EyLmxw0iL4Zp6o9S4oTSGGJZzoHDsKrLTrAlcJSV_zCEOPZ3F-icrieUEaU7Qt5OIOH6afwUkCRR8JfZR69AzXfLflx6_hBvijVE0Qr4tlUYtr8OcNLC5ZMKrMg' },
-  { id: 'chemlali-gold', title: 'Chemlali Gold', price: 64.00, size: '750ml', stock: 89, region: 'Sahel', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAw8F6qi80OSwtec9Z_SY8xz2Grx2K5ejvwAkNiouUR13bpAFez6UTyb8HCfugcpUAUh--xR0JBzXujEzG3e5xnFehmG1FB_da45Bm8A-Ij7EBmPYyg8iB4JJuh3vSOCdWG28WgIByAOADmC13e5LhBqOyjMR4-9zoKO5lDxFscyXd-Q0xqzNve9Is49DFGxvtBOwjJL9oaFEzoAqXeRZ68ZWDt3sfInXp6-VwYXGL2tfRlsq2VweFfwA' },
-  { id: 'heritage-trio', title: 'Heritage Trio Set', price: 120.00, size: '3x250ml', stock: 45, region: 'Multi-Region', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBujlZkatz7C6kyHcSKXMlMnC8w0F28U3XmwRh7Jv_SUd2UpinoitWpt_9Dl7bsGGUo1j7aB_ypeKlmES7IbFelzjv8wflbHLynnHhTwTLuusXTxmEoviZFcI3-fxEl4n_-H-_ojNl4q_mfMGeW-qIyrckJGHdPpim4bwheSZeiYYsnVA8fINwNohnpYLaxXM-9tZauG0bZCTk6DXLw1N3rQDhxlov4DK00x74gFXwTK0Cs0F9Hmy7yUQ' },
-  { id: 'carthage-amphora', title: 'Carthage Amphora', price: 185.00, size: '1000ml', stock: 12, region: 'Cap Bon', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-fCq1OG_kxJ4F6N97IKiMLF_gloGNEMHBsz78RyvnAqlDmNZFSEIsK9CE2XsHJy51hDUnzXseeWjOvyhjLmR8BpUncR4dxUQXEM5taqNi6Oyii4mKzASf73prSI57PFe9m-O_UpBDCBcIK4_TNJ3UszzWc8Hgp4aH8JgtMFhO6E1ORaevBbG6EKVMo5F6wXmnjH2dksY_dUtxALvkCmg3Qsyp500rMefkvDf2_ViyBUEr5nzpw5qzw' }
-];
+import { useApp } from '../../context/AppContext';
 
 const AdminProducts = () => {
-  const [products, setProducts] = useState(initialProducts);
+  const { products, createProduct, updateProduct, deleteProduct, token } = useApp();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
   const [formState, setFormState] = useState({
     title: '',
     price: '',
-    size: '',
-    stock: '',
+    description: '',
+    volume: '',
+    countInStock: '',
     region: '',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4ByUjGacuLxWtbDxcz4kGpUSx7s01qJl4bI33eIxuKBrwC76UFi2MgK_xviAlXB2_mM3HKzLcbcD6IXwo6k3Nm5EElOq0YtkV5ed6S1Jiy7V6BEV2C6n1cKVZ3E1EyLmxw0iL4Zp6o9S4oTSGGJZzoHDsKrLTrAlcJSV_zCEOPZ3F-icrieUEaU7Qt5OIOH6afwUkCRR8JfZR69AzXfLflx6_hBvijVE0Qr4tlUYtr8OcNLC5ZMKrMg'
+    category: 'Reserve Estate',
+    image: '',
+    images: []
   });
 
   const handleOpenAddModal = () => {
     setEditingProduct(null);
-    setFormState({ title: '', price: '', size: '', stock: '', region: '', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4ByUjGacuLxWtbDxcz4kGpUSx7s01qJl4bI33eIxuKBrwC76UFi2MgK_xviAlXB2_mM3HKzLcbcD6IXwo6k3Nm5EElOq0YtkV5ed6S1Jiy7V6BEV2C6n1cKVZ3E1EyLmxw0iL4Zp6o9S4oTSGGJZzoHDsKrLTrAlcJSV_zCEOPZ3F-icrieUEaU7Qt5OIOH6afwUkCRR8JfZR69AzXfLflx6_hBvijVE0Qr4tlUYtr8OcNLC5ZMKrMg' });
+    setFormState({
+      title: '',
+      price: '',
+      description: '',
+      volume: '500ml',
+      countInStock: '10',
+      region: 'Tunisia',
+      category: 'Reserve Estate',
+      image: '',
+      images: []
+    });
+    setUploadError('');
     setIsModalOpen(true);
   };
 
   const handleOpenEditModal = (product) => {
     setEditingProduct(product);
     setFormState({
-      title: product.title,
-      price: product.price.toString(),
-      size: product.size,
-      stock: product.stock.toString(),
-      region: product.region,
-      image: product.image
+      title: product.title || '',
+      price: product.price ? product.price.toString() : '',
+      description: product.description || '',
+      volume: product.volume || '',
+      countInStock: product.countInStock ? product.countInStock.toString() : '0',
+      region: product.region || '',
+      category: product.category || 'Reserve Estate',
+      image: product.image || '',
+      images: product.images || []
     });
+    setUploadError('');
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setProducts(prev => prev.filter(p => p.id !== id));
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      const result = await deleteProduct(id);
+      if (!result.success) {
+        alert(result.message || 'Failed to delete product');
+      }
+    }
   };
 
-  const handleFormSubmit = (e) => {
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    setUploadError('');
+
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        // Append all uploaded images.
+        // If there's no main image set yet, use the first uploaded image.
+        setFormState((prev) => {
+          const newImages = [...(prev.images || []), ...data.urls];
+          return {
+            ...prev,
+            image: prev.image || data.urls[0] || '',
+            images: newImages,
+          };
+        });
+      } else {
+        setUploadError(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      setUploadError(err.message || 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveImage = (indexToRemove) => {
+    setFormState((prev) => {
+      const newImages = prev.images.filter((_, idx) => idx !== indexToRemove);
+      // If we removed the main image, set main image to the first remaining image (if any)
+      const removedImageUrl = prev.images[indexToRemove];
+      const newMainImage = prev.image === removedImageUrl 
+        ? (newImages[0] || '') 
+        : prev.image;
+
+      return {
+        ...prev,
+        image: newMainImage,
+        images: newImages,
+      };
+    });
+  };
+
+  const handleSetMainImage = (imageUrl) => {
+    setFormState((prev) => ({
+      ...prev,
+      image: imageUrl,
+    }));
+  };
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const updatedPrice = parseFloat(formState.price) || 0;
-    const updatedStock = parseInt(formState.stock) || 0;
+    const productData = {
+      title: formState.title,
+      price: parseFloat(formState.price) || 0,
+      description: formState.description || 'Premium Tunisian Olive Oil',
+      volume: formState.volume,
+      countInStock: parseInt(formState.countInStock) || 0,
+      region: formState.region,
+      category: formState.category,
+      image: formState.image || (formState.images && formState.images[0]) || 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5',
+      images: formState.images || []
+    };
 
     if (editingProduct) {
-      // Edit
-      setProducts(prev => prev.map(p => {
-        if (p.id === editingProduct.id) {
-          return {
-            ...p,
-            title: formState.title,
-            price: updatedPrice,
-            size: formState.size,
-            stock: updatedStock,
-            region: formState.region,
-            image: formState.image
-          };
-        }
-        return p;
-      }));
+      const result = await updateProduct(editingProduct._id || editingProduct.id, productData);
+      if (result.success) {
+        setIsModalOpen(false);
+      } else {
+        alert(result.message || 'Failed to update product');
+      }
     } else {
-      // Add
-      const newId = formState.title.toLowerCase().replace(/\s+/g, '-');
-      const newProduct = {
-        id: newId,
-        title: formState.title,
-        price: updatedPrice,
-        size: formState.size,
-        stock: updatedStock,
-        region: formState.region,
-        image: formState.image
-      };
-      setProducts(prev => [...prev, newProduct]);
+      const result = await createProduct(productData);
+      if (result.success) {
+        setIsModalOpen(false);
+      } else {
+        alert(result.message || 'Failed to create product');
+      }
     }
-
-    setIsModalOpen(false);
   };
 
-  const filteredProducts = products.filter(p => 
+  const filteredProducts = (products || []).filter(p => 
     p.title.toLowerCase().includes(search.toLowerCase()) || 
-    p.region.toLowerCase().includes(search.toLowerCase())
+    (p.region && p.region.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -143,61 +223,64 @@ const AdminProducts = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10 font-light font-sans">
-                {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-surface-container-low transition-colors">
-                    <td className="py-4 px-6 select-none">
-                      <div className="w-12 h-16 bg-surface-container rounded-lg overflow-hidden border border-outline-variant/30 p-2 flex items-center justify-center">
-                        <img className="h-full w-auto object-contain" alt={product.title} src={product.image} />
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 font-bold text-primary">{product.title}</td>
-                    <td className="py-4 px-6 font-bold text-secondary">${product.price.toFixed(2)}</td>
-                    <td className="py-4 px-6">{product.size}</td>
-                    <td className="py-4 px-6">
-                      {product.stock <= 15 ? (
-                        <span className="flex items-center gap-1.5 text-amber-600 font-bold text-xs uppercase">
-                          <AlertTriangle className="h-4 w-4 shrink-0" /> Low ({product.stock})
-                        </span>
-                      ) : (
-                        <span className="text-on-surface-variant font-semibold">{product.stock} units</span>
-                      )}
-                    </td>
-                    <td className="py-4 px-6">{product.region}</td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex gap-3 justify-end">
-                        <button 
-                          onClick={() => handleOpenEditModal(product)}
-                          className="p-2 hover:bg-surface-container text-outline hover:text-primary rounded-lg transition-colors focus:outline-none"
-                          aria-label="Edit"
-                        >
-                          <Edit2 className="h-4.5 w-4.5" />
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(product.id)}
-                          className="p-2 hover:bg-red-500/10 text-outline hover:text-red-600 rounded-lg transition-colors focus:outline-none"
-                          aria-label="Delete"
-                        >
-                          <Trash2 className="h-4.5 w-4.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {filteredProducts.map((product) => {
+                  const productId = product._id || product.id;
+                  return (
+                    <tr key={productId} className="hover:bg-surface-container-low transition-colors">
+                      <td className="py-4 px-6 select-none">
+                        <div className="w-12 h-16 bg-surface-container rounded-lg overflow-hidden border border-outline-variant/30 p-2 flex items-center justify-center">
+                          <img className="max-h-full max-w-full object-contain" alt={product.title} src={product.image} />
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 font-bold text-primary">{product.title}</td>
+                      <td className="py-4 px-6 font-bold text-secondary">${(product.price || 0).toFixed(2)}</td>
+                      <td className="py-4 px-6">{product.volume}</td>
+                      <td className="py-4 px-6">
+                        {(product.countInStock || 0) <= 5 ? (
+                          <span className="flex items-center gap-1.5 text-amber-600 font-bold text-xs uppercase">
+                            <AlertTriangle className="h-4 w-4 shrink-0" /> Low ({product.countInStock || 0})
+                          </span>
+                        ) : (
+                          <span className="text-on-surface-variant font-semibold">{product.countInStock || 0} units</span>
+                        )}
+                      </td>
+                      <td className="py-4 px-6">{product.region}</td>
+                      <td className="py-4 px-6 text-right">
+                        <div className="flex gap-3 justify-end">
+                          <button 
+                            onClick={() => handleOpenEditModal(product)}
+                            className="p-2 hover:bg-surface-container text-outline hover:text-primary rounded-lg transition-colors focus:outline-none"
+                            aria-label="Edit"
+                          >
+                            <Edit2 className="h-4.5 w-4.5" />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(productId)}
+                            className="p-2 hover:bg-red-500/10 text-outline hover:text-red-600 rounded-lg transition-colors focus:outline-none"
+                            aria-label="Delete"
+                          >
+                            <Trash2 className="h-4.5 w-4.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         </div>
 
         {/* Add/Edit Modal (Framer Motion Drawer) */}
-        <dAnimatePresence>
+        <AnimatePresence>
           {isModalOpen && (
-            <dMotion.div 
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 flex items-center justify-end bg-black/60 backdrop-blur-sm"
             >
-              <dMotion.div 
+              <motion.div 
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
@@ -217,7 +300,7 @@ const AdminProducts = () => {
                     </button>
                   </div>
 
-                  <form onSubmit={handleFormSubmit} id="productForm" className="space-y-6">
+                  <form onSubmit={handleFormSubmit} id="productForm" className="space-y-5">
                     <div className="flex flex-col gap-2">
                       <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Product Title</label>
                       <input 
@@ -231,52 +314,149 @@ const AdminProducts = () => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Price (USD)</label>
-                      <input 
-                        value={formState.price}
-                        onChange={(e) => setFormState({ ...formState, price: e.target.value })}
-                        className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
-                        placeholder="48.00" 
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Description</label>
+                      <textarea 
+                        value={formState.description}
+                        onChange={(e) => setFormState({ ...formState, description: e.target.value })}
+                        className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm min-h-[80px]" 
+                        placeholder="A robust, intense olive oil..." 
                         required 
-                        type="number" 
-                        step="0.01"
                       />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Volume / Size</label>
-                      <input 
-                        value={formState.size}
-                        onChange={(e) => setFormState({ ...formState, size: e.target.value })}
-                        className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
-                        placeholder="500ml" 
-                        required 
-                        type="text" 
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Price (USD)</label>
+                        <input 
+                          value={formState.price}
+                          onChange={(e) => setFormState({ ...formState, price: e.target.value })}
+                          className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
+                          placeholder="48.00" 
+                          required 
+                          type="number" 
+                          step="0.01"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Inventory Stock</label>
+                        <input 
+                          value={formState.countInStock}
+                          onChange={(e) => setFormState({ ...formState, countInStock: e.target.value })}
+                          className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
+                          placeholder="100" 
+                          required 
+                          type="number" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Volume / Size</label>
+                        <input 
+                          value={formState.volume}
+                          onChange={(e) => setFormState({ ...formState, volume: e.target.value })}
+                          className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
+                          placeholder="500ml" 
+                          required 
+                          type="text" 
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Grove Region</label>
+                        <input 
+                          value={formState.region}
+                          onChange={(e) => setFormState({ ...formState, region: e.target.value })}
+                          className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
+                          placeholder="Tunisian Sahel" 
+                          required 
+                          type="text" 
+                        />
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Inventory Stock</label>
-                      <input 
-                        value={formState.stock}
-                        onChange={(e) => setFormState({ ...formState, stock: e.target.value })}
-                        className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
-                        placeholder="100" 
-                        required 
-                        type="number" 
-                      />
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Category</label>
+                      <select
+                        value={formState.category}
+                        onChange={(e) => setFormState({ ...formState, category: e.target.value })}
+                        className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface focus:outline-none focus:border-primary text-sm"
+                      >
+                        <option value="Reserve Estate">Reserve Estate</option>
+                        <option value="Limited Harvest">Limited Harvest</option>
+                        <option value="Infusions">Infusions</option>
+                      </select>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Grove Region</label>
-                      <input 
-                        value={formState.region}
-                        onChange={(e) => setFormState({ ...formState, region: e.target.value })}
-                        className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm" 
-                        placeholder="Tunisian Sahel" 
-                        required 
-                        type="text" 
-                      />
+                    {/* Image Upload Area */}
+                    <div className="flex flex-col gap-3 pt-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-outline flex justify-between">
+                        <span>Product Images</span>
+                        {uploading && <span className="text-secondary animate-pulse">Uploading...</span>}
+                      </label>
+                      
+                      <div className="flex items-center justify-center w-full">
+                        <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-outline-variant/50 rounded-xl cursor-pointer hover:bg-surface-container-low hover:border-primary transition-all">
+                          <div className="flex flex-col items-center justify-center pt-2">
+                            <Upload className="h-6 w-6 text-outline-variant mb-1" />
+                            <p className="text-xs text-outline-variant font-light">Click to upload multiple images</p>
+                          </div>
+                          <input 
+                            type="file" 
+                            multiple 
+                            onChange={handleImageUpload} 
+                            disabled={uploading}
+                            className="hidden" 
+                            accept="image/*"
+                          />
+                        </label>
+                      </div>
+
+                      {uploadError && (
+                        <p className="text-red-500 text-xs font-semibold">{uploadError}</p>
+                      )}
+
+                      {/* Uploaded Images List */}
+                      {formState.images && formState.images.length > 0 && (
+                        <div className="grid grid-cols-4 gap-2 pt-2">
+                          {formState.images.map((url, idx) => {
+                            const isMain = formState.image === url;
+                            return (
+                              <div key={idx} className={`relative aspect-square rounded-lg overflow-hidden border p-1 bg-white flex items-center justify-center group ${isMain ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant/30'}`}>
+                                <img src={url} alt={`upload-${idx}`} className="max-h-full max-w-full object-contain" />
+                                
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5 transition-all">
+                                  {!isMain && (
+                                    <button 
+                                      type="button"
+                                      onClick={() => handleSetMainImage(url)}
+                                      className="bg-white/90 text-primary text-[9px] px-1.5 py-0.5 rounded font-bold hover:bg-white"
+                                    >
+                                      Main
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveImage(idx)}
+                                    className="bg-red-600/90 text-white p-1 rounded hover:bg-red-600"
+                                    aria-label="Remove image"
+                                  >
+                                    <Trash className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+
+                                {isMain && (
+                                  <span className="absolute top-1 left-1 bg-primary text-white text-[8px] px-1 rounded uppercase tracking-wide font-bold scale-90 origin-top-left">
+                                    Main
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </form>
                 </div>
@@ -296,10 +476,10 @@ const AdminProducts = () => {
                     {editingProduct ? 'Save Changes' : 'Create Product'}
                   </button>
                 </div>
-              </dMotion.div>
-            </dMotion.div>
+              </motion.div>
+            </motion.div>
           )}
-        </dAnimatePresence>
+        </AnimatePresence>
 
       </div>
     </AdminLayout>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, Minus, ArrowRight, ShieldCheck, ShoppingBag } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const initialCartItems = [
   {
@@ -24,24 +25,25 @@ const initialCartItems = [
 
 const Cart = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const { cart, updateCartQty, removeFromCart } = useApp();
+  const cartItems = cart;
   const [promoCode, setPromoCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [promoError, setPromoError] = useState('');
   const [promoSuccess, setPromoSuccess] = useState('');
 
   const updateQuantity = (id, change) => {
-    setCartItems(prev => prev.map(item => {
-      if (item.id === id) {
-        const newQty = item.quantity + change;
-        return newQty > 0 ? { ...item, quantity: newQty } : item;
+    const item = cart.find(x => x.id === id);
+    if (item) {
+      const newQty = item.quantity + change;
+      if (newQty > 0) {
+        updateCartQty(id, newQty);
       }
-      return item;
-    }));
+    }
   };
 
   const removeItem = (id) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+    removeFromCart(id);
   };
 
   const handleApplyPromo = () => {

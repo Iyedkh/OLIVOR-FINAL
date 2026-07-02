@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register } = useApp();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +15,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -28,12 +30,14 @@ const Register = () => {
     }
 
     setLoading(true);
-    
-    // Simulate API registration and redirect to Dashboard
-    setTimeout(() => {
-      setLoading(false);
+    const res = await register(fullName, email, password);
+    setLoading(false);
+
+    if (res.success) {
       navigate('/dashboard');
-    }, 1500);
+    } else {
+      setError(res.message || 'Registration failed');
+    }
   };
 
   return (

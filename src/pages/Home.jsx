@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView } from 'framer-motion';
-import { ArrowLeft, ArrowRight, ShoppingBag, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useApp } from '../context/AppContext';
 
 const Home = () => {
+  const { products, addToCart } = useApp();
   const scrollerRef = useRef(null);
 
   const scrollLeft = () => {
@@ -178,82 +179,48 @@ const Home = () => {
           viewport={{ once: true }}
           variants={staggerContainer}
         >
-          {/* Product Card 1 */}
-          <motion.div 
-            variants={fadeIn}
-            className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
-          >
-            <Link to="/product/reserve-collection">
-              <div className="relative overflow-hidden rounded-lg mb-3 aspect-square">
-                <img 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                  alt="Reserve Collection Bottle"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsbT7Hx2sj5VJBn-NfFC36gri3sH0MrZuEim-PZzqBlHLxonjWYPIQS5Z3fwQ89WbMpLE_PHY71fv_deKNP4M1Fv0NLAtLBHB0Z5xlYw2m-wLL34vwG3bmLmfypl98W303OGeVq2kN2J4IWOezkA2s8hbc1J7GhFZA6X2E9vY6FedKFxXmtTcxcchNiwfPUoGh9jHxCbbrqkfukicJH0a0WIg3o6bOQUxIw6ZLE8HAF0OQFgjVT70p3w"
-                />
-                <div className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container font-label-sm px-1.5 py-0.5 rounded text-[8px] tracking-wide">
-                  Limited Release
-                </div>
-              </div>
-              <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold">Reserve Collection</h4>
-              <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md">
-                Bold, peppery notes with a velvety finish.
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="font-headline-md text-sm text-primary font-bold">$48.00</span>
-                <button className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold">
-                  Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
-                </button>
-              </div>
-            </Link>
-          </motion.div>
-
-          {/* Product Card 2 */}
-          <motion.div 
-            variants={fadeIn}
-            className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
-          >
-            <div className="relative overflow-hidden rounded-lg mb-3 aspect-square">
-              <img 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                alt="Heritage Blend Bottle"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJepa3o6sJKIVVNJj4OOyVllRHF2JJ-4XfmdCs0cltMYIGt0H7i6JDKTJRqfn7ff6j4tYwvHbyp29hRuUgw4RRM_zRKcuMqjSnIfBmE0KKmdGBCeheF5YqZdRr7qX3mk1eCJxIV_MyAssbJr7P2aW0qVkejJivCZaxWYhXUeEkSuLJiry1dRQRwyqNi6ZlxbHyB1abQZDAFUMNbJWzTk5i3QVlWKiZFhn8eOQu86OMccZyoOSMZ1IUoA"
-              />
-            </div>
-            <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold">Heritage Blend</h4>
-            <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md">
-              A harmonious balance of smooth and robust flavors.
-            </p>
-            <div className="flex justify-between items-center">
-              <span className="font-headline-md text-sm text-primary font-bold">$35.00</span>
-              <button className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold">
-                Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Product Card 3 */}
-          <motion.div 
-            variants={fadeIn}
-            className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
-          >
-            <div className="relative overflow-hidden rounded-lg mb-3 aspect-square">
-              <img 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                alt="Infused Sage Oil Bottle"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuALAkZLj-PVYnKZULYj-IkYImwZyFnaQQeGShjaDLwPRcqSXvXOJOgYiB4CmSxcabXvwsTPv4zIWe102VMcagkz6gNaJwxavT6bhjKYml7azggprVvhXYAmuNTVsb6PE58loqGH0RarlKh36OAEa5GwhXTPXWFCa4n-q7v4RP7t_P_z38va2pQ5L7hQRQrb5G0R4SfLEVRxewXG_mpB95iX6aStjGiDMao-xWN5YUbYClfwvGs3WTDrXA"
-              />
-            </div>
-            <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold">Infused Sage Oil</h4>
-            <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md">
-              Wild desert sage infused for an aromatic culinary lift.
-            </p>
-            <div className="flex justify-between items-center">
-              <span className="font-headline-md text-sm text-primary font-bold">$42.00</span>
-              <button className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold">
-                Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
-              </button>
-            </div>
-          </motion.div>
+          {products && products.slice(0, 6).map((product) => {
+            const productId = product._id || product.id;
+            return (
+              <motion.div 
+                key={productId}
+                variants={fadeIn}
+                className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
+              >
+                <Link to={`/product/${productId}`}>
+                  <div className="relative overflow-hidden rounded-lg mb-3 aspect-square bg-surface-container/50 flex items-center justify-center p-2">
+                    <img 
+                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-700" 
+                      alt={product.title}
+                      src={product.image}
+                    />
+                    {product.badge && (
+                      <div className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container font-label-sm px-1.5 py-0.5 rounded text-[8px] tracking-wide">
+                        {product.badge}
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold truncate">{product.title}</h4>
+                  <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md line-clamp-2">
+                    {product.description}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="font-headline-md text-sm text-primary font-bold">${product.price.toFixed(2)}</span>
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addToCart(product, 1);
+                      }}
+                      className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold"
+                    >
+                      Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
+                    </button>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </section>
 
@@ -329,58 +296,81 @@ const Home = () => {
 
         <div className="max-w-[1440px] mx-auto px-container-padding grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-gutter h-auto md:h-[800px]">
           {/* Large Card */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="md:col-span-2 md:row-span-2 bg-white rounded-3xl overflow-hidden group relative flex flex-col justify-end p-10 cursor-pointer min-h-[400px] md:min-h-auto shadow-sm border border-outline-variant/10"
-          >
-            <img 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
-              alt="Signature Daily Blend flat lay"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1WRFvE83e-y9exy8fuOauN55VYKMWD4PxIvrMWFJOgQCEcsI2lmJm6WogRrEqJEpwzHNC6GuN3id3rp97XE8cgmxc0kUvobauyyNCczjNn4TU_crHbY9OT3cEUjjBR49svfJc8DTXB_q-HQ5YdzhXlTSMJt7XTUF6slBX5P3yXs-6SAYsJ2j9I1S__P5QiBLJJj2JOfqAtVP-H64FcJGxNkHvidv98cxXjkg6DjgKy8A3Ns7OF5wP7g"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-            <div className="relative z-10 text-white">
-              <span className="font-label-sm bg-secondary px-3 py-1 rounded-full mb-4 inline-block text-xs text-white">
-                Best Seller
-              </span>
-              <h3 className="font-headline-xl text-white mb-2 text-2xl md:text-4xl">
-                Signature Daily Blend
-              </h3>
-              <p className="opacity-80 mb-6 font-body-md">
-                The essential foundation for every kitchen.
-              </p>
-              <Link to="/shop" className="inline-block bg-white text-primary px-8 py-3 rounded-full font-label-lg hover:bg-secondary-container hover:text-on-secondary-container transition-colors text-center font-semibold">
-                Shop Signature
-              </Link>
-            </div>
-          </motion.div>
+          {(() => {
+            const p1 = products.find(p => p.title === 'Reserve Collection') || products[0];
+            const p1Id = p1 ? (p1._id || p1.id) : '';
+            return (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="md:col-span-2 md:row-span-2 bg-white rounded-3xl overflow-hidden group relative flex flex-col justify-end p-10 cursor-pointer min-h-[400px] md:min-h-auto shadow-sm border border-outline-variant/10"
+              >
+                {p1 && (
+                  <>
+                    <img 
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+                      alt={p1.title}
+                      src={p1.image}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div className="relative z-10 text-white">
+                      <span className="font-label-sm bg-secondary px-3 py-1 rounded-full mb-4 inline-block text-xs text-white">
+                        Best Seller
+                      </span>
+                      <h3 className="font-headline-xl text-white mb-2 text-2xl md:text-4xl">
+                        {p1.title}
+                      </h3>
+                      <p className="opacity-80 mb-6 font-body-md line-clamp-2">
+                        {p1.description}
+                      </p>
+                      <Link to={`/product/${p1Id}`} className="inline-block bg-white text-primary px-8 py-3 rounded-full font-label-lg hover:bg-secondary-container hover:text-on-secondary-container transition-colors text-center font-semibold text-xs">
+                        Shop {p1.title}
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            );
+          })()}
 
           {/* Side Card 1 */}
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="md:col-span-2 bg-white rounded-3xl overflow-hidden group relative p-10 flex items-center justify-between cursor-pointer min-h-[200px] md:min-h-auto shadow-sm border border-outline-variant/10"
-          >
-            <div className="z-10 w-1/2">
-              <h3 className="font-headline-md text-primary mb-2 text-xl md:text-2xl">
-                Early Harvest Green
-              </h3>
-              <p className="text-on-surface-variant mb-6 font-body-md text-sm">
-                Sharp, grassy, and vibrant.
-              </p>
-              <span className="font-headline-md text-primary text-xl md:text-2xl block mb-2">$52.00</span>
-            </div>
-            <img 
-              className="absolute right-0 top-0 h-full w-2/3 object-cover group-hover:scale-105 transition-transform duration-700" 
-              alt="Early Harvest Green Bottle"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4p6E1u3ivSuxW22rclIVJf0HLtS-_wJXLHArE3ilCKgh-0OXgE34NG96Rh9PT3344WTXrbUHlqT4Cd_6O9C3M2Yo7kjHzD4PsHYfdA7WUaDlsQECw2o9b-xcQm5-iGmapf17c0C5zjIc7JgGaCPSGWxz7ssW2GijcArIms5rwOSN4m2MiQjbegWpTlids1Tlxmy1gVUTG4WSWwhLvi68df71obQg0t32-2Eogx0Vcbrov7gGVLNI_Og"
-            />
-          </motion.div>
+          {(() => {
+            const p2 = products.find(p => p.title === 'Chemlali Gold') || products[1];
+            const p2Id = p2 ? (p2._id || p2.id) : '';
+            return (
+              <motion.div 
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="md:col-span-2 bg-white rounded-3xl overflow-hidden group relative p-10 flex items-center justify-between cursor-pointer min-h-[200px] md:min-h-auto shadow-sm border border-outline-variant/10"
+              >
+                {p2 && (
+                  <>
+                    <div className="z-10 w-1/2">
+                      <h3 className="font-headline-md text-primary mb-2 text-xl md:text-2xl">
+                        {p2.title}
+                      </h3>
+                      <p className="text-on-surface-variant mb-6 font-body-md text-sm line-clamp-2">
+                        {p2.description}
+                      </p>
+                      <span className="font-headline-md text-primary text-xl md:text-2xl block mb-2">${p2.price.toFixed(2)}</span>
+                      <Link to={`/product/${p2Id}`} className="inline-block bg-primary text-white px-6 py-2 rounded-full font-label-lg hover:bg-primary-container transition-colors text-center font-semibold text-xs mt-2">
+                        Buy Now
+                      </Link>
+                    </div>
+                    <img 
+                      className="absolute right-0 top-0 h-full w-1/2 object-contain group-hover:scale-105 transition-transform duration-700 p-4" 
+                      alt={p2.title}
+                      src={p2.image}
+                    />
+                  </>
+                )}
+              </motion.div>
+            );
+          })()}
 
           {/* Side Card 2 */}
           <motion.div 

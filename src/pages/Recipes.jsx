@@ -1,35 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, BarChart2, Bookmark, ArrowRight } from 'lucide-react';
-
-const recipesData = [
-  {
-    id: 'saffron-risotto',
-    title: 'Saffron Infused Risotto',
-    time: '45 MIN',
-    difficulty: 'Advanced',
-    category: 'Main Course',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAusxsWRLqM5suGdnNlXHseWnSsxmm4qecZFlEdgCWtJtIfq8gGUowG7MUv40mZguWkU0h0hd-f7WziV-7QDBBnGYKPlEMV0PNPATudgNiJRaulAD6KNJ7W5irlirrrpm2veTkCARlXRekf1b2i-LRFVc0zU9JQpp599tDxcaoiRRs7U_aIGIghXOR1YXfmIX_4r2JqQVEBEo8mPVlsTfGGMt_0mWlJ1digj4Ynx0iSz86zMcmHp9AF2A'
-  },
-  {
-    id: 'garlic-focaccia',
-    title: 'Roasted Garlic Focaccia',
-    time: '3 HOURS',
-    difficulty: 'Intermediate',
-    category: 'Appetizers',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDQAE-PlLOm2NI_ezZwUy6nMhMH28iVHoRoS9FI9QK2ICYKiZcijY35DXhyn5j6LsqiFth-K4RKGOV9raGcfAyvwuXQKyLzZWpvwRK5n9UCubWj3zO3uZIL0P3CkW7GPrqtu-Jk4otED15a6OaD1ITHDbnQF6kMJt4i-GXbu2m4wLSjmomSUzDwzBC_Z7Wm-rcUBwdM-aU0dfCeMz86TQ4AoW94YN51YQYTHTHv_bseH3q_vt_4vgf9qA'
-  },
-  {
-    id: 'burrata-heirloom',
-    title: 'Burrata & Heirloom',
-    time: '15 MIN',
-    difficulty: 'Easy',
-    category: 'Appetizers',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCmxPyO-MkED81xdK5ro-GaT3tawLeebr2AD5pYrDJ9qVEn3jO2bbCMAtc030Tt5681uWuNFKw6EbZinhRCHHaSBbTk652NT4-OhO3IcjqaeXK1WnLStHTCuX72zWvlz8HOKE_Jmu9hCXdH9aLg9XpRgj61IYI7amODTQ0O9bNkStPX1w4mGVIgXA8ZqPfgMSBfjUpad1osjNqmYq0KoOLO401IfTv2o-bZDHFY-_4VXTCFa1qzNeIF-w'
-  }
-];
+import { useApp } from '../context/AppContext';
 
 const Recipes = () => {
+  const { recipes, loadingRecipes } = useApp();
   const [activeCategory, setActiveCategory] = useState('All');
   const [bookmarked, setBookmarked] = useState({});
 
@@ -40,9 +15,11 @@ const Recipes = () => {
     }));
   };
 
+  const activeRecipes = recipes || [];
+
   const filteredRecipes = activeCategory === 'All'
-    ? recipesData
-    : recipesData.filter(r => r.category === activeCategory);
+    ? activeRecipes
+    : activeRecipes.filter(r => r.category === activeCategory);
 
   // Animation variants
   const fadeIn = {
@@ -207,55 +184,69 @@ const Recipes = () => {
             </a>
           </div>
 
-          <motion.div 
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter"
-          >
-            {filteredRecipes.map((recipe) => (
-              <motion.div 
-                key={recipe.id}
-                variants={fadeIn}
-                className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-outline-variant/10"
-              >
-                <div className="aspect-[3/4] overflow-hidden bg-surface-container">
-                  <img 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                    alt={recipe.title}
-                    src={recipe.image}
-                  />
-                </div>
-                
-                <div className="p-8 text-left">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-headline-md text-headline-md text-primary text-lg md:text-xl">
-                      {recipe.title}
-                    </h3>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleBookmark(recipe.id);
-                      }}
-                      className="text-outline hover:text-primary transition-colors focus:outline-none"
-                    >
-                      <Bookmark className={`h-5 w-5 ${bookmarked[recipe.id] ? 'fill-primary text-primary' : 'text-outline-variant hover:text-primary'}`} />
-                    </button>
-                  </div>
-                  
-                  <div className="flex items-center gap-6 text-label-sm font-label-sm text-outline uppercase tracking-widest text-xs font-semibold">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" /> {recipe.time}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <BarChart2 className="h-4 w-4" /> {recipe.difficulty}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+          {loadingRecipes ? (
+            <div className="flex items-center justify-center min-h-[300px]">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          ) : filteredRecipes.length === 0 ? (
+            <div className="flex flex-col items-center justify-center min-h-[300px] text-on-surface-variant">
+              <span className="material-symbols-outlined text-6xl opacity-30 mb-4">menu_book</span>
+              <p className="font-body-lg">No recipes found for this category.</p>
+            </div>
+          ) : (
+            <motion.div 
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter"
+            >
+              {filteredRecipes.map((recipe) => {
+                const recipeId = recipe._id || recipe.id;
+                return (
+                  <motion.div 
+                    key={recipeId}
+                    variants={fadeIn}
+                    className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-outline-variant/10"
+                  >
+                    <div className="aspect-[3/4] overflow-hidden bg-surface-container">
+                      <img 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                        alt={recipe.title}
+                        src={recipe.image}
+                      />
+                    </div>
+                    
+                    <div className="p-8 text-left">
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="font-headline-md text-headline-md text-primary text-lg md:text-xl">
+                          {recipe.title}
+                        </h3>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleBookmark(recipeId);
+                          }}
+                          className="text-outline hover:text-primary transition-colors focus:outline-none"
+                        >
+                          <Bookmark className={`h-5 w-5 ${bookmarked[recipeId] ? 'fill-primary text-primary' : 'text-outline-variant hover:text-primary'}`} />
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center gap-6 text-label-sm font-label-sm text-outline uppercase tracking-widest text-xs font-semibold">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-4 w-4" /> {recipe.time}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <BarChart2 className="h-4 w-4" /> {recipe.difficulty}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
         </div>
       </section>
 

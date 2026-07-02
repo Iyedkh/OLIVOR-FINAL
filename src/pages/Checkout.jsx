@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ArrowRight, ShieldCheck, Lock, CreditCard, CheckCircle } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const checkoutProducts = [
   {
@@ -24,7 +25,9 @@ const checkoutProducts = [
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const { token, cart, placeOrder } = useApp();
   const [step, setStep] = useState(1); // 1: Shipping, 2: Delivery, 3: Payment, 4: Review, 5: Success
+  const [loading, setLoading] = useState(false);
   const [shippingForm, setShippingForm] = useState({
     email: '',
     subscribe: true,
@@ -45,6 +48,12 @@ const Checkout = () => {
     cvc: ''
   });
 
+  useEffect(() => {
+    if (cart.length === 0 && step !== 5) {
+      navigate('/cart');
+    }
+  }, [cart, navigate, step]);
+ 
   const handleInputChange = (field, value) => {
     setShippingForm(prev => ({
       ...prev,
@@ -60,9 +69,52 @@ const Checkout = () => {
   };
 
   // Calculations
-  const subtotal = checkoutProducts.reduce((acc, p) => acc + p.price * p.quantity, 0);
+  const subtotal = cart.reduce((acc, p) => acc + p.price * p.quantity, 0);
   const shippingCost = deliveryMethod === 'express' ? 15.00 : 0.00;
   const total = subtotal + shippingCost;
+
+  const handlePlaceOrder = async () => {
+    if (!token) {
+      alert('Please log in or register an account to place an order.');
+      navigate('/login');
+      return;
+    }
+    
+    setLoading(true);
+    const orderData = {
+      orderItems: cart.map(item => ({
+        title: item.title,
+        qty: item.quantity,
+        image: item.image,
+        price: item.price,
+        product: item.id
+      })),
+      shippingAddress: {
+        firstName: shippingForm.firstName,
+        lastName: shippingForm.lastName,
+        address: shippingForm.address,
+        apartment: shippingForm.apartment || '',
+        city: shippingForm.city,
+        postalCode: shippingForm.postalCode,
+        country: 'Tunisia',
+        phone: shippingForm.phone
+      },
+      paymentMethod: 'Credit Card',
+      itemsPrice: subtotal,
+      taxPrice: subtotal * 0.08,
+      shippingPrice: shippingCost,
+      totalPrice: total
+    };
+
+    const res = await placeOrder(orderData);
+    setLoading(false);
+    
+    if (res.success) {
+      setStep(5);
+    } else {
+      alert(res.message || 'Failed to place order. Please try again.');
+    }
+  };
 
   // Step names
   const stepsList = ['Shipping', 'Delivery', 'Payment', 'Review'];
@@ -450,10 +502,11 @@ const Checkout = () => {
                         <ChevronLeft className="h-4 w-4" /> Back to Payment
                       </button>
                       <button 
-                        onClick={() => setStep(5)}
-                        className="bg-primary hover:bg-primary-container text-white px-10 py-4 rounded-lg font-semibold tracking-wide transition-all hover:scale-[1.02] active:scale-95 shadow-md text-sm uppercase"
+                        onClick={handlePlaceOrder}
+                        disabled={loading}
+                        className="bg-primary hover:bg-primary-container text-white px-10 py-4 rounded-lg font-semibold tracking-wide transition-all hover:scale-[1.02] active:scale-95 shadow-md text-sm uppercase flex items-center gap-2"
                       >
-                        Place Order
+                        {loading ? 'Processing...' : 'Place Order'}
                       </button>
                     </div>
                   </motion.div>
@@ -471,7 +524,7 @@ const Checkout = () => {
                 
                 {/* Product List */}
                 <div className="space-y-6 mb-8">
-                  {checkoutProducts.map((product) => (
+                  {cart.map((product) => (
                     <div key={product.id} className="flex gap-4">
                       <div className="relative w-20 h-24 bg-white rounded-lg flex-shrink-0 overflow-hidden border border-outline-variant/10 select-none">
                         <img 
@@ -489,7 +542,7 @@ const Checkout = () => {
                           {product.title}
                         </h4>
                         <p className="text-label-sm text-on-surface-variant text-xs font-light">
-                          {product.subtitle}
+                          {product.region} • {product.volume}
                         </p>
                         <p className="font-body-md text-body-md mt-1 text-secondary font-bold text-sm">
                           ${product.price.toFixed(2)}

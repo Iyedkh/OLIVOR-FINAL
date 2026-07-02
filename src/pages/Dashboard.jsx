@@ -2,30 +2,19 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, Package, MapPin, CreditCard, Settings, LogOut, Award, Navigation, Trash2, ArrowRight } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [wishlist, setWishlist] = useState([
-    {
-      id: 'carthage-reserve',
-      title: 'Carthage Reserve',
-      price: 45.00,
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDS4rOfiT7oTuOTPornemmeYMWdmPc8IHax0hkkhxoZV8mVw9t1sNRhjSoO8qcAiJuzgHg9KjiIH2LWpd5yRYSyEOl2J1U-LjuesU3LduEQheHvqon0ukpnc92RzcJo_H9FnYPYsknDOnN6fkGqQu9EQLC74xD-I5bKUME5iqDS6TZsEjhe8vstBpq4W5bkBP5CAH_mY0yj774fsqm_PvMxSX0TPjzxcMwtPFWtnUveap61lSX8arvI8A'
-    },
-    {
-      id: 'infusion-trio',
-      title: 'Infusion Trio',
-      price: 62.00,
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCrkek1qbk5FWFWil2kAOqTwl45kvdKeIJhoii4m6zrR4ScQ3jjtNOiYtg1fMxp0ISJ_mjvBp7iUvCH6sFgbhBdD6_boumzygicF8BFtrAN1vLY9FF0kSawGG03KqXYS_EjI5LHx8DpIpRdsfxrBZbbtf3DUDZjQc9KJ6jJZmwTyunUCWgm0dT0WGJa6DSm0zzqCAqqNS8EU6WaO6Ru0Jh_YAk7C6H8hx2JvmB_tkJdVM3xE5d7d0qDzg'
-    }
-  ]);
+  const { user, logout, wishlist, toggleWishlist } = useApp();
 
   const handleLogout = () => {
+    logout();
     navigate('/login');
   };
 
   const removeWishlistItem = (id) => {
-    setWishlist(prev => prev.filter(item => item.id !== id));
+    toggleWishlist(id);
   };
 
   // Circular progress calculation
@@ -52,8 +41,8 @@ const Dashboard = () => {
                 />
               </div>
               <div>
-                <p className="font-bold text-sm text-primary">Alessandro Rossi</p>
-                <p className="text-xs text-outline font-semibold uppercase tracking-wider">Connoisseur</p>
+                <p className="font-bold text-sm text-primary">{user?.name || 'Guest User'}</p>
+                <p className="text-xs text-outline font-semibold uppercase tracking-wider">{user?.isAdmin ? 'Admin Concierge' : 'Connoisseur'}</p>
               </div>
             </div>
 
@@ -122,7 +111,7 @@ const Dashboard = () => {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
               <div>
                 <h1 className="font-headline-xl text-headline-xl text-primary tracking-tight mb-2 text-2xl md:text-4xl font-bold">
-                  Welcome back, Alessandro
+                  Welcome back, {user?.name ? user.name.split(' ')[0] : 'Guest'}
                 </h1>
                 <div className="flex items-center gap-4 flex-wrap">
                   <span className="inline-flex items-center gap-2 px-3 py-1 bg-secondary/15 text-secondary rounded-full text-label-sm font-label-sm text-xs font-bold">
@@ -267,37 +256,44 @@ const Dashboard = () => {
                 Your Wishlist
               </h2>
               
-              <div className="space-y-4">
-                {wishlist.length === 0 ? (
-                  <p className="text-on-surface-variant font-light text-sm text-left">No items saved.</p>
-                ) : (
-                  wishlist.map((item) => (
-                    <div 
-                      key={item.id}
-                      className="flex items-center gap-4 p-4 rounded-2xl hover:bg-surface-container-low transition-colors group cursor-pointer border border-outline-variant/10 bg-surface text-left"
-                    >
-                      <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 select-none">
-                        <img 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                          alt={item.title}
-                          src={item.image}
-                        />
-                      </div>
-                      
-                      <div className="flex-grow">
-                        <p className="font-semibold text-primary text-sm">{item.title}</p>
-                        <p className="text-secondary font-bold text-xs">${item.price.toFixed(2)}</p>
-                      </div>
-                      
-                      <button 
-                        onClick={() => removeWishlistItem(item.id)}
-                        className="text-outline-variant hover:text-error transition-colors focus:outline-none"
-                      >
-                        <Trash2 className="h-4.5 w-4.5" />
-                      </button>
-                    </div>
-                  ))
-                )}
+               <div className="space-y-4">
+                 {wishlist.length === 0 ? (
+                   <p className="text-on-surface-variant font-light text-sm text-left">No items saved.</p>
+                 ) : (
+                   wishlist.map((item) => {
+                     const itemId = item._id || item.id || item;
+                     // If item is just an ID (e.g. guest), it might not have details, so we display placeholder or basic info
+                     const title = item.title || 'Saved Product';
+                     const price = item.price || 0.00;
+                     const image = item.image || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDS4rOfiT7oTuOTPornemmeYMWdmPc8IHax0hkkhxoZV8mVw9t1sNRhjSoO8qcAiJuzgHg9KjiIH2LWpd5yRYSyEOl2J1U-LjuesU3LduEQheHvqon0ukpnc92RzcJo_H9FnYPYsknDOnN6fkGqQu9EQLC74xD-I5bKUME5iqDS6TZsEjhe8vstBpq4W5bkBP5CAH_mY0yj774fsqm_PvMxSX0TPjzxcMwtPFWtnUveap61lSX8arvI8A';
+                     return (
+                       <div 
+                         key={itemId}
+                         className="flex items-center gap-4 p-4 rounded-2xl hover:bg-surface-container-low transition-colors group cursor-pointer border border-outline-variant/10 bg-surface text-left"
+                       >
+                         <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 select-none">
+                           <img 
+                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                             alt={title}
+                             src={image}
+                           />
+                         </div>
+                         
+                         <div className="flex-grow">
+                           <p className="font-semibold text-primary text-sm">{title}</p>
+                           <p className="text-secondary font-bold text-xs">${price.toFixed(2)}</p>
+                         </div>
+                         
+                         <button 
+                           onClick={() => removeWishlistItem(itemId)}
+                           className="text-outline-variant hover:text-error transition-colors focus:outline-none"
+                         >
+                           <Trash2 className="h-4.5 w-4.5" />
+                         </button>
+                       </div>
+                     );
+                   })
+                 )}
                 
                 <Link 
                   to="/wishlist" 

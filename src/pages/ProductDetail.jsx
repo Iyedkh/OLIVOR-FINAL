@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ShieldCheck, Heart, Trash2, Plus, Minus, ZoomIn, ChevronDown, Award, Sparkles, Sprout, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Star, ShieldCheck, Plus, Minus, ZoomIn, ChevronDown, Award, Sprout } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const galleryImages = [
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDvCDTtUsXIuLOLgDKfWQX7TtvAPEiXLW1qHkglddu-DKTduowXMaGrx4h4vqJg17LUTwQamYBF7Qoz7pqfj8IVxgbs7F-CB220KsH86tFELyI94Neq2aFhVRmDMMZdLrgWBoNy-yxI8DoAtFTnveV3UnKh5S2pgqIKyrRLcRZSOSmMkpBCX3oRtDkfVORs4o3qYJiXzRVoXS9n4FxyG9CKt_KkLJir3k0x_-uZq08bNTsskcYTvnqF6w',
@@ -10,45 +11,47 @@ const galleryImages = [
   'https://lh3.googleusercontent.com/aida-public/AB6AXuCsmlQn7DSuvj_dNW1Bswa5WWA8dJu7X1rdwsHEhBesk5DRsymX71m5SMe5-4nSRq6Lxdn_mJQp62OuhDyEhyhKccvMp-kfbsVuAOKbXnXBjj0K80WIbDk5Vb99dBZTqYYwirYjfA6zvi9BVxBXdFrfEEhPAG3-qiWQqmWV46EdDB7no8AkRqIqOurJjp9lvTLn37Pm2w9oXCuL4TWv1O2Dgbd_PTsK5CHZJU389-XBhCd2_HuEfzlxLw'
 ];
 
-const similarProducts = [
-  {
-    id: 'heritage-blend',
-    title: 'Heritage Blend',
-    type: 'Multi-Varietal Extra Virgin',
-    price: 36.00,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBcmU7lBps0ygAt2leCW1YMqlhxJ-N4zNznS_ur__OimBCorJ2oNWJRTTJr8X_0_IvLFGrubcDj8vBswabrqpLLV3G0vZDkr2v6E68ufW6CTqZvYnRi-mGIGWtTPb5DpOWjGXRir-C9LpJf-L-FJE0L4Fj_VO03JuwJL_ldid3awWsoUVznrzjj61QKziPU_zBEhy4zKss2XCr1CF_aT84yHRWNyflmz4jytDaYBSQi-z-sBlzsOY_xGw'
-  },
-  {
-    id: 'infused-sage',
-    title: 'Infused Sage Oil',
-    type: 'Artisanal Infusion',
-    price: 42.00,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAlURkC3COMndJEJCLvYNCI-Pcav-40TSw2nQCepOTqNUdxllvkFF6pyDXz1d-_SJyv8bVVoFCsaHBhVKAC-55Gqcf7AIusWBe0t64f8TDMC0YsnurBJqOHCfXZ4PKDsHCsOWrB2rX5nQJplJ-GxcF1E3qJ8z79CMj6pN598w91kz69qxsshzI-TNBnYUOQFnLSTuGfuRshHJcAP_we3_fK3ibjG8F7Slvo2Wizs8F40gRfeZiTZIhbfg'
-  },
-  {
-    id: 'discovery-trio',
-    title: 'Discovery Trio',
-    type: 'The Signature Collection',
-    price: 95.00,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9_KbZsboANZ6shQEsOkFyyVOWOXDDDILzJOD-gOvkZx8Z3DRSFbWpvBoYotI68NCk2uL2z7W7FDOyYUXtoHws9w4gj3sZSZX485SNWCD6r6Mdc0ix5rzwXid9P6zrKLeZ0w78qqCVvcI1fyziicPS9ON04rG4CauqC60xmBkKjgxSuw0UifG293QTiF6O2WtKEMFkAICU66oSkGeS16U9KxsggmkkyPQwAQkgsaOlWufx29doTF3ByA'
-  },
-  {
-    id: 'estate-decanter',
-    title: 'Estate Decanter',
-    type: 'Kitchen Statement Piece',
-    price: 120.00,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDpKXep6QvFeZylnjJ8HFcA-xNDLOOboZQS8LHRb9j-ysvNlv_fx48pPS2yMS7ZK037efbIF_uNydtphRBsl7w9vpdqs5-13oZMFTcv3kzIWEA8WWvgmiSLa9bWwhOcQJgxcS7JiMnzmdSBZdtYI5v1_aQWBHLfI_j1jvlN1iZi6Xe5a1LEfPIjpRnE5PWCq38cBF2kS7Xo8j9Nt_bFuqCIRhUCvyy66I2pIeAz0_rcnHEuMISn2HQ7Ow'
-  }
-];
-
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { products, addToCart, loadingProducts } = useApp();
   
+  const product = products.find(p => (p._id || p.id) === id);
+
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
-  const [selectedSize, setSelectedSize] = useState('500ml');
+  const [selectedSize, setSelectedSize] = useState(product?.volume || '500ml');
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('Description');
   const [openFaq, setOpenFaq] = useState(null);
+
+  const similarProducts = products
+    ? products.filter(p => (p._id || p.id) !== id).slice(0, 4)
+    : [];
+
+  if (loadingProducts) {
+    return (
+      <div className="bg-background text-on-surface min-h-screen flex items-center justify-center pt-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="bg-background text-on-surface min-h-screen flex flex-col items-center justify-center text-center p-6 pt-32">
+        <span className="material-symbols-outlined text-6xl text-outline mb-4">sentiment_dissatisfied</span>
+        <h2 className="font-headline-lg text-primary text-2xl mb-4 font-bold">Product Not Found</h2>
+        <p className="text-on-surface-variant max-w-md mb-8">The premium olive oil blend you are looking for does not exist or has been removed from our cellars.</p>
+        <Link to="/shop" className="bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full font-semibold uppercase tracking-widest text-xs">
+          Return to Shop
+        </Link>
+      </div>
+    );
+  }
+
+  const productImages = product.images && product.images.length > 0 
+    ? product.images 
+    : (product.image ? [product.image, ...galleryImages.slice(1)] : galleryImages);
 
   const handleQtyChange = (type) => {
     if (type === 'inc') {
@@ -62,6 +65,11 @@ const ProductDetail = () => {
     setOpenFaq(prev => (prev === index ? null : index));
   };
 
+  const handleBuyNow = () => {
+    addToCart(product, quantity);
+    navigate('/cart');
+  };
+
   return (
     <div className="bg-background text-on-surface font-body-md min-h-screen">
       <main className="pt-32 pb-section-gap-lg max-w-[1440px] mx-auto px-gutter">
@@ -72,7 +80,7 @@ const ProductDetail = () => {
           <span className="material-symbols-outlined text-[14px]">chevron_right</span>
           <Link className="hover:text-primary transition-colors" to="/shop">Shop</Link>
           <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-          <span className="text-primary font-semibold">Reserve Collection</span>
+          <span className="text-primary font-semibold">{product.title}</span>
         </nav>
 
         {/* Product Hero Section */}
@@ -83,7 +91,7 @@ const ProductDetail = () => {
             
             {/* Vertical Thumbnails */}
             <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-x-visible scroller-hide select-none">
-              {galleryImages.map((imgUrl, idx) => (
+              {productImages.map((imgUrl, idx) => (
                 <button 
                   key={idx}
                   onClick={() => setSelectedImgIdx(idx)}
@@ -107,7 +115,7 @@ const ProductDetail = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105" 
-                style={{ backgroundImage: `url('${galleryImages[selectedImgIdx]}')` }}
+                style={{ backgroundImage: `url('${productImages[selectedImgIdx]}')` }}
               ></motion.div>
               <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
               <div className="absolute bottom-6 right-6 bg-surface/85 backdrop-blur-md px-4 py-2 rounded-full border border-outline-variant/30 flex items-center gap-2">
@@ -125,26 +133,26 @@ const ProductDetail = () => {
                 Limited Release
               </span>
               <h1 className="font-display-lg text-headline-xl text-primary leading-tight text-3xl md:text-5xl">
-                Reserve Collection
+                {product.title}
               </h1>
               
               <div className="flex items-center gap-4">
                 <div className="flex text-secondary select-none">
                   {[...Array(5)].map((_, i) => (
                     <span key={i} className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      {i < 4 ? 'star' : 'star_half'}
+                      {i < Math.floor(product.rating || 5) ? 'star' : 'star_half'}
                     </span>
                   ))}
                 </div>
                 <span className="text-outline font-label-lg text-label-lg text-xs font-semibold uppercase tracking-wider">
-                  4.9 / 5 (128 Reviews)
+                  {product.rating || 5.0} / 5 (128 Reviews)
                 </span>
               </div>
-              <div className="text-3xl font-headline-md text-primary font-bold">$48.00</div>
+              <div className="text-3xl font-headline-md text-primary font-bold">${(product.price || 0.00).toFixed(2)}</div>
             </div>
 
             <p className="text-body-lg text-on-surface-variant font-light leading-relaxed text-sm md:text-base">
-              A rare, limited-edition olive oil sourced exclusively from century-old trees in the heart of the Tunisian Sahel. Characterized by a vibrant peppery finish and notes of green almond.
+              {product.description}
             </p>
 
             {/* Selectors */}
@@ -194,13 +202,19 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="flex-grow flex gap-4">
-                  <button className="flex-grow bg-primary hover:bg-primary-container text-white py-4 rounded-full font-label-lg text-label-lg uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-xs font-bold">
+                  <button 
+                    onClick={() => addToCart(product, quantity)}
+                    className="flex-grow bg-primary hover:bg-primary-container text-white py-4 rounded-full font-label-lg text-label-lg uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-xs font-bold"
+                  >
                     Add to Cart
                   </button>
                 </div>
               </div>
 
-              <button className="w-full border-2 border-secondary text-secondary py-4 rounded-full font-headline-md text-label-lg uppercase tracking-widest hover:bg-secondary/5 transition-all text-xs font-bold">
+              <button 
+                onClick={handleBuyNow}
+                className="w-full border-2 border-secondary text-secondary py-4 rounded-full font-headline-md text-label-lg uppercase tracking-widest hover:bg-secondary/5 transition-all text-xs font-bold"
+              >
                 Buy Now
               </button>
             </div>
@@ -490,23 +504,31 @@ const ProductDetail = () => {
           </div>
 
           <div className="flex gap-8 overflow-x-auto scroller-hide pb-10 select-none">
-            {similarProducts.map((prod) => (
-              <div key={prod.id} className="min-w-[280px] md:min-w-[320px] group cursor-pointer border border-outline-variant/10 rounded-2xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <div className="aspect-[3/4] rounded-xl overflow-hidden bg-surface-container mb-6 relative">
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
-                    style={{ backgroundImage: `url('${prod.image}')` }}
-                  ></div>
-                </div>
-                <h4 className="font-headline-md text-headline-md text-primary mb-1 text-lg">
-                  {prod.title}
-                </h4>
-                <p className="text-outline font-label-sm text-label-sm uppercase tracking-widest mb-3 text-[10px] font-semibold">
-                  {prod.type}
-                </p>
-                <div className="text-secondary font-bold">${prod.price.toFixed(2)}</div>
-              </div>
-            ))}
+            {similarProducts.map((prod) => {
+              const prodId = prod._id || prod.id;
+              return (
+                <Link 
+                  to={`/product/${prodId}`} 
+                  key={prodId} 
+                  className="min-w-[280px] md:min-w-[320px] group cursor-pointer border border-outline-variant/10 rounded-2xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                >
+                  <div className="aspect-[3/4] rounded-xl overflow-hidden bg-surface-container mb-6 relative flex items-center justify-center p-4">
+                    <img 
+                      className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105" 
+                      alt={prod.title}
+                      src={prod.image}
+                    />
+                  </div>
+                  <h4 className="font-headline-md text-headline-md text-primary mb-1 text-lg truncate">
+                    {prod.title}
+                  </h4>
+                  <p className="text-outline font-label-sm text-label-sm uppercase tracking-widest mb-3 text-[10px] font-semibold">
+                    {prod.region} &bull; {prod.volume}
+                  </p>
+                  <div className="text-secondary font-bold mt-auto">${prod.price.toFixed(2)}</div>
+                </Link>
+              );
+            })}
           </div>
         </section>
 
