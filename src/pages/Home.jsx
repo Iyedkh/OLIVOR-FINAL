@@ -172,7 +172,7 @@ const Home = () => {
 
         <motion.div 
           ref={scrollerRef}
-          className="flex gap-8 px-container-padding overflow-x-auto scroller-hide snap-x"
+          className="flex gap-6 px-container-padding overflow-x-auto scroller-hide snap-x"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -181,27 +181,27 @@ const Home = () => {
           {/* Product Card 1 */}
           <motion.div 
             variants={fadeIn}
-            className="min-w-[320px] md:min-w-[400px] bg-white rounded-2xl p-6 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
+            className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
           >
             <Link to="/product/reserve-collection">
-              <div className="relative overflow-hidden rounded-xl mb-6 aspect-[3/4]">
+              <div className="relative overflow-hidden rounded-lg mb-3 aspect-square">
                 <img 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                   alt="Reserve Collection Bottle"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsbT7Hx2sj5VJBn-NfFC36gri3sH0MrZuEim-PZzqBlHLxonjWYPIQS5Z3fwQ89WbMpLE_PHY71fv_deKNP4M1Fv0NLAtLBHB0Z5xlYw2m-wLL34vwG3bmLmfypl98W303OGeVq2kN2J4IWOezkA2s8hbc1J7GhFZA6X2E9vY6FedKFxXmtTcxcchNiwfPUoGh9jHxCbbrqkfukicJH0a0WIg3o6bOQUxIw6ZLE8HAF0OQFgjVT70p3w"
                 />
-                <div className="absolute top-4 left-4 bg-secondary-container text-on-secondary-container font-label-sm px-3 py-1 rounded-full text-xs">
+                <div className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container font-label-sm px-1.5 py-0.5 rounded text-[8px] tracking-wide">
                   Limited Release
                 </div>
               </div>
-              <h4 className="font-headline-md text-headline-md text-primary mb-2">Reserve Collection</h4>
-              <p className="text-on-surface-variant text-sm mb-6 font-body-md">
+              <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold">Reserve Collection</h4>
+              <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md">
                 Bold, peppery notes with a velvety finish.
               </p>
               <div className="flex justify-between items-center">
-                <span className="font-headline-md text-primary">$48.00</span>
-                <button className="text-primary hover:text-secondary flex items-center gap-2 font-label-lg font-semibold">
-                  Add to Cart <span className="material-symbols-outlined text-sm">shopping_bag</span>
+                <span className="font-headline-md text-sm text-primary font-bold">$48.00</span>
+                <button className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold">
+                  Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
                 </button>
               </div>
             </Link>
@@ -210,23 +210,23 @@ const Home = () => {
           {/* Product Card 2 */}
           <motion.div 
             variants={fadeIn}
-            className="min-w-[320px] md:min-w-[400px] bg-white rounded-2xl p-6 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
+            className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
           >
-            <div className="relative overflow-hidden rounded-xl mb-6 aspect-[3/4]">
+            <div className="relative overflow-hidden rounded-lg mb-3 aspect-square">
               <img 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 alt="Heritage Blend Bottle"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJepa3o6sJKIVVNJj4OOyVllRHF2JJ-4XfmdCs0cltMYIGt0H7i6JDKTJRqfn7ff6j4tYwvHbyp29hRuUgw4RRM_zRKcuMqjSnIfBmE0KKmdGBCeheF5YqZdRr7qX3mk1eCJxIV_MyAssbJr7P2aW0qVkejJivCZaxWYhXUeEkSuLJiry1dRQRwyqNi6ZlxbHyB1abQZDAFUMNbJWzTk5i3QVlWKiZFhn8eOQu86OMccZyoOSMZ1IUoA"
               />
             </div>
-            <h4 className="font-headline-md text-headline-md text-primary mb-2">Heritage Blend</h4>
-            <p className="text-on-surface-variant text-sm mb-6 font-body-md">
+            <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold">Heritage Blend</h4>
+            <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md">
               A harmonious balance of smooth and robust flavors.
             </p>
             <div className="flex justify-between items-center">
-              <span className="font-headline-md text-primary">$35.00</span>
-              <button className="text-primary hover:text-secondary flex items-center gap-2 font-label-lg font-semibold">
-                Add to Cart <span className="material-symbols-outlined text-sm">shopping_bag</span>
+              <span className="font-headline-md text-sm text-primary font-bold">$35.00</span>
+              <button className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold">
+                Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
               </button>
             </div>
           </motion.div>
@@ -234,23 +234,23 @@ const Home = () => {
           {/* Product Card 3 */}
           <motion.div 
             variants={fadeIn}
-            className="min-w-[320px] md:min-w-[400px] bg-white rounded-2xl p-6 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
+            className="min-w-[180px] md:min-w-[220px] bg-white rounded-xl p-3 group cursor-pointer snap-start border border-outline-variant/10 shadow-sm"
           >
-            <div className="relative overflow-hidden rounded-xl mb-6 aspect-[3/4]">
+            <div className="relative overflow-hidden rounded-lg mb-3 aspect-square">
               <img 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 alt="Infused Sage Oil Bottle"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuALAkZLj-PVYnKZULYj-IkYImwZyFnaQQeGShjaDLwPRcqSXvXOJOgYiB4CmSxcabXvwsTPv4zIWe102VMcagkz6gNaJwxavT6bhjKYml7azggprVvhXYAmuNTVsb6PE58loqGH0RarlKh36OAEa5GwhXTPXWFCa4n-q7v4RP7t_P_z38va2pQ5L7hQRQrb5G0R4SfLEVRxewXG_mpB95iX6aStjGiDMao-xWN5YUbYClfwvGs3WTDrXA"
               />
             </div>
-            <h4 className="font-headline-md text-headline-md text-primary mb-2">Infused Sage Oil</h4>
-            <p className="text-on-surface-variant text-sm mb-6 font-body-md">
+            <h4 className="font-headline-md text-sm text-primary mb-0.5 font-semibold">Infused Sage Oil</h4>
+            <p className="text-on-surface-variant text-[11px] mb-2 leading-tight font-body-md">
               Wild desert sage infused for an aromatic culinary lift.
             </p>
             <div className="flex justify-between items-center">
-              <span className="font-headline-md text-primary">$42.00</span>
-              <button className="text-primary hover:text-secondary flex items-center gap-2 font-label-lg font-semibold">
-                Add to Cart <span className="material-symbols-outlined text-sm">shopping_bag</span>
+              <span className="font-headline-md text-sm text-primary font-bold">$42.00</span>
+              <button className="text-primary hover:text-secondary flex items-center gap-1 text-[11px] font-semibold">
+                Add <span className="material-symbols-outlined text-[12px]">shopping_bag</span>
               </button>
             </div>
           </motion.div>
