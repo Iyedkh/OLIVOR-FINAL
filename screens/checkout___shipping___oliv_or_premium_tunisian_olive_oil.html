@@ -1,0 +1,343 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Checkout | Tunisian Liquid Gold</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#44502d",
+                        "primary-fixed": "#d2eca2",
+                        "outline-variant": "#c5c8b8",
+                        "on-secondary-container": "#795a01",
+                        "surface-bright": "#fbf9f3",
+                        "on-secondary-fixed": "#251a00",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#785a00",
+                        "secondary-fixed": "#ffdf9c",
+                        "secondary-container": "#ffd577",
+                        "on-surface": "#1b1c19",
+                        "inverse-surface": "#30312d",
+                        "on-tertiary-container": "#d8e7b7",
+                        "surface-container-highest": "#e4e2dd",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e4e2dd",
+                        "primary": "#3e5219",
+                        "tertiary-fixed-dim": "#becc9f",
+                        "on-tertiary-fixed": "#151f03",
+                        "on-surface-variant": "#45483c",
+                        "surface-container-low": "#f5f3ee",
+                        "primary-fixed-dim": "#b6d088",
+                        "tertiary-container": "#5b6842",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#3f4b28",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f2f1eb",
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "tertiary-fixed": "#dae8b9",
+                        "on-primary-fixed-variant": "#394d14",
+                        "surface-tint": "#50652a",
+                        "on-primary-fixed": "#131f00",
+                        "error": "#ba1a1a",
+                        "primary-container": "#556b2f",
+                        "outline": "#75796b",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b6d088",
+                        "background": "#fbf9f3",
+                        "surface-container-high": "#eae8e2",
+                        "surface": "#fbf9f3",
+                        "surface-dim": "#dcdad4",
+                        "on-primary-container": "#d0eba1",
+                        "surface-container": "#f0eee8",
+                        "secondary-fixed-dim": "#eac166",
+                        "on-background": "#1b1c19"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap-md": "80px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "section-gap-lg": "120px",
+                        "container-padding": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fbf9f3;
+            color: #1b1c19;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .shimmer-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shimmer-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.1) 50%, transparent 55%);
+            animation: shimmer 4s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(-30%, -30%); }
+            100% { transform: translate(30%, 30%); }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        input:focus {
+            box-shadow: 0 0 0 1px rgba(85, 107, 47, 0.2);
+        }
+
+        .step-indicator-line {
+            height: 1px;
+            background: #e4e2dd;
+            flex-grow: 1;
+            margin: 0 12px;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- Header / TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm shadow-primary/5">
+<div class="flex justify-between items-center w-full px-section-gap-md py-base max-w-[1440px] mx-auto">
+<a class="font-display-lg text-headline-md tracking-tighter text-primary" href="#">Tunisian Liquid Gold</a>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-on-surface-variant text-xl cursor-pointer hover:text-primary transition-colors">shopping_bag</span>
+<span class="material-symbols-outlined text-on-surface-variant text-xl cursor-pointer hover:text-primary transition-colors">person</span>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-section-gap-lg max-w-[1440px] mx-auto px-container-padding">
+<div class="flex flex-col lg:flex-row gap-gutter">
+<!-- Left Column: Form Area -->
+<div class="flex-grow lg:max-w-[65%]">
+<!-- Multi-Step Indicator -->
+<div class="mb-12 flex items-center justify-between overflow-x-auto whitespace-nowrap py-2 scrollbar-hide">
+<div class="flex items-center text-primary font-semibold">
+<span class="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-sm mr-3 bg-primary text-on-primary">1</span>
+<span class="font-label-lg text-label-lg tracking-widest uppercase">Shipping</span>
+</div>
+<div class="step-indicator-line"></div>
+<div class="flex items-center text-on-surface-variant/40">
+<span class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-sm mr-3">2</span>
+<span class="font-label-lg text-label-lg tracking-widest uppercase">Delivery</span>
+</div>
+<div class="step-indicator-line"></div>
+<div class="flex items-center text-on-surface-variant/40">
+<span class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-sm mr-3">3</span>
+<span class="font-label-lg text-label-lg tracking-widest uppercase">Payment</span>
+</div>
+<div class="step-indicator-line"></div>
+<div class="flex items-center text-on-surface-variant/40">
+<span class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-sm mr-3">4</span>
+<span class="font-label-lg text-label-lg tracking-widest uppercase">Review</span>
+</div>
+</div>
+<!-- Form Section: Contact -->
+<section class="mb-12">
+<div class="flex justify-between items-end mb-6">
+<h2 class="font-headline-lg text-headline-lg text-primary">Contact Information</h2>
+<span class="text-label-sm font-label-sm text-on-surface-variant cursor-pointer hover:underline">Already have an account? Log in</span>
+</div>
+<div class="grid grid-cols-1 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Email Address</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="concierge@luxury.com" type="email">
+</div>
+<div class="flex items-center gap-3">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" id="newsletter" type="checkbox">
+<label class="text-body-md font-body-md text-on-surface-variant/80" for="newsletter">Subscribe to the Estate Newsletter for harvest updates.</label>
+</div>
+</div>
+</section>
+<!-- Form Section: Shipping -->
+<section>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6">Shipping Address</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">First Name</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="Elena" type="text">
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Last Name</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="Rossi" type="text">
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Address</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="123 Olive Grove Lane" type="text">
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Apartment, suite, etc. (optional)</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="Estate Flat 4" type="text">
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">City</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="Tunis" type="text">
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Postal Code</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="1002" type="text">
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Phone</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 font-body-md text-body-md focus:ring-1 focus:ring-primary-container transition-all" placeholder="+216 20 000 000" type="tel">
+</div>
+</div>
+</section>
+<div class="mt-12 flex items-center justify-between border-t border-outline-variant/20 pt-8">
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">chevron_left</span>
+<span class="font-label-lg text-label-lg">Return to Cart</span>
+</a>
+<button class="shimmer-btn bg-secondary text-on-secondary px-10 py-5 rounded-lg font-display-lg text-body-lg font-semibold tracking-wide transition-transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-secondary/20">
+                        Continue to Delivery
+                    </button>
+</div>
+</div>
+<!-- Right Column: Sidebar Summary -->
+<aside class="lg:w-[35%]">
+<div class="bg-surface-container-low rounded-xl p-8 sticky top-32">
+<h3 class="font-headline-md text-headline-md text-primary mb-8">Your Selection</h3>
+<!-- Product List -->
+<div class="space-y-6 mb-8">
+<!-- Product Item 1 -->
+<div class="flex gap-4">
+<div class="relative w-20 h-24 bg-white rounded-lg flex-shrink-0 overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="A high-end editorial photograph of a sleek, dark-tinted glass olive oil bottle with a minimalist gold label. The bottle is positioned centrally against a warm, sun-lit ivory background with soft botanical shadows. The lighting is ethereal and premium, emphasizing the viscous, golden quality of the liquid inside. Professional product photography style for a luxury brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOLTgNmPa4YnVTTM2p-KFgs3dKvKoEgH_KoUP7QGEoWKlv_fbVCdPMOyZaQLbYrJ_YUAT8my2mvQss1J8gOY3gkJ9gSfoHjyv2qRfezviFeQTNHDJVAjTY5lVldZr5jVF7llpxusQz5gQRScsoMcmHGgueZzgk79RbqfyGzV5PWrBKFAJgH-k8CUEN2bV0PO694Gv_SmkOPDjuhVNbgj5wPA8N-T1OnrpIPhaXhesXWZej1UjpG4L1tA">
+<span class="absolute -top-2 -right-2 w-6 h-6 bg-tertiary text-on-tertiary text-[10px] flex items-center justify-center rounded-full font-bold">1</span>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="font-body-lg text-body-md font-semibold text-primary">Reserve Collection</h4>
+<p class="text-label-sm text-on-surface-variant">Early Harvest, 500ml</p>
+<p class="font-body-md text-body-md mt-1">$48.00</p>
+</div>
+</div>
+<!-- Product Item 2 -->
+<div class="flex gap-4">
+<div class="relative w-20 h-24 bg-white rounded-lg flex-shrink-0 overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="A luxury olive oil decanter bottle made of clear crystal-like glass, showcasing a vibrant golden oil. The label is textured paper with elegant serif typography in deep olive green. Set in a minimalist, high-key studio with soft shadows and organic stone textures. Sophisticated and organic aesthetic with a focus on heritage and quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHUvL2U6aapMQk1qsJoArdN823uIspIt8lEjtcuwYMPsi62Ds4WefpRjPN-TvIYUdj6rMxufuAxAuD12qeQKkOIskaZkszOkm7xyj9-Syw30Jfsiw_-wq9KFR6jiGhtJvJNwBI66QUCMAeq7Ix6661Ks-xJqMJwurevIey5KN2S0GI1t99J1fVavNNT9HZEOftF3hTmYrbFl_Zbnl10e7oz5JOa3AgmLSy-v9HBT03ENfs8BEJlXTYkw">
+<span class="absolute -top-2 -right-2 w-6 h-6 bg-tertiary text-on-tertiary text-[10px] flex items-center justify-center rounded-full font-bold">1</span>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="font-body-lg text-body-md font-semibold text-primary">Heritage Blend</h4>
+<p class="text-label-sm text-on-surface-variant">Cold Pressed, 750ml</p>
+<p class="font-body-md text-body-md mt-1">$35.00</p>
+</div>
+</div>
+</div>
+<!-- Totals -->
+<div class="space-y-4 pt-6 border-t border-outline-variant/30">
+<div class="flex justify-between text-body-md text-on-surface-variant">
+<span>Subtotal</span>
+<span>$83.00</span>
+</div>
+<div class="flex justify-between text-body-md text-on-surface-variant">
+<span>Shipping</span>
+<span class="text-secondary font-medium italic">Complimentary</span>
+</div>
+<div class="flex justify-between items-end pt-4 border-t border-outline-variant/30 mt-4">
+<span class="font-headline-md text-headline-md text-primary">Total</span>
+<div class="text-right">
+<span class="text-xs text-on-surface-variant uppercase tracking-widest block mb-1">USD</span>
+<span class="font-headline-md text-headline-md text-primary">$83.00</span>
+</div>
+</div>
+</div>
+<!-- Payment Icons -->
+<div class="mt-12 flex justify-center gap-4 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+<img alt="Visa" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADVJ8hAg58q9Pxg1s5RCRuk2ZMNwg6dvYYlWho_TYAFabJP3YdGc2Gxl_TnpstgeTVVDWoiGlh8L6aAcNkBIjj5upe9Fvi-HtQISs3afYOV5f9_WSKVoxg-atgnvapF3iO3iEbAXORURApAIVMCy0tgblfgQTwyFwfERbg6Bt5LTqdQt-sluq-H2KmtuYzr7R_sDF5GMsExelVc0OJr6oBXIY665eIyDogNtfgS1H_LGlxq3OmkNeaeg">
+<img alt="Mastercard" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxEO_A2GjOe_t4-fOB33Mvc_5VJL0NRljGyqyn-G9NXKvvvoIc0Y_GQSARBsiECeTyNS8JCPUOo-gyBdGDsy6_xUe1KKvvjkCtwGOjm2b8t2TkmYZYQqcpHs_H8tlmBk_vCXpZvbZ1TXC3Y7m7R3wbc4ZQzbi43SRC6HMD7oigP4t0ZnOSDD_wVgVM_JXD9MGrO-lNbqmlqPVjmDMRbFO3jDwPNKoZhod91845uHW2GVM4ekavXCnV6w">
+<img alt="Amex" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyOhT6AmcxeX8htRID1cx8z6C69q-7l_TTtjm1N2AFgos84d7q_pmW1mgGtgfBqrx4MtDOttGXTaIDfU1CKdeDtsjzB4Mljm3JkAWA8WT4z7AwDCohaQvsUZh9cqFwvqIFcbieOpSluQb4PGTGeYFPql5sJ1FswVTEEwdRI11bBEXPiFZ8bYc7Eq0QxGUntZsp4_1sTAuRW76NhuJQZpZCRu4Mq1TUmIKPm_nqZp-u9tpGsQ89ISZOug">
+<img alt="Apple Pay" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUTQDpU6kZVo9tQQbKfM19u7y8v3DFQki0dgpf95s4pm6VqeG-y5fixzxRcLC3tnDGOXe4D3h558x7IurrK8sR-W_tzt27nM6W4lrd13HLNGNLeHpPaDXxPG7HxdjMNgP2XGxpSWJMsBAHHG27eGsbiBEir_YK2FyJA9JqnOzzzV0SK9qCWLCBqNStIqteNUzEEGuSJbjGFXi6AX_qATUm4LNgxYY-Mgbb3VaQjFvLAcxnmooOS7vK0Q">
+</div>
+<!-- Trust Message -->
+<div class="mt-8 text-center px-4">
+<p class="text-[11px] text-on-surface-variant/60 leading-relaxed">
+<span class="material-symbols-outlined align-middle text-sm mr-1">lock</span>
+                            Your transaction is secured with end-to-end encryption. Our concierge is available 24/7 for assistance.
+                        </p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap-md bg-surface-container-low border-t border-outline-variant/20">
+<div class="flex flex-col md:flex-row justify-between items-center px-container-padding max-w-7xl mx-auto gap-8">
+<div class="flex flex-col items-center md:items-start gap-4">
+<span class="font-display-lg text-headline-md text-primary">Tunisian Liquid Gold</span>
+<p class="font-body-md text-body-md text-on-surface-variant">© 2024 Liquid Gold Tunisia. All Rights Reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-4">
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors duration-200" href="#">Shipping &amp; Returns</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors duration-200" href="#">Sustainability</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors duration-200" href="#">Contact Us</a>
+</div>
+</div>
+</footer>
+<script>
+        // Subtle micro-interaction for input fields
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label').style.color = '#3e5219';
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label').style.color = 'rgba(69, 72, 60, 0.7)';
+            });
+        });
+    </script>
+</body></html>

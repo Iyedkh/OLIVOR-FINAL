@@ -1,0 +1,453 @@
+<!DOCTYPE html><html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>OLIV'OR | Reserve Collection Extra Virgin Olive Oil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#eae8e2",
+                        "error": "#ba1a1a",
+                        "primary": "#3e5219",
+                        "on-surface": "#1b1c19",
+                        "on-tertiary": "#ffffff",
+                        "background": "#fbf9f3",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#ffd577",
+                        "outline": "#75796b",
+                        "surface-variant": "#e4e2dd",
+                        "surface-bright": "#fbf9f3",
+                        "surface": "#fbf9f3",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#dcdad4",
+                        "on-tertiary-fixed-variant": "#3f4b28",
+                        "primary-fixed": "#d2eca2",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#dae8b9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#131f00",
+                        "tertiary": "#44502d",
+                        "secondary-fixed-dim": "#eac166",
+                        "inverse-on-surface": "#f2f1eb",
+                        "on-primary-fixed-variant": "#394d14",
+                        "primary-fixed-dim": "#b6d088",
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "tertiary-container": "#5b6842",
+                        "surface-container-highest": "#e4e2dd",
+                        "secondary-fixed": "#ffdf9c",
+                        "on-background": "#1b1c19",
+                        "secondary": "#785a00",
+                        "outline-variant": "#c5c8b8",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#becc9f",
+                        "on-primary-container": "#d0eba1",
+                        "on-secondary-fixed": "#251a00",
+                        "inverse-primary": "#b6d088",
+                        "surface-tint": "#50652a",
+                        "on-surface-variant": "#45483c",
+                        "on-tertiary-fixed": "#151f03",
+                        "on-secondary-container": "#795a01",
+                        "on-tertiary-container": "#d8e7b7",
+                        "surface-container-low": "#f5f3ee",
+                        "inverse-surface": "#30312d",
+                        "primary-container": "#556b2f",
+                        "surface-container": "#f0eee8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap-md": "80px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "container-padding": "24px",
+                        "base": "8px",
+                        "section-gap-lg": "120px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "headline-xl": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(251, 249, 243, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .product-zoom:hover img {
+            transform: scale(1.1);
+        }
+        .custom-tab-active {
+            border-bottom: 2px solid #785a00;
+            color: #3e5219;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-secondary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm shadow-primary/5">
+<div class="flex justify-between items-center px-gutter py-6 max-w-[1440px] mx-auto">
+<div class="font-headline-xl text-headline-xl tracking-widest text-primary">OLIV'OR</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-lg text-label-lg uppercase" href="#">Collections</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-lg text-label-lg uppercase" href="#">Our Heritage</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-lg text-label-lg uppercase" href="#">The Harvest</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-lg text-label-lg uppercase" href="#">Sustainability</a>
+</nav>
+<div class="flex items-center gap-6">
+<button class="hover:scale-105 transition-transform duration-200"><span class="material-symbols-outlined text-primary">search</span></button>
+<button class="hover:scale-105 transition-transform duration-200"><span class="material-symbols-outlined text-primary">shopping_bag</span></button>
+<button class="hover:scale-105 transition-transform duration-200"><span class="material-symbols-outlined text-primary">person</span></button>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-section-gap-lg max-w-[1440px] mx-auto px-gutter">
+<!-- Breadcrumbs -->
+<nav class="mb-12 flex items-center gap-2 text-outline font-label-sm text-label-sm uppercase tracking-widest">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Shop</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-semibold">Reserve Collection</span>
+</nav>
+<!-- Product Hero Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+<!-- Left: Cinematic Image Gallery -->
+<div class="lg:col-span-7 flex flex-col md:flex-row gap-6">
+<!-- Vertical Thumbnails -->
+<div class="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-x-visible no-scrollbar">
+<button class="w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden border-2 border-primary">
+<div class="w-full h-full bg-surface-container" data-alt="A macro studio photograph of the OLIV'OR Reserve Collection olive oil bottle made of premium dark glass, sitting on a warm beige marble surface with soft, diffused golden sunlight. The lighting is elegant and high-end, highlighting the emerald green reflections of the glass and the sophisticated minimalist typography of the label." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvCDTtUsXIuLOLgDKfWQX7TtvAPEiXLW1qHkglddu-DKTduowXMaGrx4h4vqJg17LUTwQamYBF7Qoz7pqfj8IVxgbs7F-CB220KsH86tFELyI94Neq2aFhVRmDMMZdLrgWBoNy-yxI8DoAtFTnveV3UnKh5S2pgqIKyrRLcRZSOSmMkpBCX3oRtDkfVORs4o3qYJiXzRVoXS9n4FxyG9CKt_KkLJir3k0x_-uZq08bNTsskcYTvnqF6w')"></div>
+</button>
+<button class="w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all">
+<div class="w-full h-full bg-surface-container" data-alt="A close-up shot of liquid gold olive oil being poured slowly from a dark glass bottle into a small ceramic dish. The oil is luminous and translucent, catching the warm sunset light from a nearby window. The background is a soft-focus Mediterranean kitchen with rustic wooden textures and white plaster walls." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDTPIHgqoCrNuvCJXzR_CiKl3-Xyqy_Up_XO2a81SdKKOiSicpaKBy39ZW71WEiDch5ZcjRTs_A0OmEHSzkVvliqy7LNvLwBp7L5Ajp2YsbpXr5lY7iJ3r8_tk4Rf68l2WY5Tv_sxq1M7vaE2c6DzdmEaSAzZvgrEtGzGdEC92qrR-cg8CI-E3sc4A5crESqcOWIPhRx4DfIKcp85n7te3EfJL9S9HV4uUh8fFzdzMGlJmZQBHHvU4VOg')"></div>
+</button>
+<button class="w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all">
+<div class="w-full h-full bg-surface-container" data-alt="A wide cinematic landscape of the Tunisian Sahel region at dawn, featuring ancient, gnarled olive trees with silvery-green leaves. The soil is a rich, warm terracotta color, and the sky is painted in soft hues of violet and gold. The atmosphere is serene and timeless, emphasizing the organic heritage of the brand." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPa_LAL0fQbWlp6v9Z7Oqn2ahe8Tep1vqVbyQGZK_TOlYsX4ssBq98tdYtki3mKan9w4DI4m4fumC3T7RjOSQm-J2Cdk9ureAlY6uvT5mt-Kc8fLBLaKOp-kbCYUd08ukH4UZ4I4G49JCofzs34ARXwTVPanPTeYp6CDr-MuZpzvxgHpLkjEwehNsuy7GH6mUDMi6hAPiOebDmDKTLJtVVQ_pAD2T1j3hfvj8wUTPOFIEuopJF7_ZRrA')"></div>
+</button>
+<button class="w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all">
+<div class="w-full h-full bg-surface-container" data-alt="A detailed shot of freshly harvested green olives resting in a weathered wooden crate. The olives are glistening with a light dew, showcasing their vibrant health and freshness. The lighting is natural and bright, typical of a luxury organic farm aesthetic, emphasizing purity and artisanal quality." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCsmlQn7DSuvj_dNW1Bswa5WWA8dJu7X1rdwsHEhBesk5DRsymX71m5SMe5-4nSRq6Lxdn_mJQp62OuhDyEhyhKccvMp-kfbsVuAOKbXnXBjj0K80WIbDk5Vb99dBZTqYYwirYjfA6zvi9BVxBXdFrfEEhPAG3-qiWQqmWV46EdDB7no8AkRqIqOurJjp9lvTLn37Pm2w9oXCuL4TWv1O2Dgbd_PTsK5CHZJU389-XBhCd2_HuEfzlxLw')"></div>
+</button>
+</div>
+<!-- Main Display -->
+<div class="order-1 md:order-2 flex-grow relative aspect-[3/4] rounded-2xl overflow-hidden product-zoom bg-surface-container-low group cursor-crosshair">
+<div class="absolute inset-0 transition-transform duration-700 ease-out" data-alt="A stunning, high-resolution hero shot of the OLIV'OR Reserve Collection olive oil bottle. The bottle is tall and slender, crafted from deep, dark glass that glows with an internal warmth. It stands prominently in the center of the frame against a minimalist, warm white background. Soft shadows and a gentle golden ambient glow create a sense of three-dimensional depth and luxury." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB6r5CmMFRdf5DLxOiq_YnVRqbzjDQfYZYYCok1J6UV06wyneByNWpQJTj8BR5cPZk4vw67BbPQbUJQyPEcNdrc0qu05d7FmZ7ToIjvbGvzgzSxdS-FkldeKucfsl4gJVX2Ye3-p3NrHIE0iwLMce7y7vMp_6ysqM7oAY5ZBbxuPKv1gk7d4TjKFHy1m81kVf8DnkcLmJ0WnhxabSPk4JG-UqM3v1blaZ0Uzt8aDj7-GUjxHHjHMQCGsg')"></div>
+<div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="absolute bottom-6 right-6 bg-surface/80 backdrop-blur-md px-4 py-2 rounded-full border border-outline-variant/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">zoom_in</span>
+<span class="text-label-sm font-label-lg uppercase tracking-tight text-on-surface">Zoom</span>
+</div>
+</div>
+</div>
+<!-- Right: Product Details -->
+<div class="lg:col-span-5 space-y-8">
+<div class="space-y-4">
+<span class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase tracking-widest border border-secondary/20">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                        Limited Release
+                    </span>
+<h1 class="font-headline-xl text-headline-xl text-primary leading-tight">Reserve Collection</h1>
+<div class="flex items-center gap-4">
+<div class="flex text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+<span class="text-outline font-label-lg text-label-lg">4.9 / 5 (128 Reviews)</span>
+</div>
+<div class="text-4xl font-headline-md text-primary">$48.00</div>
+</div>
+<p class="text-body-lg text-on-surface-variant font-light leading-relaxed">
+                    A rare, limited-edition olive oil sourced exclusively from century-old trees in the heart of the Tunisian Sahel. Characterized by a vibrant peppery finish and notes of green almond.
+                </p>
+<!-- Selectors -->
+<div class="space-y-6 pt-4">
+<div class="space-y-3">
+<label class="font-label-lg text-label-lg uppercase tracking-wider text-outline">Select Size</label>
+<div class="flex gap-4">
+<button class="flex-1 py-3 border-2 border-primary bg-primary-fixed/20 text-primary font-semibold rounded-xl transition-all">250ml</button>
+<button class="flex-1 py-3 border border-outline-variant hover:border-primary text-on-surface-variant rounded-xl transition-all">500ml</button>
+<button class="flex-1 py-3 border border-outline-variant hover:border-primary text-on-surface-variant rounded-xl transition-all">750ml</button>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center border border-outline-variant rounded-xl px-4 py-2 bg-surface">
+<button class="p-2 hover:text-primary"><span class="material-symbols-outlined">remove</span></button>
+<input class="w-12 text-center bg-transparent border-none focus:ring-0 font-label-lg text-label-lg" readonly="" type="number" value="1">
+<button class="p-2 hover:text-primary"><span class="material-symbols-outlined">add</span></button>
+</div>
+<div class="flex-grow flex gap-4">
+<button class="flex-grow bg-primary text-on-primary py-4 rounded-full font-label-lg text-label-lg uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                                Add to Cart
+                            </button>
+</div>
+</div>
+<button class="w-full border-2 border-secondary text-secondary py-4 rounded-full font-headline-md text-label-lg uppercase tracking-widest hover:bg-secondary/5 transition-all">
+                        Buy Now
+                    </button>
+</div>
+<!-- Icons Summary -->
+<div class="grid grid-cols-2 gap-6 pt-8 border-t border-outline-variant/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">eco</span>
+<span class="font-label-sm text-label-sm leading-tight text-on-surface-variant uppercase tracking-wider">100% Organic<br>Certified</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">ac_unit</span>
+<span class="font-label-sm text-label-sm leading-tight text-on-surface-variant uppercase tracking-wider">Cold Pressed<br>Extraction</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Info Sections (Tabs) -->
+<section class="mt-section-gap-lg">
+<div class="border-b border-outline-variant/30 flex gap-12 overflow-x-auto no-scrollbar">
+<button class="pb-6 px-2 font-label-lg text-label-lg uppercase tracking-widest custom-tab-active whitespace-nowrap">Description</button>
+<button class="pb-6 px-2 font-label-lg text-label-lg uppercase tracking-widest text-outline hover:text-primary transition-colors whitespace-nowrap">Harvest Info</button>
+<button class="pb-6 px-2 font-label-lg text-label-lg uppercase tracking-widest text-outline hover:text-primary transition-colors whitespace-nowrap">Extraction &amp; Storage</button>
+<button class="pb-6 px-2 font-label-lg text-label-lg uppercase tracking-widest text-outline hover:text-primary transition-colors whitespace-nowrap">Nutritional Facts</button>
+</div>
+<div class="py-12 grid grid-cols-1 md:grid-cols-2 gap-16">
+<div class="space-y-6">
+<h3 class="font-headline-lg text-headline-lg text-primary">The Essence of Tunisia</h3>
+<p class="text-body-lg leading-relaxed text-on-surface-variant">
+                        Each drop of our Reserve Collection is a testament to the sun-soaked terroir of the Sahel. We harvest only during the first full moon of October, ensuring the polyphenols are at their peak intensity. The result is a robust, complex oil that dances between bitterness and fruitiness.
+                    </p>
+<ul class="space-y-4">
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary">verified</span>
+<span class="text-body-md text-on-surface-variant">Single-estate origin from Mahdia, Tunisia.</span>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary">verified</span>
+<span class="text-body-md text-on-surface-variant">Acidity level below 0.2%—truly superior grade.</span>
+</li>
+</ul>
+</div>
+<div class="bg-surface-container rounded-2xl p-10 flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 opacity-10" data-alt="A subtle, abstract pattern of olive leaf sketches on a textured parchment-style background, using soft sage green lines. The aesthetic is clean and high-end, evoking the feeling of an artisanal luxury workshop." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAVOhZBK2x00SxuS4gDeJjwKNHPvcS0mituRgfeKcNoNabVhhpkduKENcIQtcygkZHvqYCyFC1lF9eQ72deWOgTsYGzeeeMQ05KJ2wb7e6Rx9pnotqEREdBB23Df9d_X0zwcisiypqQcV3Q-3_ylk6fV9DUTxp-QcBMcqfHYXDDdzlDAUbFg_j0T50Ior8hsuqLlG5y_y4Ist345uCUmXSyW8hoOgTZZzYPl0NvyDUh_t0uXY4nQtkvSw')"></div>
+<div class="relative z-10 text-center space-y-4">
+<div class="font-display-lg text-display-lg text-primary opacity-20">2024</div>
+<div class="font-headline-md text-headline-md text-secondary">Vintage Harvest</div>
+<p class="text-label-lg uppercase tracking-[0.2em] text-outline">Batch No. 0042 / 1000</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Reviews & FAQ -->
+<section class="mt-section-gap-lg grid grid-cols-1 lg:grid-cols-2 gap-24">
+<!-- Testimonials -->
+<div class="space-y-12">
+<h3 class="font-headline-lg text-headline-lg text-primary">Customer Reflections</h3>
+<div class="space-y-8">
+<div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant/20 shadow-sm">
+<div class="flex gap-1 text-secondary mb-4">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="italic text-body-lg text-on-surface-variant mb-6">"An absolute revelation. The depth of flavor is unlike anything I've purchased in boutique stores. It's liquid gold indeed."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">EM</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Eleanor M.</p>
+<p class="text-label-sm text-outline">Verified Connoisseur</p>
+</div>
+</div>
+</div>
+<div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant/20 shadow-sm">
+<div class="flex gap-1 text-secondary mb-4">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="italic text-body-lg text-on-surface-variant mb-6">"The packaging alone is a work of art, but the oil itself is the true star. Perfect for finishing roasted vegetables."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary font-bold">JD</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Julian D.</p>
+<p class="text-label-sm text-outline">Private Chef</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FAQ Accordion -->
+<div class="space-y-12">
+<h3 class="font-headline-lg text-headline-lg text-primary">Curated Questions</h3>
+<div class="space-y-4">
+<div class="border-b border-outline-variant/30 py-4 group cursor-pointer">
+<div class="flex justify-between items-center group-hover:text-primary transition-colors">
+<span class="font-label-lg text-label-lg uppercase tracking-wider">How should I store this reserve oil?</span>
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+<div class="max-h-0 overflow-hidden transition-all duration-300">
+<p class="pt-4 text-body-md text-on-surface-variant leading-relaxed">Keep in a cool, dark place away from heat sources. Our dark glass protects against UV, but direct sunlight should be avoided to preserve the antioxidant properties.</p>
+</div>
+</div>
+<div class="border-b border-outline-variant/30 py-4 group cursor-pointer">
+<div class="flex justify-between items-center group-hover:text-primary transition-colors">
+<span class="font-label-lg text-label-lg uppercase tracking-wider">What is the shelf life?</span>
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+<div class="max-h-0 overflow-hidden transition-all duration-300">
+<p class="pt-4 text-body-md text-on-surface-variant leading-relaxed">Best consumed within 18 months of harvest for peak flavor. Once opened, we recommend using it within 3-4 months.</p>
+</div>
+</div>
+<div class="border-b border-outline-variant/30 py-4 group cursor-pointer">
+<div class="flex justify-between items-center group-hover:text-primary transition-colors">
+<span class="font-label-lg text-label-lg uppercase tracking-wider">Is it suitable for high-heat cooking?</span>
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+<div class="max-h-0 overflow-hidden transition-all duration-300">
+<p class="pt-4 text-body-md text-on-surface-variant leading-relaxed">While EVOO has a stable smoke point, we recommend using the Reserve Collection as a finishing oil to appreciate its complex aromatic profile.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Cross-Selling: Horizontal Slider -->
+<section class="mt-section-gap-lg">
+<div class="flex justify-between items-end mb-10">
+<div>
+<span class="text-secondary font-label-lg text-label-lg uppercase tracking-[0.2em] mb-2 block">Curation</span>
+<h3 class="font-headline-lg text-headline-lg text-primary">Similar Treasures</h3>
+</div>
+<div class="flex gap-4">
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="flex gap-8 overflow-x-auto no-scrollbar pb-10">
+<!-- Product Card 1 -->
+<div class="min-w-[320px] group cursor-pointer">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container mb-6 relative">
+<div class="absolute inset-0 transition-transform duration-700 group-hover:scale-110" data-alt="A luxury bottle of OLIV'OR Heritage Blend olive oil, featuring a slightly different label design with traditional Tunisian motifs. The bottle is presented in a lifestyle setting with rustic bread and fresh herbs on a sun-drenched terrace. High-end, editorial aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBcmU7lBps0ygAt2leCW1YMqlhxJ-N4zNznS_ur__OimBCorJ2oNWJRTTJr8X_0_IvLFGrubcDj8vBswabrqpLLV3G0vZDkr2v6E68ufW6CTqZvYnRi-mGIGWtTPb5DpOWjGXRir-C9LpJf-L-FJE0L4Fj_VO03JuwJL_ldid3awWsoUVznrzjj61QKziPU_zBEhy4zKss2XCr1CF_aT84yHRWNyflmz4jytDaYBSQi-z-sBlzsOY_xGw')"></div>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary mb-1">Heritage Blend</h4>
+<p class="text-outline font-label-sm text-label-sm uppercase tracking-widest mb-3">Multi-Varietal Extra Virgin</p>
+<div class="text-secondary font-semibold">$36.00</div>
+</div>
+<!-- Product Card 2 -->
+<div class="min-w-[320px] group cursor-pointer">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container mb-6 relative">
+<div class="absolute inset-0 transition-transform duration-700 group-hover:scale-110" data-alt="A specialized bottle of OLIV'OR Infused Sage Oil. The oil inside has a beautiful translucent green tint, and the clear glass bottle reveals a small sprig of dried sage. The scene is illuminated by soft, cool morning light, creating a clean and refreshing visual appeal." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAlURkC3COMndJEJCLvYNCI-Pcav-40TSw2nQCepOTqNUdxllvkFF6pyDXz1d-_SJyv8bVVoFCsaHBhVKAC-55Gqcf7AIusWBe0t64f8TDMC0YsnurBJqOHCfXZ4PKDsHCsOWrB2rX5nQJplJ-GxcF1E3qJ8z79CMj6pN598w91kz69qxsshzI-TNBnYUOQFnLSTuGfuRshHJcAP_we3_fK3ibjG8F7Slvo2Wizs8F40gRfeZiTZIhbfg')"></div>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary mb-1">Infused Sage Oil</h4>
+<p class="text-outline font-label-sm text-label-sm uppercase tracking-widest mb-3">Artisanal Infusion</p>
+<div class="text-secondary font-semibold">$42.00</div>
+</div>
+<!-- Product Card 3 -->
+<div class="min-w-[320px] group cursor-pointer">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container mb-6 relative">
+<div class="absolute inset-0 transition-transform duration-700 group-hover:scale-110" data-alt="A curated gift set featuring three miniature bottles of different OLIV'OR olive oils, elegantly presented in a wooden presentation box with gold-leaf accents. The setting is a luxury retail environment with soft ambient lighting and polished surfaces." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB9_KbZsboANZ6shQEsOkFyyVOWOXDDDILzJOD-gOvkZx8Z3DRSFbWpvBoYotI68NCk2uL2z7W7FDOyYUXtoHws9w4gj3sZSZX485SNWCD6r6Mdc0ix5rzwXid9P6zrKLeZ0w78qqCVvcI1fyziicPS9ON04rG4CauqC60xmBkKjgxSuw0UifG293QTiF6O2WtKEMFkAICU66oSkGeS16U9KxsggmkkyPQwAQkgsaOlWufx29doTF3ByA')"></div>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary mb-1">Discovery Trio</h4>
+<p class="text-outline font-label-sm text-label-sm uppercase tracking-widest mb-3">The Signature Collection</p>
+<div class="text-secondary font-semibold">$95.00</div>
+</div>
+<!-- Product Card 4 -->
+<div class="min-w-[320px] group cursor-pointer">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container mb-6 relative">
+<div class="absolute inset-0 transition-transform duration-700 group-hover:scale-110" data-alt="A premium 1-liter decanter of OLIV'OR Extra Virgin Olive Oil, designed for kitchen display. The decanter is made of faceted glass that catches the light brilliantly. The background is a clean, modern white-on-white kitchen with marble accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDpKXep6QvFeZylnjJ8HFcA-xNDLOOboZQS8LHRb9j-ysvNlv_fx48pPS2yMS7ZK037efbIF_uNydtphRBsl7w9vpdqs5-13oZMFTcv3kzIWEA8WWvgmiSLa9bWwhOcQJgxcS7JiMnzmdSBZdtYI5v1_aQWBHLfI_j1jvlN1iZi6Xe5a1LEfPIjpRnE5PWCq38cBF2kS7Xo8j9Nt_bFuqCIRhUCvyy66I2pIeAz0_rcnHEuMISn2HQ7Ow')"></div>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary mb-1">Estate Decanter</h4>
+<p class="text-outline font-label-sm text-label-sm uppercase tracking-widest mb-3">Kitchen Statement Piece</p>
+<div class="text-secondary font-semibold">$120.00</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap-md bg-surface-container-highest border-t border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter w-full max-w-[1440px] mx-auto gap-8">
+<div class="font-headline-lg text-headline-lg text-primary uppercase tracking-widest">OLIV'OR</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Shipping &amp; Returns</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Contact Concierge</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Stockists</a>
+</div>
+<div class="text-on-surface font-body-md text-body-md text-center md:text-right opacity-60">
+                © 2024 OLIV'OR TUNISIA. THE ESSENCE OF LUXURY.
+            </div>
+</div>
+</footer>
+<script>
+        // Simple FAQ toggle logic
+        document.querySelectorAll('.group.cursor-pointer').forEach(item => {
+            item.addEventListener('click', () => {
+                const content = item.querySelector('div:last-child');
+                const icon = item.querySelector('.material-symbols-outlined');
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Custom Tab interaction (Simulation)
+        document.querySelectorAll('.custom-tab-active, .text-outline.whitespace-nowrap').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const parent = tab.parentElement;
+                parent.querySelectorAll('button').forEach(b => {
+                    b.classList.remove('custom-tab-active');
+                    b.classList.add('text-outline');
+                });
+                tab.classList.remove('text-outline');
+                tab.classList.add('custom-tab-active');
+            });
+        });
+    </script>
+</body></html>

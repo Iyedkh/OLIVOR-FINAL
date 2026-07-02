@@ -1,0 +1,394 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Customer Dashboard | OLIV'OR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#eae8e2",
+                        "inverse-on-surface": "#f2f1eb",
+                        "surface-tint": "#50652a",
+                        "surface-container-highest": "#e4e2dd",
+                        "on-tertiary-fixed": "#151f03",
+                        "on-surface-variant": "#45483c",
+                        "tertiary": "#44502d",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#d2eca2",
+                        "tertiary-fixed-dim": "#becc9f",
+                        "on-tertiary-fixed-variant": "#3f4b28",
+                        "on-secondary-container": "#795a01",
+                        "on-primary-container": "#d0eba1",
+                        "on-surface": "#1b1c19",
+                        "on-secondary-fixed": "#251a00",
+                        "primary": "#3e5219",
+                        "primary-fixed-dim": "#b6d088",
+                        "on-secondary": "#ffffff",
+                        "outline": "#75796b",
+                        "secondary-fixed-dim": "#eac166",
+                        "on-primary-fixed": "#131f00",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f5f3ee",
+                        "tertiary-container": "#5b6842",
+                        "primary-container": "#556b2f",
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#dae8b9",
+                        "inverse-primary": "#b6d088",
+                        "surface-variant": "#e4e2dd",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c5c8b8",
+                        "inverse-surface": "#30312d",
+                        "on-tertiary-container": "#d8e7b7",
+                        "surface": "#fbf9f3",
+                        "on-primary-fixed-variant": "#394d14",
+                        "surface-bright": "#fbf9f3",
+                        "surface-dim": "#dcdad4",
+                        "background": "#fbf9f3",
+                        "secondary-fixed": "#ffdf9c",
+                        "secondary-container": "#ffd577",
+                        "secondary": "#785a00",
+                        "error": "#ba1a1a",
+                        "surface-container": "#f0eee8",
+                        "on-background": "#1b1c19"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap-lg": "120px",
+                        "margin-mobile": "16px",
+                        "container-padding": "24px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "section-gap-md": "80px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-xl": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "label-lg": ["Inter"],
+                        "headline-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fbf9f3;
+            color: #1b1c19;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(182, 208, 136, 0.2);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .ambient-glow {
+            box-shadow: 0 20px 40px -15px rgba(62, 82, 25, 0.08);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-80 bg-surface-container-low dark:bg-inverse-surface shadow-xl shadow-primary/10 flex flex-col p-6 space-y-4 z-50 transition-all duration-300 hidden md:flex">
+<div class="mb-8 px-4">
+<img alt="OLIV'OR Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaXrq0vVUvocn9-GsBxsLNSGd8bdKqPMK6n2F52GbKFQOiSwVzEI8QpNK8Ibnne557I7bLdEbjsVzNzGII33VM4VDCAlSjsRmoHwkZcMOS2MKTXQgz5_3TtRzE9LEiyAIYuDFBqumvYlrAL6T9B58tEcqjJoMslCnNJeKLGeZGVOtAvy-aC15vWsEfXcmC-AgL7cTnDmsiHqJ-l5i7zKiKCrVCt_gh3R_LaQM_psIArGVtvMRkkVGFcWujpAMSnhXiyIg">
+</div>
+<div class="mb-10 px-4">
+<h2 class="font-headline-md text-headline-md text-primary mb-1">Welcome back</h2>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">Premium Member</p>
+</div>
+<nav class="flex-grow space-y-1">
+<!-- Active State Logic: Dashboard is currently active -->
+<a class="flex items-center gap-4 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg px-4 py-3 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container px-4 py-3 duration-200 ease-in-out rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">package_2</span>
+<span class="font-body-md text-body-md">Orders</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container px-4 py-3 duration-200 ease-in-out rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">favorite</span>
+<span class="font-body-md text-body-md">Wishlist</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container px-4 py-3 duration-200 ease-in-out rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">location_on</span>
+<span class="font-body-md text-body-md">Addresses</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container px-4 py-3 duration-200 ease-in-out rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">payments</span>
+<span class="font-body-md text-body-md">Payment Methods</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container px-4 py-3 duration-200 ease-in-out rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="pt-6 border-t border-outline-variant/30 mt-auto">
+<button class="w-full text-left flex items-center gap-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container px-4 py-3 duration-200 ease-in-out rounded-lg group">
+<span class="material-symbols-outlined group-hover:text-error transition-colors">logout</span>
+<span class="font-body-md text-body-md">Logout</span>
+</button>
+<div class="mt-6">
+<button class="w-full py-4 px-6 rounded-full bg-primary text-on-primary font-label-lg hover:scale-[1.02] transition-transform active:scale-95 shadow-lg shadow-primary/20">
+                    Contact Concierge
+                </button>
+</div>
+</div>
+</aside>
+<!-- Mobile Navigation (Bottom Bar) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant/20 flex justify-around items-center py-4 px-4 z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-semibold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">package_2</span>
+<span class="text-[10px]">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px]">Wishlist</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px]">Profile</span>
+</a>
+</nav>
+<!-- Main Content Area -->
+<main class="md:ml-80 min-h-screen p-6 md:p-12 lg:p-16 max-w-7xl">
+<!-- Header / Welcome Card -->
+<header class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-2">Welcome back, Alessandro</h1>
+<div class="flex items-center gap-4">
+<span class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                            Connoisseur Level
+                        </span>
+<span class="text-on-surface-variant/60 font-label-sm text-label-sm">MEMBER SINCE OCT 2021</span>
+</div>
+</div>
+<div class="hidden md:flex gap-3">
+<button class="px-6 py-3 rounded-full border border-secondary text-secondary font-label-lg hover:bg-secondary/5 transition-colors">
+                        Edit Profile
+                    </button>
+<button class="px-6 py-3 rounded-full bg-primary text-on-primary font-label-lg hover:shadow-lg hover:shadow-primary/20 transition-all">
+                        New Order
+                    </button>
+</div>
+</div>
+</header>
+<!-- Bento Grid Layout for Dashboard Sections -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Rewards & Points Section (Col 1-8) -->
+<section class="lg:col-span-8 glass-card rounded-[2rem] p-8 ambient-glow flex flex-col md:flex-row items-center gap-10">
+<div class="relative w-40 h-40 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-container-highest" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-secondary" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-dasharray="440" stroke-dashoffset="110" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-headline-lg text-headline-lg text-on-surface">3,250</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Points</span>
+</div>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Harvest Rewards</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 max-w-md">You are only 750 points away from your complimentary Reserve Series bottle. Your passion for liquid gold is bearing fruit.</p>
+<div class="flex flex-wrap gap-3">
+<button class="px-6 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label-sm hover:scale-105 transition-transform">Redeem Rewards</button>
+<button class="px-6 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-sm hover:bg-surface-container-low transition-colors">How it works</button>
+</div>
+</div>
+</section>
+<!-- Saved Address Quick View (Col 9-12) -->
+<section class="lg:col-span-4 bg-surface-container-low rounded-[2rem] p-8 flex flex-col justify-between border border-outline-variant/30">
+<div>
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Primary Address</h3>
+<span class="material-symbols-outlined text-primary">local_shipping</span>
+</div>
+<div class="space-y-1">
+<p class="font-label-lg text-label-lg text-on-surface">Home Sanctuary</p>
+<p class="text-on-surface-variant">Via dei Condotti, 12</p>
+<p class="text-on-surface-variant">00187 Roma RM</p>
+<p class="text-on-surface-variant">Italy</p>
+</div>
+</div>
+<button class="mt-8 text-primary font-label-lg flex items-center gap-2 group">
+                    Manage Addresses <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</section>
+<!-- Recent Orders (Col 1-12) -->
+<section class="lg:col-span-12">
+<div class="flex justify-between items-end mb-8">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Recent Order</h2>
+<a class="text-on-surface-variant font-label-lg hover:text-primary transition-colors" href="#">View History</a>
+</div>
+<div class="glass-card rounded-[2rem] p-8 flex flex-col md:flex-row gap-10 items-center ambient-glow">
+<div class="w-full md:w-48 h-48 rounded-2xl overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A luxury photograph of a sleek, dark glass olive oil bottle with a minimalist gold label sitting on a textured marble surface. The lighting is dramatic and moody, highlighting the elegant curves of the bottle and the viscous texture of the oil. The aesthetic is high-end, premium, and sophisticated, consistent with a luxury culinary brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBD40OoiWVv_xnC5dw4-hB_yQVZnH7DePYsUumNALvU3I-9BozEsc-BPnlRwX8iVP6djedR-XmvR-Xb-Qzqu3iEVOemKQPvT9O0Xi8EU1dfhkGrTA-fAaJhwVQ61t-JbTRjtHXzJUlqTlH2jgAU2MYnyxZNOFRv26tgLJ5UYCqShqVgXCOXyubReG95p64TyH5tyoW4gCx42kReNuaOD9BHNWEuui49PB0Gq-Pv-Zl05-Wc0KCNKCGxVg">
+</div>
+<div class="flex-grow grid grid-cols-2 md:grid-cols-4 gap-8 w-full">
+<div class="space-y-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Order ID</span>
+<p class="font-headline-md text-headline-md text-on-surface">#OL-88902</p>
+</div>
+<div class="space-y-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Status</span>
+<p class="flex items-center gap-2 text-primary font-label-lg">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                In Transit
+                            </p>
+</div>
+<div class="space-y-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Est. Delivery</span>
+<p class="text-on-surface font-label-lg">May 24, 2024</p>
+</div>
+<div class="flex items-center md:justify-end">
+<button class="w-full md:w-auto px-8 py-3 rounded-full border border-secondary text-secondary font-label-lg hover:bg-secondary hover:text-on-secondary transition-all duration-300">
+                                Track Package
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Wishlist Preview (Col 1-5) -->
+<section class="lg:col-span-5">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-8">Your Wishlist</h2>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-4 rounded-2xl hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Close-up shot of a clear glass bottle containing premium, vibrant green olive oil. Sunlight filters through the oil, creating a golden glow. The bottle is set against a soft ivory background with subtle botanical shadows. The overall feel is organic, pure, and high-quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS4rOfiT7oTuOTPornemmeYMWdmPc8IHax0hkkhxoZV8mVw9t1sNRhjSoO8qcAiJuzgHg9KjiIH2LWpd5yRYSyEOl2J1U-LjuesU3LduEQheHvqon0ukpnc92RzcJo_H9FnYPYsknDOnN6fkGqQu9EQLC74xD-I5bKUME5iqDS6TZsEjhe8vstBpq4W5bkBP5CAH_mY0yj774fsqm_PvMxSX0TPjzxcMwtPFWtnUveap61lSX8arvI8A">
+</div>
+<div class="flex-grow">
+<p class="font-headline-md text-headline-md text-on-surface">Carthage Reserve</p>
+<p class="text-primary font-label-lg">€45.00</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant hover:text-error transition-colors">delete</span>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A premium olive oil infusion set featuring small glass vials of rosemary and chili infused oils. The vials are arranged on a rustic wooden tray with fresh herbs. The lighting is warm and inviting, evoking a Mediterranean harvest feel. High-key light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrkek1qbk5FWFWil2kAOqTwl45kvdKeIJhoii4m6zrR4ScQ3jjtNOiYtg1fMxp0ISJ_mjvBp7iUvCH6sFgbhBdD6_boumzygicF8BFtrAN1vLY9FF0kSawGG03KqXYS_EjI5LHx8DpIpRdsfxrBZbbtf3DUDZjQc9KJ6jJZmwTyunUCWgm0dT0WGJa6DSm0zzqCAqqNS8EU6WaO6Ru0Jh_YAk7C6H8hx2JvmB_tkJdVM3xE5d7d0qDzg">
+</div>
+<div class="flex-grow">
+<p class="font-headline-md text-headline-md text-on-surface">Infusion Trio</p>
+<p class="text-primary font-label-lg">€62.00</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant hover:text-error transition-colors">delete</span>
+</div>
+<button class="w-full py-4 mt-2 text-on-surface-variant font-label-lg border border-dashed border-outline-variant rounded-2xl hover:bg-surface-container-low transition-colors">
+                        View All Wishlist
+                    </button>
+</div>
+</section>
+<!-- Curated Recommendations (Col 6-12) -->
+<section class="lg:col-span-7">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-8">Curated for You</h2>
+<div class="flex overflow-x-auto no-scrollbar gap-6 pb-4">
+<div class="min-w-[280px] group">
+<div class="aspect-[3/4] rounded-[2rem] overflow-hidden mb-4 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A minimalist, tall, and elegant ceramic olive oil decanter in a soft matte sage green color. It stands against a pristine off-white background with professional studio lighting that emphasizes its clean lines and organic shape. The image is sophisticated, editorial, and perfectly aligned with a luxury kitchenware aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeUKF_9Uzlt58st7y2OCE47YLCvlNofwDEhlPXwfp7mV3mopuAI2BvxtjzUHhABjva6Zk2sxSOQwI0Qwxo-ngqOSU29RKoVpWfCR-LYsQqT5J7KthmllIPkzWMlc2T6JmGW7Zq3SkgZConxha_EctZNNg9qYB4gFAxokt-6SvmT4aqW9F9K6jJlMZssXZjpz3nbyrrWKTHG7BFfcW0L5TAW7Kpuu64IUpNzCEFzVWpqVH0M8VgIqgmjA">
+<div class="absolute top-4 right-4 bg-surface/90 backdrop-blur px-3 py-1 rounded-full text-label-sm font-label-sm text-primary">New Season</div>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Monovarietal Chetoui</h4>
+<p class="text-on-surface-variant font-body-md mb-4">Intense aroma with notes of green almond.</p>
+<button class="flex items-center gap-2 text-secondary font-label-lg">
+                            Explore Collection <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="min-w-[280px] group">
+<div class="aspect-[3/4] rounded-[2rem] overflow-hidden mb-4 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A set of luxury olive oil tasting glasses, thin and crystal clear, catching the light elegantly. They are arranged on a clean, modern table in a bright, sun-drenched room. The scene is airy, ethereal, and evokes a sense of quiet indulgence and high-end culinary experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoU57zRPrvL_AQZqDWuwUiJCsylZjbGR75X7tm4D2Un37l4fy9v4HYtHyP26eyVvj2L97pGvvvt0ULKlkEd_z70aKGKsgwPXgWwTn1ZCbckkC5DXcA9hBy0Cu_Fm3Zsp5pYZulRJbjNTDtxlaBZDO7nahIghQr7KCBlsIi1AqiZORi-Mmu8wLrEOQFTyvPOPAKoRS9OBG1Bk0XnTiUtDzSkc58ibDWWKyadMMaiiaojy2EqRgBZJA_vg">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Sommelier Kit</h4>
+<p class="text-on-surface-variant font-body-md mb-4">Master the art of olive oil tasting at home.</p>
+<button class="flex items-center gap-2 text-secondary font-label-lg">
+                            Explore Collection <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer / Support -->
+<footer class="mt-section-gap-md pb-24 md:pb-0 pt-12 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-8">
+<p class="text-on-surface-variant/60 font-body-md">© 2024 OLIV'OR. Artisans of Mediterranean Heritage.</p>
+<div class="flex gap-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm" href="#">Shipping &amp; Returns</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm" href="#">Concierge Support</a>
+</div>
+</footer>
+</main>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('mousedown', () => {
+                elem.classList.add('scale-95');
+            });
+            elem.addEventListener('mouseup', () => {
+                elem.classList.remove('scale-95');
+            });
+            elem.addEventListener('mouseleave', () => {
+                elem.classList.remove('scale-95');
+            });
+        });
+
+        // Ambient scroll effect for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('translate-y-0', 'opacity-100');
+                    entry.target.classList.remove('translate-y-4', 'opacity-0');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-700', 'ease-out', 'translate-y-4', 'opacity-0');
+            observer.observe(section);
+        });
+    </script>
+</body></html>

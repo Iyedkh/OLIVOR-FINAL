@@ -1,0 +1,389 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Order History | L'Élixir de Tunisie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c5c8b8",
+                    "tertiary-fixed-dim": "#becc9f",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#251a00",
+                    "inverse-primary": "#b6d088",
+                    "on-primary-container": "#d0eba1",
+                    "on-surface-variant": "#45483c",
+                    "surface-tint": "#50652a",
+                    "on-secondary-container": "#795a01",
+                    "on-tertiary-fixed": "#151f03",
+                    "on-tertiary-container": "#d8e7b7",
+                    "primary-container": "#556b2f",
+                    "surface-container-low": "#f5f3ee",
+                    "inverse-surface": "#30312d",
+                    "surface-container": "#f0eee8",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#dae8b9",
+                    "tertiary": "#44502d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#131f00",
+                    "on-primary-fixed-variant": "#394d14",
+                    "secondary-fixed-dim": "#eac166",
+                    "inverse-on-surface": "#f2f1eb",
+                    "tertiary-container": "#5b6842",
+                    "surface-container-highest": "#e4e2dd",
+                    "secondary-fixed": "#ffdf9c",
+                    "primary-fixed-dim": "#b6d088",
+                    "on-secondary-fixed-variant": "#5b4300",
+                    "secondary": "#785a00",
+                    "on-background": "#1b1c19",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "outline": "#75796b",
+                    "secondary-container": "#ffd577",
+                    "surface-bright": "#fbf9f3",
+                    "surface-variant": "#e4e2dd",
+                    "surface": "#fbf9f3",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#d2eca2",
+                    "surface-dim": "#dcdad4",
+                    "on-tertiary-fixed-variant": "#3f4b28",
+                    "surface-container-high": "#eae8e2",
+                    "error": "#ba1a1a",
+                    "primary": "#3e5219",
+                    "on-surface": "#1b1c19",
+                    "on-tertiary": "#ffffff",
+                    "background": "#fbf9f3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-gap-lg": "120px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "container-padding": "24px",
+                    "section-gap-md": "80px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "label-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-xl": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(251, 249, 243, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .order-card-shadow {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #fbf9f3;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface selection:bg-primary-fixed-dim selection:text-on-primary-fixed">
+<!-- Top Navigation Bar (Shared Component Strategy) -->
+<header class="bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 docked full-width top-0 sticky z-50">
+<nav class="flex justify-between items-center w-full px-gutter max-w-7xl mx-auto h-20">
+<div class="font-headline-md text-headline-md font-semibold text-primary">L'Élixir de Tunisie</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-300" href="#">Heritage</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-300" href="#">Collection</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-300" href="#">Terroir</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-300" href="#">Our Mills</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="cursor-pointer active:opacity-70 transition-transform hover:scale-105">
+<span class="material-symbols-outlined text-primary" data-icon="shopping_bag">shopping_bag</span>
+</button>
+<button class="cursor-pointer active:opacity-70 transition-transform hover:scale-105">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+</button>
+</div>
+</nav>
+</header>
+<div class="flex max-w-7xl mx-auto min-h-screen">
+<!-- Side Navigation (Shared Component Strategy) -->
+<aside class="hidden lg:flex flex-col py-8 px-4 h-screen w-64 sticky top-20 bg-surface-container-low border-r border-outline-variant/20">
+<div class="mb-10 px-4">
+<div class="w-12 h-12 rounded-full overflow-hidden mb-4 bg-primary-fixed-dim border border-outline-variant/50">
+<img class="w-full h-full object-cover" data-alt="A sophisticated editorial portrait of a distinguished customer in their 40s, with warm lighting and a soft bokeh background. The aesthetic is clean and luxurious, echoing high-end skincare or fashion brand photography with muted earth tones and a serene, professional atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNGVEsWtwC3WSTItvZM0O03mntUArsM1iKZ7gFOzI-V8STcu8RboCbNLxxvqP8vZqMLuDjY-VmjIEDbtG78PpQ7GDF7jFaNMbw9xm-NF0gNAUxKfSZgcXth0ZtKsla9PojPIFuKOJUE4Lds3IDYwXwNEajlOL-yV7eXR3K87GmTfiQP7v4ZIEr55s8kIGhpCqedgYXHZ6LPIVsFYzqZhUFPlNCYwD4eBEzEY4bvqcNZDIsCViso3GVJA">
+</div>
+<h3 class="font-headline-md text-headline-md text-primary">Welcome Back</h3>
+<p class="font-label-sm text-on-surface-variant opacity-70">Connoisseur Member</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-variant/50 rounded-full transition-transform hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+<span class="font-label-lg text-label-lg">My Profile</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 bg-secondary-container text-on-secondary-container rounded-full transition-transform hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-lg text-label-lg">Order History</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-variant/50 rounded-full transition-transform hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="auto_renew">autorenew</span>
+<span class="font-label-lg text-label-lg">Subscriptions</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-variant/50 rounded-full transition-transform hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="local_florist">local_florist</span>
+<span class="font-label-lg text-label-lg">Saved Harvests</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-variant/50 rounded-full transition-transform hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+<span class="font-label-lg text-label-lg">Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-surface-container-highest/30 rounded-2xl border border-outline-variant/10">
+<p class="font-label-sm text-on-surface-variant mb-3">Need assistance?</p>
+<button class="w-full py-2 bg-primary text-on-primary rounded-full font-label-lg text-label-lg hover:scale-[1.02] transition-transform">Contact Sommelier</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 px-4 md:px-gutter py-10 max-w-4xl mx-auto">
+<header class="mb-12">
+<h1 class="font-headline-xl text-headline-xl text-primary mb-8">Your Archives</h1>
+<!-- Search & Filters -->
+<div class="flex flex-col md:flex-row gap-4 items-center bg-surface-container-lowest p-2 rounded-2xl order-card-shadow">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-transparent border-none focus:ring-0 font-body-md placeholder:text-on-surface-variant/40" placeholder="Search by Order ID or Product" type="text">
+</div>
+<div class="flex gap-2 w-full md:w-auto px-2">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-variant/30 text-on-surface-variant rounded-xl font-label-lg whitespace-nowrap hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+                            Past 6 Months
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-variant/30 text-on-surface-variant rounded-xl font-label-lg whitespace-nowrap hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                            Filter
+                        </button>
+</div>
+</div>
+</header>
+<section class="space-y-8">
+<!-- Order Card 1: Delivered -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 md:p-8 order-card-shadow border border-outline-variant/5 hover:border-outline-variant/20 transition-all duration-300">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-outline-variant/10 pb-6">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<span class="font-label-lg text-primary">#ORD-7721</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-body-md text-on-surface-variant">October 12, 2023</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">The Sahel Autumn Harvest</h2>
+</div>
+<div class="px-4 py-1.5 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full font-label-lg text-label-sm flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                            Delivered
+                        </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Products Summary -->
+<div class="md:col-span-4 flex flex-col gap-4">
+<div class="flex items-center gap-4 group">
+<div class="w-16 h-20 bg-surface rounded-lg overflow-hidden flex-shrink-0 border border-outline-variant/10 group-hover:scale-105 transition-transform">
+<img class="w-full h-full object-cover" data-alt="A tall, slender dark glass olive oil bottle with a minimalist white label, titled 'Reserve Collection'. The photography style is high-end editorial, with soft natural light catching the curves of the glass, creating a sense of luxury and organic purity on a clean ivory background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhQk1-2Psf_06amlvJMA1emVa_y663K8OXN3RU5r1pKxuZmtkRZg7JAu0SMDrXXeBkQhQWoAfrCZhHeL9UxQ4eynxXUMrwxSvNSpOvE8JB0bKklPA9RDMKLPVRewGOdMqQ-lXLVw7FgfbWPfGF445fiw1hXfVKd0GDvYNYLprU5E4qMW6pnIuKCoDqAcZdGG7YzA7gcfSOnYk32K9nrdlwL2my2m9eHylPLRFw9YbsdeL1leAS4xEKkQ">
+</div>
+<div>
+<p class="font-label-lg text-on-surface">Reserve Collection</p>
+<p class="font-label-sm text-on-surface-variant opacity-70">500ml • Glass Cask</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="w-16 h-20 bg-surface rounded-lg overflow-hidden flex-shrink-0 border border-outline-variant/10 group-hover:scale-105 transition-transform">
+<img class="w-full h-full object-cover" data-alt="A premium artisanal olive oil bottle featuring a textured label with 'Heritage Blend' written in elegant serif typography. The lighting is warm and atmospheric, emphasizing the rich golden viscosity of the oil visible through the glass, presented in a minimalist, gallery-like setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY2erfSA8g6Y0PPxCA7CI51b6gPAfBaeJONvPAr81dxk8673zS2TyL2naAenxwjnnJA-bZRFC4dJ4F3s-i3XiW6KUFSv5Qiq20JmDssMk3qQinoe2Q6f2MbLRo8MKn4n5kRrvJsDGObm-IimSW1Dz_v7-TqYZxSfEkL04iLgIxpiONvo3GQ0p9ciCEql-8JjVxcm3geUtDa2U_V7Hl9NvYuqWYoNP3uHuDJYzVAvtUjgybYP7pdtuAYg">
+</div>
+<div>
+<p class="font-label-lg text-on-surface">Heritage Blend</p>
+<p class="font-label-sm text-on-surface-variant opacity-70">250ml • Limited Edition</p>
+</div>
+</div>
+</div>
+<!-- Timeline Tracking -->
+<div class="md:col-span-8">
+<div class="flex flex-col gap-6 relative">
+<div class="absolute left-[7px] top-2 bottom-2 w-[1px] bg-outline-variant/30"></div>
+<div class="flex gap-4 items-start relative z-10">
+<div class="w-[15px] h-[15px] rounded-full bg-primary mt-1 border-4 border-surface-container-lowest"></div>
+<div>
+<p class="font-label-lg text-on-surface">Delivered</p>
+<p class="font-label-sm text-on-surface-variant">Signature received at 2:45 PM • Oct 15</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative z-10 opacity-50">
+<div class="w-[15px] h-[15px] rounded-full bg-outline-variant mt-1 border-4 border-surface-container-lowest"></div>
+<div>
+<p class="font-label-lg text-on-surface">In Transit</p>
+<p class="font-label-sm text-on-surface-variant">Carrier: Global Express • Tunis Port</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative z-10 opacity-50">
+<div class="w-[15px] h-[15px] rounded-full bg-outline-variant mt-1 border-4 border-surface-container-lowest"></div>
+<div>
+<p class="font-label-lg text-on-surface">Harvested &amp; Bottled</p>
+<p class="font-label-sm text-on-surface-variant">Estate Mill • Sousse District</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-10 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+<a class="flex items-center gap-2 text-primary font-label-lg hover:underline underline-offset-4 transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                            Download Invoice
+                        </a>
+<div class="flex gap-4 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-8 py-3 border border-secondary text-secondary rounded-full font-label-lg hover:bg-secondary/5 transition-all hover:scale-[1.02]">Track Package</button>
+<button class="flex-1 sm:flex-none px-8 py-3 bg-primary text-on-primary rounded-full font-label-lg shadow-lg shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.02] transition-all">Reorder</button>
+</div>
+</div>
+</div>
+<!-- Order Card 2: In Transit -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 md:p-8 order-card-shadow border border-outline-variant/5 hover:border-outline-variant/20 transition-all duration-300">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-outline-variant/10 pb-6">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<span class="font-label-lg text-primary">#ORD-8944</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-body-md text-on-surface-variant">March 04, 2024</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Spring Culinary Select</h2>
+</div>
+<div class="px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-full font-label-lg text-label-sm flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                            In Transit
+                        </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<div class="md:col-span-4 flex flex-col gap-4">
+<div class="flex items-center gap-4 group">
+<div class="w-16 h-20 bg-surface rounded-lg overflow-hidden flex-shrink-0 border border-outline-variant/10 group-hover:scale-105 transition-transform">
+<img class="w-full h-full object-cover" data-alt="A set of small, artisanal tasting bottles of olive oil in a handcrafted wooden gift box. The image is bathed in soft, early morning sun, highlighting the organic textures of the wood and the shimmering transparency of the oil. Minimalist, premium aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCy_lNAKYNlZeC_SpV95mC5nJVZ4BedQ0nvtNXR1oMkYcJN2pLU-qWUhePE2kJopmMmNKimfT_kusupY2jzb0-HFAkCyh3nJ1AFK0szkRclnZYg-QTY4vU0rqIqIdudrNeprqp9vI3TyOGGep554Ph8VOTB2ZDFjxZHmwCfzSgE517XsxpKbhAimwwbM151F70BwAQ1xePmgV3BvKUDqhGpPAPLqAA7qVZXXeHTw8dS5DkHATS1QTf0Nw">
+</div>
+<div>
+<p class="font-label-lg text-on-surface">Sommelier Discovery Set</p>
+<p class="font-label-sm text-on-surface-variant opacity-70">3x 100ml • Trio</p>
+</div>
+</div>
+</div>
+<div class="md:col-span-8">
+<div class="flex flex-col gap-6 relative">
+<div class="absolute left-[7px] top-2 bottom-2 w-[1px] bg-outline-variant/30"></div>
+<div class="flex gap-4 items-start relative z-10 opacity-30">
+<div class="w-[15px] h-[15px] rounded-full bg-outline-variant mt-1 border-4 border-surface-container-lowest"></div>
+<div>
+<p class="font-label-lg text-on-surface">Delivered</p>
+<p class="font-label-sm text-on-surface-variant">Pending arrival</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative z-10">
+<div class="w-[15px] h-[15px] rounded-full bg-secondary mt-1 border-4 border-surface-container-lowest"></div>
+<div>
+<p class="font-label-lg text-on-surface">In Transit</p>
+<p class="font-label-sm text-on-surface-variant">Arriving Tomorrow by 8 PM</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative z-10">
+<div class="w-[15px] h-[15px] rounded-full bg-primary mt-1 border-4 border-surface-container-lowest"></div>
+<div>
+<p class="font-label-lg text-on-surface">Harvested &amp; Bottled</p>
+<p class="font-label-sm text-on-surface-variant">Certified Organic Estate • Mar 05</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-10 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+<a class="flex items-center gap-2 text-primary font-label-lg hover:underline underline-offset-4 transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="receipt">receipt</span>
+                            View Details
+                        </a>
+<div class="flex gap-4 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-8 py-3 bg-secondary text-on-secondary rounded-full font-label-lg shadow-lg shadow-secondary/10 hover:scale-[1.02] transition-all">Track Order</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Load More -->
+<div class="mt-16 text-center">
+<button class="group flex items-center gap-2 mx-auto px-8 py-4 bg-surface-container text-on-surface-variant rounded-full font-label-lg hover:bg-surface-variant transition-colors">
+                    View Complete History
+                    <span class="material-symbols-outlined transition-transform group-hover:translate-y-1" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</main>
+</div>
+<!-- Footer (Shared Component Strategy) -->
+<footer class="w-full mt-section-gap-lg bg-surface-container-highest dark:bg-surface-container">
+<div class="w-full px-container-padding py-section-gap-md grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-outline-variant/10 max-w-7xl mx-auto">
+<div>
+<div class="font-headline-md text-headline-md text-primary mb-2">L'Élixir de Tunisie</div>
+<p class="font-body-md text-on-surface-variant dark:text-on-surface">© 2024 L'Élixir de Tunisie. Liquid Gold from the Sahel.</p>
+</div>
+<div class="flex flex-wrap gap-x-8 gap-y-4 md:justify-end">
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary underline-offset-4 transition-all duration-300" href="#">Sustainability</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary underline-offset-4 transition-all duration-300" href="#">Shipping Policy</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary underline-offset-4 transition-all duration-300" href="#">Privacy</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline decoration-secondary underline-offset-4 transition-all duration-300" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions for order cards
+        document.querySelectorAll('.order-card-shadow').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Search highlight effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.parentElement.classList.add('ring-1', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.parentElement.classList.remove('ring-1', 'ring-primary/20');
+        });
+    </script>
+</body></html>

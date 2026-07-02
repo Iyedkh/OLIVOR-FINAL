@@ -1,0 +1,286 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>OLIV'OR | The Essence of Luxury Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Inter:wght@300;400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Playfair+Display:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#1b1c19",
+                      "on-secondary-fixed": "#251a00",
+                      "on-secondary-container": "#795a01",
+                      "on-primary-container": "#d0eba1",
+                      "primary": "#3e5219",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#b6d088",
+                      "secondary-fixed-dim": "#eac166",
+                      "on-primary-fixed": "#131f00",
+                      "error-container": "#ffdad6",
+                      "outline": "#75796b",
+                      "surface-container-low": "#f5f3ee",
+                      "tertiary-container": "#5b6842",
+                      "primary-container": "#556b2f",
+                      "on-secondary-fixed-variant": "#5b4300",
+                      "surface-container-high": "#eae8e2",
+                      "inverse-on-surface": "#f2f1eb",
+                      "surface-tint": "#50652a",
+                      "on-tertiary-fixed": "#151f03",
+                      "on-surface-variant": "#45483c",
+                      "surface-container-highest": "#e4e2dd",
+                      "tertiary": "#44502d",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed": "#d2eca2",
+                      "tertiary-fixed-dim": "#becc9f",
+                      "on-tertiary-fixed-variant": "#3f4b28",
+                      "surface-dim": "#dcdad4",
+                      "surface-bright": "#fbf9f3",
+                      "background": "#fbf9f3",
+                      "secondary-fixed": "#ffdf9c",
+                      "secondary-container": "#ffd577",
+                      "secondary": "#785a00",
+                      "error": "#ba1a1a",
+                      "surface-container": "#f0eee8",
+                      "on-background": "#1b1c19",
+                      "on-error-container": "#93000a",
+                      "surface-variant": "#e4e2dd",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed": "#dae8b9",
+                      "inverse-primary": "#b6d088",
+                      "inverse-surface": "#30312d",
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#c5c8b8",
+                      "surface": "#fbf9f3",
+                      "on-tertiary-container": "#d8e7b7",
+                      "on-primary-fixed-variant": "#394d14"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-padding": "24px",
+                      "section-gap-lg": "120px",
+                      "margin-mobile": "16px",
+                      "section-gap-md": "80px",
+                      "gutter": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Playfair Display"],
+                      "display-lg": ["Playfair Display"],
+                      "body-md": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "headline-md": ["Playfair Display"],
+                      "label-sm": ["Inter"],
+                      "headline-xl": ["Playfair Display"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Playfair Display"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "headline-xl": ["48px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fbf9f3;
+            color: #1b1c19;
+            overflow-x: hidden;
+        }
+
+        .glass-effect {
+            background: rgba(251, 249, 243, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(117, 121, 107, 0.1);
+        }
+
+        .floating-label-input:focus-within label,
+        .floating-label-input input:not(:placeholder-shown) + label {
+            transform: translateY(-24px) scale(0.85);
+            color: #3e5219;
+        }
+
+        .floating-label-input label {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        /* Custom underline for premium links */
+        .premium-link {
+            position: relative;
+            text-decoration: none;
+        }
+        .premium-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width 0.3s ease;
+        }
+        .premium-link:hover::after {
+            width: 100%;
+        }
+
+        .fade-in {
+            animation: fadeIn 1.2s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-body-md antialiased">
+<main class="min-h-screen flex flex-col md:flex-row overflow-hidden">
+<!-- Left Side: Visual Narrative -->
+<section class="relative hidden md:flex w-1/2 h-screen overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] hover:scale-105" data-alt="Cinematic wide shot of a lush Tunisian olive grove during the golden hour. The sunlight filters through the silver-green leaves of ancient gnarled olive trees, casting long soft shadows on the warm dry earth. The color palette is dominated by rich ambers, deep olives, and soft ivory highlights. The atmosphere is serene and luxurious, capturing the quiet dignity of a heritage agricultural landscape in a high-end editorial photography style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASQTfMu-0xiKhrcnfa-XJN62fDDJuh1dIIeTAdUiIZFxSiwIbWcM1TZtKtNZY6lz9DmP7EOGWJhSdtdTXpUzqOHp0KOpw_V-E4VtQbjcMRS9Y68yNN9vgPYjEQOrxnlOyvB7NQMtg2K2TLP6ovakcn7GE1Ur3d5QYeRCL45eM8d0GeK4VTZA7vy95g5eoMSq5nIJUFPc1TA6kGIWb8qFRYLIw93_JGA0bePPrMquuKehCvMsR-RO3AuQ')">
+</div>
+<!-- Branding Overlay -->
+<div class="absolute top-12 left-12 z-10">
+<h1 class="font-headline-xl text-headline-xl text-white tracking-widest drop-shadow-md">
+                    OLIV'OR
+                </h1>
+</div>
+<!-- Atmospheric Gradient -->
+<div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
+<!-- Quote/Context -->
+<div class="absolute bottom-12 left-12 right-12 z-10 fade-in" style="animation-delay: 0.5s;">
+<p class="font-headline-md text-headline-md text-white italic max-w-md">
+                    "From the sun-drenched groves of Tunisia, straight to your table."
+                </p>
+<div class="mt-4 w-12 h-[1px] bg-white opacity-60"></div>
+<p class="mt-4 font-label-lg text-label-lg text-white/80 uppercase tracking-widest">
+                    The Harvest 2024
+                </p>
+</div>
+</section>
+<!-- Right Side: Interaction Canvas -->
+<section class="w-full md:w-1/2 flex items-center justify-center p-gutter md:p-12 lg:p-24 bg-surface">
+<!-- Mobile Brand Mark -->
+<div class="absolute top-8 left-8 md:hidden">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-widest">OLIV'OR</span>
+</div>
+<div class="w-full max-w-md fade-in">
+<!-- Header -->
+<header class="mb-12 text-center md:text-left">
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-3">Welcome Back</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant opacity-80">Please enter your credentials to access the concierge.</p>
+</header>
+<!-- Auth Card -->
+<div class="space-y-8">
+<form class="space-y-6" id="loginForm">
+<!-- Email Field -->
+<div class="relative floating-label-input">
+<input class="w-full px-0 py-4 bg-transparent border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors text-on-surface font-body-md peer" id="email" name="email" placeholder=" " required="" type="email">
+<label class="absolute left-0 top-4 font-label-lg text-label-lg text-outline-variant peer-focus:text-primary" for="email">
+                                EMAIL ADDRESS
+                            </label>
+</div>
+<!-- Password Field -->
+<div class="relative floating-label-input">
+<input class="w-full px-0 py-4 bg-transparent border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors text-on-surface font-body-md peer" id="password" name="password" placeholder=" " required="" type="password">
+<label class="absolute left-0 top-4 font-label-lg text-label-lg text-outline-variant peer-focus:text-primary" for="password">
+                                PASSWORD
+                            </label>
+<!-- Forgot Password Link -->
+<div class="flex justify-end mt-2">
+<a class="font-label-sm text-label-sm uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">
+                                    Forgot Password?
+                                </a>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full py-5 bg-primary text-secondary-fixed font-headline-md text-headline-md rounded-full shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all duration-300" type="submit">
+                            Sign In
+                        </button>
+</form>
+<!-- Divider -->
+<div class="relative flex items-center justify-center">
+<div class="flex-grow border-t border-outline-variant/30"></div>
+<span class="px-4 font-label-sm text-label-sm text-outline-variant tracking-widest uppercase">Or continue with</span>
+<div class="flex-grow border-t border-outline-variant/30"></div>
+</div>
+<!-- Social CTA -->
+<button class="w-full py-4 flex items-center justify-center gap-3 border border-outline-variant/50 rounded-full font-label-lg text-label-lg text-on-surface hover:bg-surface-variant/20 transition-colors duration-200">
+<svg class="w-5 h-5" viewBox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"></path>
+</svg>
+                        Google
+                    </button>
+</div>
+<!-- Footer Link -->
+<footer class="mt-16 text-center">
+<p class="font-body-md text-on-surface-variant">
+                        Don't have an account? 
+                        <a class="premium-link text-primary font-semibold ml-1" href="#">Register</a>
+</p>
+</footer>
+</div>
+</section>
+</main>
+<!-- Script for Micro-interactions -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const originalText = btn.innerHTML;
+                
+                // Success visual state
+                btn.innerHTML = `
+                    <span class="flex items-center justify-center gap-2">
+                        Authenticating...
+                        <svg class="animate-spin h-5 w-5 text-secondary-fixed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                `;
+                btn.classList.add('opacity-80', 'pointer-events-none');
+
+                setTimeout(() => {
+                    // Reset or Redirect logic simulation
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('opacity-80', 'pointer-events-none');
+                }, 2000);
+            });
+
+            // Smooth parallax effect on the image
+            const imageContainer = document.querySelector('[data-alt]');
+            document.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.005;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.005;
+                imageContainer.style.transform = `scale(1.05) translate(${moveX}px, ${moveY}px)`;
+            });
+        });
+    </script>
+</body></html>
