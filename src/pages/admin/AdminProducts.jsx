@@ -6,7 +6,7 @@ import { useApp } from '../../context/AppContext';
 import axios from 'axios';
 
 const AdminProducts = () => {
-  const { products, createProduct, updateProduct, deleteProduct, token } = useApp();
+  const { products, createProduct, updateProduct, deleteProduct, token, categories } = useApp();
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -21,8 +21,7 @@ const AdminProducts = () => {
     volume: '',
     countInStock: '',
     region: '',
-    category: 'Reserve Estate',
-    image: '',
+    category: '',
     images: []
   });
 
@@ -35,8 +34,7 @@ const AdminProducts = () => {
       volume: '500ml',
       countInStock: '10',
       region: 'Tunisia',
-      category: 'Reserve Estate',
-      image: '',
+      category: categories && categories.length > 0 ? categories[0]._id : '',
       images: []
     });
     setUploadError('');
@@ -52,9 +50,8 @@ const AdminProducts = () => {
       volume: product.volume || '',
       countInStock: product.countInStock ? product.countInStock.toString() : '0',
       region: product.region || '',
-      category: product.category || 'Reserve Estate',
-      image: product.image || '',
-      images: product.images || []
+      category: product.category?._id || product.category || '',
+      images: product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : [])
     });
     setUploadError('');
     setIsModalOpen(true);
@@ -90,12 +87,10 @@ const AdminProducts = () => {
       });
 
       // Append all uploaded images.
-      // If there's no main image set yet, use the first uploaded image.
       setFormState((prev) => {
         const newImages = [...(prev.images || []), ...data.urls];
         return {
           ...prev,
-          image: prev.image || data.urls[0] || '',
           images: newImages,
         };
       });
@@ -109,29 +104,26 @@ const AdminProducts = () => {
   const handleRemoveImage = (indexToRemove) => {
     setFormState((prev) => {
       const newImages = prev.images.filter((_, idx) => idx !== indexToRemove);
-      // If we removed the main image, set main image to the first remaining image (if any)
-      const removedImageUrl = prev.images[indexToRemove];
-      const newMainImage = prev.image === removedImageUrl 
-        ? (newImages[0] || '') 
-        : prev.image;
-
       return {
         ...prev,
-        image: newMainImage,
         images: newImages,
       };
     });
   };
 
   const handleSetMainImage = (imageUrl) => {
-    setFormState((prev) => ({
-      ...prev,
-      image: imageUrl,
-    }));
+    setFormState((prev) => {
+      const filtered = (prev.images || []).filter(url => url !== imageUrl);
+      return {
+        ...prev,
+        images: [imageUrl, ...filtered],
+      };
+    });
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
     const productData = {
       title: formState.title,
       price: parseFloat(formState.price) || 0,
@@ -140,8 +132,7 @@ const AdminProducts = () => {
       countInStock: parseInt(formState.countInStock) || 0,
       region: formState.region,
       category: formState.category,
-      image: formState.image || (formState.images && formState.images[0]) || 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5',
-      images: formState.images || []
+      images: formState.images && formState.images.length > 0 ? formState.images : ['https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5']
     };
 
     if (editingProduct) {
@@ -224,7 +215,7 @@ const AdminProducts = () => {
                     <tr key={productId} className="hover:bg-surface-container-low transition-colors">
                       <td className="py-4 px-6 select-none">
                         <div className="w-12 h-16 bg-surface-container rounded-lg overflow-hidden border border-outline-variant/30 p-2 flex items-center justify-center">
-                          <img className="max-h-full max-w-full object-contain" alt={product.title} src={product.image} />
+                          <img className="max-h-full max-w-full object-contain" alt={product.title} src={product.images && product.images.length > 0 ? product.images[0] : product.image} />
                         </div>
                       </td>
                       <td className="py-4 px-6 font-bold text-primary">{product.title}</td>
@@ -379,9 +370,9 @@ const AdminProducts = () => {
                         onChange={(e) => setFormState({ ...formState, category: e.target.value })}
                         className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface focus:outline-none focus:border-primary text-sm"
                       >
-                        <option value="Reserve Estate">Reserve Estate</option>
-                        <option value="Limited Harvest">Limited Harvest</option>
-                        <option value="Infusions">Infusions</option>
+                        {categories.map((cat) => (
+                          <option key={cat._id} value={cat._id}>{cat.name}</option>
+                        ))}
                       </select>
                     </div>
 
@@ -417,7 +408,7 @@ const AdminProducts = () => {
                       {formState.images && formState.images.length > 0 && (
                         <div className="grid grid-cols-4 gap-2 pt-2">
                           {formState.images.map((url, idx) => {
-                            const isMain = formState.image === url;
+                            const isMain = idx === 0;
                             return (
                               <div key={idx} className={`relative aspect-square rounded-lg overflow-hidden border p-1 bg-white flex items-center justify-center group ${isMain ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant/30'}`}>
                                 <img src={url} alt={`upload-${idx}`} className="max-h-full max-w-full object-contain" />

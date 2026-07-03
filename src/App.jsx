@@ -11,6 +11,8 @@ import Collections from './pages/Collections';
 import Heritage from './pages/Heritage';
 import Recipes from './pages/Recipes';
 import ProductDetail from './pages/ProductDetail';
+import RecipeDetail from './pages/RecipeDetail';
+import Blog from './pages/Blog';
 import Wishlist from './pages/Wishlist';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
@@ -22,6 +24,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminCustomers from './pages/admin/AdminCustomers';
+import AdminCategories from './pages/admin/AdminCategories';
 
 function App() {
   return (
@@ -33,7 +36,9 @@ function App() {
           <Route path="/collections" element={<Collections />} />
           <Route path="/heritage" element={<Heritage />} />
           <Route path="/recipes" element={<Recipes />} />
+          <Route path="/blog" element={<Blog />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/recipe/:id" element={<RecipeDetail />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/bag" element={<Cart />} />
           <Route path="/cart" element={<Cart />} />
@@ -47,6 +52,7 @@ function App() {
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/customers" element={<AdminCustomers />} />
+          <Route path="/admin/categories" element={<AdminCategories />} />
         </Routes>
       </Layout>
       <ToastContainer position="top-right" autoClose={2000} theme="light" />

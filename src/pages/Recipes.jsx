@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Clock, BarChart2, Bookmark, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -16,6 +17,21 @@ const Recipes = () => {
   };
 
   const activeRecipes = recipes || [];
+
+  const featuredRecipe = activeRecipes.length > 0 ? activeRecipes[0] : {
+    _id: '',
+    title: 'Summer Citrus & Herb Sea Bass',
+    time: '25 MIN',
+    difficulty: 'Intermediate',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDdFSdxg0s1bE_LX22IV6zrFPuknQHAyxuQrkroDUzp9vP4Pv58p_LoWgkjDNOXjMphmAvU6Wz1LCYiNwsFEmUrVP2axCQ5FzbQNrcH20gwogFy_b8ESYmK5cyBKJVKXXjtjz7oa9riIJzr2kMTR2ovgv_wv23LstmLrAGiIudsORMh0ohrNw9rAHF8aHlmCZrbfcFG5z0elBv6wBVVcuo3ewJE-XhEzpzijxwMS0HW5UF_OWumMnPp6g',
+    ingredients: [
+      '2 Fresh Whole Sea Bass, butterfly cut',
+      '100ml OLIV\'OR Reserve Selection Olive Oil',
+      'Blood Orange & Meyer Lemon slices',
+      'Sprigs of fresh Oregano and Dill',
+      'Flaky Sea Salt & Pink Peppercorns'
+    ]
+  };
 
   const filteredRecipes = activeCategory === 'All'
     ? activeRecipes
@@ -44,7 +60,7 @@ const Recipes = () => {
           <img 
             className="w-full h-full object-cover" 
             alt="Mediterranean salad olive oil drizzle"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8yqbZbz6_wp91bbvZHulUnqL4oMR_2cVa8kwB9moX4Jm6aoE4AQYTRo4Ovxnl6b8jbUDklX3eXndzeTKJUzw5JrlMsH7E_npR3BAEkl5XKLcsOPxx0Po3ZIlAeRGwPjvHBks2wcf5ThHcmX-_IDTjlW7ZrzzdwRib1ht6ISDBYM5iXOWEZaSxm--Skoa0gcq-RRJRTXtnAAVppDrQ21nw801gq0U8osveZjNnZsXIfqhdpl44H3dcgA"
+            src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=1600"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-surface via-transparent to-transparent opacity-70"></div>
         </div>
@@ -105,8 +121,8 @@ const Recipes = () => {
           >
             <img 
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" 
-              alt="Citrus sea bass food styling"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdFSdxg0s1bE_LX22IV6zrFPuknQHAyxuQrkroDUzp9vP4Pv58p_LoWgkjDNOXjMphmAvU6Wz1LCYiNwsFEmUrVP2axCQ5FzbQNrcH20gwogFy_b8ESYmK5cyBKJVKXXjtjz7oa9riIJzr2kMTR2ovgv_wv23LstmLrAGiIudsORMh0ohrNw9rAHF8aHlmCZrbfcFG5z0elBv6wBVVcuo3ewJE-XhEzpzijxwMS0HW5UF_OWumMnPp6g"
+              alt={featuredRecipe.title}
+              src={featuredRecipe.image}
             />
           </motion.div>
           
@@ -122,7 +138,7 @@ const Recipes = () => {
                 FEATURED RECIPE
               </span>
               <h2 className="font-headline-xl text-headline-xl text-primary leading-tight text-2xl md:text-4xl">
-                Summer Citrus & Herb Sea Bass
+                {featuredRecipe.title}
               </h2>
             </div>
             
@@ -131,43 +147,38 @@ const Recipes = () => {
                 Ingredients
               </h3>
               <ul className="space-y-3 font-body-md text-on-surface-variant font-light text-sm">
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                  2 Fresh Whole Sea Bass, butterfly cut
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                  100ml OLIV'OR Reserve Selection Olive Oil
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                  Blood Orange & Meyer Lemon slices
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                  Sprigs of fresh Oregano and Dill
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                  Flaky Sea Salt & Pink Peppercorns
-                </li>
+                {featuredRecipe.ingredients && featuredRecipe.ingredients.slice(0, 5).map((ing, idx) => (
+                  <li key={idx} className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    {ing}
+                  </li>
+                ))}
               </ul>
             </div>
             
             <div className="flex gap-8 pt-4">
               <div className="flex flex-col">
                 <span className="text-label-sm font-label-sm text-outline uppercase tracking-wider text-xs">Prep Time</span>
-                <span className="font-headline-md text-headline-md text-primary text-lg md:text-xl font-bold">25 MIN</span>
+                <span className="font-headline-md text-headline-md text-primary text-lg md:text-xl font-bold">{featuredRecipe.time}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-label-sm font-label-sm text-outline uppercase tracking-wider text-xs">Difficulty</span>
-                <span className="font-headline-md text-headline-md text-primary text-lg md:text-xl font-bold">Intermediate</span>
+                <span className="font-headline-md text-headline-md text-primary text-lg md:text-xl font-bold">{featuredRecipe.difficulty}</span>
               </div>
             </div>
             
-            <button className="w-full py-4 border border-secondary text-secondary rounded-full font-label-lg text-label-lg hover:bg-secondary hover:text-white transition-all duration-300 font-bold uppercase tracking-widest text-xs">
-              View Full Recipe
-            </button>
+            {featuredRecipe._id || featuredRecipe.id ? (
+              <Link 
+                to={`/recipe/${featuredRecipe._id || featuredRecipe.id}`}
+                className="w-full block text-center py-4 border border-secondary text-secondary rounded-full font-label-lg text-label-lg hover:bg-secondary hover:text-white transition-all duration-300 font-bold uppercase tracking-widest text-xs"
+              >
+                View Full Recipe
+              </Link>
+            ) : (
+              <button className="w-full py-4 border border-secondary text-secondary rounded-full font-label-lg text-label-lg hover:bg-secondary hover:text-white transition-all duration-300 font-bold uppercase tracking-widest text-xs cursor-not-allowed opacity-50">
+                View Full Recipe
+              </button>
+            )}
           </motion.div>
         </div>
       </section>
@@ -209,39 +220,42 @@ const Recipes = () => {
                     variants={fadeIn}
                     className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-outline-variant/10"
                   >
-                    <div className="aspect-[3/4] overflow-hidden bg-surface-container">
-                      <img 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                        alt={recipe.title}
-                        src={recipe.image}
-                      />
-                    </div>
-                    
-                    <div className="p-8 text-left">
-                      <div className="flex justify-between items-start mb-4">
-                        <h3 className="font-headline-md text-headline-md text-primary text-lg md:text-xl">
-                          {recipe.title}
-                        </h3>
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleBookmark(recipeId);
-                          }}
-                          className="text-outline hover:text-primary transition-colors focus:outline-none"
-                        >
-                          <Bookmark className={`h-5 w-5 ${bookmarked[recipeId] ? 'fill-primary text-primary' : 'text-outline-variant hover:text-primary'}`} />
-                        </button>
+                    <Link to={`/recipe/${recipeId}`} className="block w-full h-full">
+                      <div className="aspect-[3/4] overflow-hidden bg-surface-container">
+                        <img 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                          alt={recipe.title}
+                          src={recipe.image}
+                        />
                       </div>
                       
-                      <div className="flex items-center gap-6 text-label-sm font-label-sm text-outline uppercase tracking-widest text-xs font-semibold">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" /> {recipe.time}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <BarChart2 className="h-4 w-4" /> {recipe.difficulty}
-                        </span>
+                      <div className="p-8 text-left">
+                        <div className="flex justify-between items-start mb-4">
+                          <h3 className="font-headline-md text-headline-md text-primary text-lg md:text-xl">
+                            {recipe.title}
+                          </h3>
+                          <button 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleBookmark(recipeId);
+                            }}
+                            className="text-outline hover:text-primary transition-colors focus:outline-none"
+                          >
+                            <Bookmark className={`h-5 w-5 ${bookmarked[recipeId] ? 'fill-primary text-primary' : 'text-outline-variant hover:text-primary'}`} />
+                          </button>
+                        </div>
+                        
+                        <div className="flex items-center gap-6 text-label-sm font-label-sm text-outline uppercase tracking-widest text-xs font-semibold">
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-4 w-4" /> {recipe.time}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <BarChart2 className="h-4 w-4" /> {recipe.difficulty}
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   </motion.div>
                 );
               })}

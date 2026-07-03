@@ -141,7 +141,7 @@ const getMyOrders = async (req, res) => {
 // @access  Private/Admin
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).populate('user', 'id name').sort({ createdAt: -1 });
+    const orders = await Order.find({}).populate('user', 'name email').sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -164,7 +164,8 @@ const updateOrderStatus = async (req, res) => {
         order.deliveredAt = Date.now();
       }
       const updatedOrder = await order.save();
-      res.json(updatedOrder);
+      const populatedOrder = await Order.findById(updatedOrder._id).populate('user', 'name email');
+      res.json(populatedOrder);
     } else {
       res.status(404).json({ message: 'Order not found' });
     }

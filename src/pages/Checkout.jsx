@@ -85,9 +85,10 @@ const Checkout = () => {
       orderItems: cart.map(item => ({
         title: item.title,
         qty: item.quantity,
-        image: item.image,
+        image: item.images && item.images.length > 0 ? item.images[0] : item.image,
         price: item.price,
-        product: item.id
+        product: item.id || item._id,
+        volume: item.volume || '500ml'
       })),
       shippingAddress: {
         firstName: shippingForm.firstName,

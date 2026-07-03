@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Calendar, Filter, Download, ChevronRight, User, Receipt, RefreshCw, Heart, Settings, HelpCircle, Package, ArrowRight, Clock, Box } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const initialOrders = [
   {
@@ -15,11 +16,15 @@ const initialOrders = [
       {
         name: 'Reserve Collection',
         spec: '500ml • Glass Cask',
+        qty: 1,
+        price: 95.00,
         image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAhQk1-2Psf_06amlvJMA1emVa_y663K8OXN3RU5r1pKxuZmtkRZg7JAu0SMDrXXeBkQhQWoAfrCZhHeL9UxQ4eynxXUMrwxSvNSpOvE8JB0bKklPA9RDMKLPVRewGOdMqQ-lXLVw7FgfbWPfGF445fiw1hXfVKd0GDvYNYLprU5E4qMW6pnIuKCoDqAcZdGG7YzA7gcfSOnYk32K9nrdlwL2my2m9eHylPLRFw9YbsdeL1leAS4xEKkQ'
       },
       {
         name: 'Heritage Blend',
         spec: '250ml • Limited Edition',
+        qty: 2,
+        price: 45.00,
         image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDY2erfSA8g6Y0PPxCA7CI51b6gPAfBaeJONvPAr81dxk8673zS2TyL2naAenxwjnnJA-bZRFC4dJ4F3s-i3XiW6KUFSv5Qiq20JmDssMk3qQinoe2Q6f2MbLRo8MKn4n5kRrvJsDGObm-IimSW1Dz_v7-TqYZxSfEkL04iLgIxpiONvo3GQ0p9ciCEql-8JjVxcm3geUtDa2U_V7Hl9NvYuqWYoNP3uHuDJYzVAvtUjgybYP7pdtuAYg'
       }
     ],
@@ -40,6 +45,8 @@ const initialOrders = [
       {
         name: 'Sommelier Discovery Set',
         spec: '3x 100ml • Trio',
+        qty: 1,
+        price: 135.00,
         image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCy_lNAKYNlZeC_SpV95mC5nJVZ4BedQ0nvtNXR1oMkYcJN2pLU-qWUhePE2kJopmMmNKimfT_kusupY2jzb0-HFAkCyh3nJ1AFK0szkRclnZYg-QTY4vU0rqIqIdudrNeprqp9vI3TyOGGep554Ph8VOTB2ZDFjxZHmwCfzSgE517XsxpKbhAimwwbM151F70BwAQ1xePmgV3BvKUDqhGpPAPLqAA7qVZXXeHTw8dS5DkHATS1QTf0Nw'
       }
     ],
@@ -53,10 +60,63 @@ const initialOrders = [
 
 const OrderHistory = () => {
   const navigate = useNavigate();
+  const { orders: dbOrders, fetchMyOrders } = useApp();
   const [search, setSearch] = useState('');
-  const [orders, setOrders] = useState(initialOrders);
 
-  const filteredOrders = orders.filter(order => 
+  useEffect(() => {
+    if (fetchMyOrders) {
+      fetchMyOrders();
+    }
+  }, []);
+
+  const normalizeOrder = (order) => {
+    if (order.orderItems) {
+      return {
+        id: order._id || order.id,
+        title: order.orderItems.map(item => item.title).join(', '),
+        date: new Date(order.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        status: order.status || 'Pending',
+        statusBg: order.status === 'Delivered' 
+          ? 'bg-primary/10 text-primary' 
+          : order.status === 'Cancelled' 
+          ? 'bg-red-500/10 text-red-500' 
+          : 'bg-secondary/15 text-secondary',
+        statusDot: order.status === 'Delivered' 
+          ? 'bg-primary' 
+          : order.status === 'Cancelled' 
+          ? 'bg-red-500' 
+          : 'bg-secondary animate-pulse',
+        items: order.orderItems.map(item => ({
+          name: item.title,
+          qty: item.qty || 1,
+          price: item.price || 0.00,
+          image: item.image,
+          spec: item.volume || '500ml'
+        })),
+        totalPrice: order.totalPrice || 0.00,
+        timeline: [
+          { title: 'Status: ' + (order.status || 'Pending'), desc: order.isPaid ? 'Payment Complete' : 'Pending Payment', active: true }
+        ]
+      };
+    }
+    return {
+      ...order,
+      totalPrice: order.items.reduce((sum, item) => sum + (item.price || 45.00) * (item.qty || 1), 0),
+      items: order.items.map(item => ({
+        ...item,
+        qty: item.qty || 1,
+        price: item.price || 45.00
+      }))
+    };
+  };
+
+  const allNormalizedOrders = [...(dbOrders || []), ...initialOrders].map(normalizeOrder);
+
+  const filteredOrders = allNormalizedOrders.filter(order => 
     order.id.toLowerCase().includes(search.toLowerCase()) ||
     order.title.toLowerCase().includes(search.toLowerCase()) ||
     order.items.some(item => item.name.toLowerCase().includes(search.toLowerCase()))
@@ -184,6 +244,8 @@ const OrderHistory = () => {
                           <span className="font-bold text-primary tracking-wider">{order.id}</span>
                           <span className="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
                           <span className="font-light text-on-surface-variant">{order.date}</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+                          <span className="font-bold text-secondary">Total: ${order.totalPrice.toFixed(2)}</span>
                         </div>
                         <h2 className="font-headline-md text-headline-md text-primary font-bold text-lg md:text-xl">
                           {order.title}
@@ -202,17 +264,27 @@ const OrderHistory = () => {
                       {/* Products Summary */}
                       <div className="md:col-span-6 flex flex-col gap-4">
                         {order.items.map((item, idx) => (
-                          <div key={idx} className="flex items-center gap-4 group">
-                            <div className="w-16 h-20 bg-surface-container-low rounded-lg overflow-hidden shrink-0 border border-outline-variant/10 select-none">
-                              <img 
-                                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" 
-                                alt={item.name}
-                                src={item.image}
-                              />
+                          <div key={idx} className="flex items-center justify-between gap-4 group">
+                            <div className="flex items-center gap-4">
+                              <div className="w-16 h-20 bg-surface-container-low rounded-lg overflow-hidden shrink-0 border border-outline-variant/10 select-none">
+                                <img 
+                                  className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" 
+                                  alt={item.name}
+                                  src={item.image}
+                                />
+                              </div>
+                              <div className="text-left">
+                                <p className="font-semibold text-primary text-sm">{item.name}</p>
+                                <div className="flex items-center gap-4 mt-1 text-xs text-on-surface-variant font-light">
+                                  <span>Size: {item.spec}</span>
+                                  <span>•</span>
+                                  <span>Qty: {item.qty}</span>
+                                </div>
+                              </div>
                             </div>
-                            <div className="text-left">
-                              <p className="font-semibold text-primary text-sm">{item.name}</p>
-                              <p className="font-light text-on-surface-variant text-xs">{item.spec}</p>
+                            <div className="text-right shrink-0">
+                              <p className="font-semibold text-primary text-sm">${(item.price * item.qty).toFixed(2)}</p>
+                              <p className="text-[10px] text-outline">${item.price.toFixed(2)} each</p>
                             </div>
                           </div>
                         ))}

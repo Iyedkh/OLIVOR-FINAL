@@ -1,37 +1,144 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, ChevronDown, Star, Layers, CreditCard, Package2, Ruler, Verified, ArrowRight, Heart, SlidersHorizontal } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const Shop = () => {
-  const { products, wishlist, toggleWishlist, addToCart, loadingProducts } = useApp();
-  const [selectedCollections, setSelectedCollections] = useState({
-    'Reserve Estate': true,
-    'Limited Harvest': false,
-    'Infusions': false,
-  });
+  const { products, wishlist, toggleWishlist, addToCart, loadingProducts, categories, loadingCategories } = useApp();
+  const [selectedCollections, setSelectedCollections] = useState({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PRODUCTS_PER_PAGE = 6;
+
+  const [selectedPrices, setSelectedPrices] = useState({
+    under50: false,
+    fiftyToHundred: false,
+    overHundred: false
+  });
+  const [selectedVolumes, setSelectedVolumes] = useState({
+    '250ml': false,
+    '500ml': false,
+    '750ml': false,
+    '1000ml': false
+  });
+  const [selectedRegions, setSelectedRegions] = useState({
+    'Cap Bon': false,
+    'Sahel': false,
+    'Sfax': false,
+    'Zaghouan': false
+  });
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      const initial = {};
+      categories.forEach((cat) => {
+        initial[cat.name] = false;
+      });
+      setSelectedCollections(initial);
+      setCurrentPage(1);
+    }
+  }, [categories]);
 
   const handleCheckboxChange = (name) => {
     setSelectedCollections(prev => ({
       ...prev,
       [name]: !prev[name]
     }));
+    setCurrentPage(1);
   };
 
   const resetFilters = () => {
-    setSelectedCollections({
-      'Reserve Estate': false,
-      'Limited Harvest': false,
-      'Infusions': false,
+    const resetObj = {};
+    categories.forEach(cat => {
+      resetObj[cat.name] = false;
     });
+    setSelectedCollections(resetObj);
+
+    setSelectedPrices({
+      under50: false,
+      fiftyToHundred: false,
+      overHundred: false
+    });
+
+    setSelectedVolumes({
+      '250ml': false,
+      '500ml': false,
+      '750ml': false,
+      '1000ml': false
+    });
+
+    setSelectedRegions({
+      'Cap Bon': false,
+      'Sahel': false,
+      'Sfax': false,
+      'Zaghouan': false
+    });
+
+    setCurrentPage(1);
   };
 
-  const hasActiveFilters = Object.values(selectedCollections).some(v => v);
-  const filteredProducts = hasActiveFilters
-    ? (products || []).filter(p => selectedCollections[p.category])
-    : (products || []);
+  const filteredProducts = (products || []).filter(p => {
+    // 1. Category/Collection filter
+    const catName = p.category?.name || p.category;
+    const hasCategoryFilters = Object.values(selectedCollections).some(v => v);
+    if (hasCategoryFilters && !selectedCollections[catName]) {
+      return false;
+    }
+
+    // 2. Price filter
+    const hasPriceFilters = Object.values(selectedPrices).some(v => v);
+    if (hasPriceFilters) {
+      let matchPrice = false;
+      if (selectedPrices.under50 && p.price < 50) matchPrice = true;
+      if (selectedPrices.fiftyToHundred && p.price >= 50 && p.price <= 100) matchPrice = true;
+      if (selectedPrices.overHundred && p.price > 100) matchPrice = true;
+      if (!matchPrice) return false;
+    }
+
+    // 3. Volume/Bottle Size filter
+    const hasVolumeFilters = Object.values(selectedVolumes).some(v => v);
+    if (hasVolumeFilters) {
+      let matchVolume = false;
+      const vol = p.volume?.toLowerCase() || '';
+      if (selectedVolumes['250ml'] && vol.includes('250ml')) matchVolume = true;
+      if (selectedVolumes['500ml'] && vol.includes('500ml')) matchVolume = true;
+      if (selectedVolumes['750ml'] && vol.includes('750ml')) matchVolume = true;
+      if (selectedVolumes['1000ml'] && (vol.includes('1000ml') || vol.includes('1l'))) matchVolume = true;
+      if (!matchVolume) return false;
+    }
+
+    // 4. Region filter
+    const hasRegionFilters = Object.values(selectedRegions).some(v => v);
+    if (hasRegionFilters) {
+      const region = p.region || '';
+      if (!selectedRegions[region]) return false;
+    }
+
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE) || 1;
+  const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
+  const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      handlePageClick(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      handlePageClick(currentPage + 1);
+    }
+  };
 
   return (
     <div className="bg-background text-on-surface font-body-md min-h-screen">
@@ -95,41 +202,109 @@ const Shop = () => {
                     <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Collections</span>
                   </div>
                   <div className="mt-2 space-y-2 ml-8">
-                    {Object.keys(selectedCollections).map((name) => (
-                      <label key={name} className="flex items-center gap-3 cursor-pointer group">
+                    {categories.map((cat) => (
+                      <label key={cat._id} className="flex items-center gap-3 cursor-pointer group">
                         <input 
                           type="checkbox"
-                          checked={selectedCollections[name]}
-                          onChange={() => handleCheckboxChange(name)}
+                          checked={!!selectedCollections[cat.name]}
+                          onChange={() => handleCheckboxChange(cat.name)}
                           className="rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-background h-4 w-4"
                         />
-                        <span className={`text-body-md text-on-surface-variant group-hover:text-primary transition-colors ${selectedCollections[name] ? 'text-primary font-semibold' : ''}`}>
-                          {name}
+                        <span className={`text-body-md text-on-surface-variant group-hover:text-primary transition-colors ${selectedCollections[cat.name] ? 'text-primary font-semibold' : ''}`}>
+                          {cat.name}
                         </span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                {/* Other Filter Placeholders */}
-                <div className="text-outline flex items-center gap-3 py-3 hover:text-on-surface transition-all cursor-pointer">
-                  <CreditCard className="h-5 w-5 text-outline/80" />
-                  <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Price Range</span>
-                </div>
-                
-                <div className="text-outline flex items-center gap-3 py-3 hover:text-on-surface transition-all cursor-pointer">
-                  <Package2 className="h-5 w-5 text-outline/80" />
-                  <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Packaging</span>
+                {/* Price Range */}
+                <div>
+                  <div className="flex items-center gap-3 py-3 text-primary font-bold border-r-2 border-secondary">
+                    <CreditCard className="h-5 w-5 text-secondary" />
+                    <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Price Range</span>
+                  </div>
+                  <div className="mt-2 space-y-2 ml-8">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <input 
+                        type="checkbox"
+                        checked={selectedPrices.under50}
+                        onChange={() => { setSelectedPrices(prev => ({ ...prev, under50: !prev.under50 })); setCurrentPage(1); }}
+                        className="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4"
+                      />
+                      <span className={`text-body-md text-on-surface-variant group-hover:text-primary transition-colors text-sm ${selectedPrices.under50 ? 'text-primary font-semibold' : ''}`}>
+                        Under $50
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <input 
+                        type="checkbox"
+                        checked={selectedPrices.fiftyToHundred}
+                        onChange={() => { setSelectedPrices(prev => ({ ...prev, fiftyToHundred: !prev.fiftyToHundred })); setCurrentPage(1); }}
+                        className="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4"
+                      />
+                      <span className={`text-body-md text-on-surface-variant group-hover:text-primary transition-colors text-sm ${selectedPrices.fiftyToHundred ? 'text-primary font-semibold' : ''}`}>
+                        $50 - $100
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <input 
+                        type="checkbox"
+                        checked={selectedPrices.overHundred}
+                        onChange={() => { setSelectedPrices(prev => ({ ...prev, overHundred: !prev.overHundred })); setCurrentPage(1); }}
+                        className="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4"
+                      />
+                      <span className={`text-body-md text-on-surface-variant group-hover:text-primary transition-colors text-sm ${selectedPrices.overHundred ? 'text-primary font-semibold' : ''}`}>
+                        Over $100
+                      </span>
+                    </label>
+                  </div>
                 </div>
 
-                <div className="text-outline flex items-center gap-3 py-3 hover:text-on-surface transition-all cursor-pointer">
-                  <Ruler className="h-5 w-5 text-outline/80" />
-                  <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Bottle Size</span>
+                {/* Bottle Size */}
+                <div>
+                  <div className="flex items-center gap-3 py-3 text-primary font-bold border-r-2 border-secondary">
+                    <Ruler className="h-5 w-5 text-secondary" />
+                    <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Bottle Size</span>
+                  </div>
+                  <div className="mt-2 space-y-2 ml-8">
+                    {['250ml', '500ml', '750ml', '1000ml'].map((size) => (
+                      <label key={size} className="flex items-center gap-3 cursor-pointer group">
+                        <input 
+                          type="checkbox"
+                          checked={selectedVolumes[size]}
+                          onChange={() => { setSelectedVolumes(prev => ({ ...prev, [size]: !prev[size] })); setCurrentPage(1); }}
+                          className="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4"
+                        />
+                        <span className={`text-body-md text-on-surface-variant group-hover:text-primary transition-colors text-sm ${selectedVolumes[size] ? 'text-primary font-semibold' : ''}`}>
+                          {size === '1000ml' ? '1000ml (1L)' : size}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="text-outline flex items-center gap-3 py-3 hover:text-on-surface transition-all cursor-pointer">
-                  <Verified className="h-5 w-5 text-outline/80" />
-                  <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Harvest Status</span>
+                {/* Region */}
+                <div>
+                  <div className="flex items-center gap-3 py-3 text-primary font-bold border-r-2 border-secondary">
+                    <Verified className="h-5 w-5 text-secondary" />
+                    <span className="text-label-lg font-label-lg uppercase tracking-wider text-xs">Region</span>
+                  </div>
+                  <div className="mt-2 space-y-2 ml-8">
+                    {['Cap Bon', 'Sahel', 'Sfax', 'Zaghouan'].map((reg) => (
+                      <label key={reg} className="flex items-center gap-3 cursor-pointer group">
+                        <input 
+                          type="checkbox"
+                          checked={selectedRegions[reg]}
+                          onChange={() => { setSelectedRegions(prev => ({ ...prev, [reg]: !prev[reg] })); setCurrentPage(1); }}
+                          className="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4"
+                        />
+                        <span className={`text-body-md text-on-surface-variant group-hover:text-primary transition-colors text-sm ${selectedRegions[reg] ? 'text-primary font-semibold' : ''}`}>
+                          {reg}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -169,7 +344,7 @@ const Shop = () => {
 
           {/* Product Grid */}
           <section className="flex-grow">
-            {loadingProducts ? (
+            {loadingProducts || loadingCategories ? (
               <div className="flex items-center justify-center min-h-[400px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
@@ -180,7 +355,7 @@ const Shop = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-12 gap-x-8">
-                {filteredProducts.map((product) => {
+                {currentProducts.map((product) => {
                   const productId = product._id || product.id;
                   const isFavorite = wishlist.some(item => (item._id || item.id || item) === productId);
                   return (
@@ -192,12 +367,12 @@ const Shop = () => {
                       transition={{ duration: 0.5 }}
                       className="product-card flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden group border border-outline-variant/10 shadow-sm hover:shadow-md transition-shadow duration-300"
                     >
-                      <div className="relative aspect-[3/4] bg-surface-container overflow-hidden p-8 flex items-center justify-center">
-                        <Link to={`/product/${productId}`} className="w-full h-full flex items-center justify-center">
+                      <div className="relative aspect-[3/4] bg-surface-container overflow-hidden">
+                        <Link to={`/product/${productId}`} className="w-full h-full block">
                           <img 
-                            className="h-full w-auto object-contain transition-transform duration-700 group-hover:scale-105" 
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                             alt={product.title}
-                            src={product.image}
+                            src={product.images && product.images.length > 0 ? product.images[0] : product.image}
                           />
                         </Link>
                         
@@ -268,30 +443,43 @@ const Shop = () => {
             )}
 
             {/* Pagination */}
-            <div className="mt-24 flex items-center justify-center gap-4">
-              <button 
-                className="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-surface-variant transition-colors disabled:opacity-30 disabled:hover:bg-transparent" 
-                disabled
-                aria-label="Previous page"
-              >
-                <span className="material-symbols-outlined block">chevron_left</span>
-              </button>
-              
-              <div className="flex items-center gap-2">
-                <button className="w-12 h-12 rounded-full bg-primary text-white font-label-lg font-bold">1</button>
-                <button className="w-12 h-12 rounded-full hover:bg-surface-variant transition-colors font-label-lg font-semibold">2</button>
-                <button className="w-12 h-12 rounded-full hover:bg-surface-variant transition-colors font-label-lg font-semibold">3</button>
-                <span className="px-2 select-none">...</span>
-                <button className="w-12 h-12 rounded-full hover:bg-surface-variant transition-colors font-label-lg font-semibold">8</button>
+            {totalPages > 1 && (
+              <div className="mt-24 flex items-center justify-center gap-4">
+                <button 
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
+                  className="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-surface-variant transition-colors disabled:opacity-30 disabled:hover:bg-transparent focus:outline-none" 
+                  aria-label="Previous page"
+                >
+                  <span className="material-symbols-outlined block">chevron_left</span>
+                </button>
+                
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                    <button 
+                      key={pageNum}
+                      onClick={() => handlePageClick(pageNum)}
+                      className={`w-12 h-12 rounded-full transition-colors font-label-lg font-bold focus:outline-none ${
+                        currentPage === pageNum 
+                          ? 'bg-primary text-white' 
+                          : 'hover:bg-surface-variant text-primary'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+                
+                <button 
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-surface-variant transition-colors disabled:opacity-30 disabled:hover:bg-transparent focus:outline-none"
+                  aria-label="Next page"
+                >
+                  <span className="material-symbols-outlined block">chevron_right</span>
+                </button>
               </div>
-              
-              <button 
-                className="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-surface-variant transition-colors"
-                aria-label="Next page"
-              >
-                <span className="material-symbols-outlined block">chevron_right</span>
-              </button>
-            </div>
+            )}
           </section>
         </div>
       </main>

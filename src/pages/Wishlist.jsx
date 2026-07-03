@@ -96,7 +96,7 @@ const Wishlist = () => {
                         
                         <div className="aspect-[3/4] rounded-lg overflow-hidden bg-surface-container mb-6 relative p-4 flex items-center justify-center">
                           <img 
-                            src={item.image} 
+                            src={item.images} 
                             alt={item.title} 
                             className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105" 
                           />

@@ -12,12 +12,14 @@ export const AppProvider = ({ children }) => {
   
   const [products, setProducts] = useState([]);
   const [recipes, setRecipes] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [orders, setOrders] = useState([]);
 
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingRecipes, setLoadingRecipes] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingUser, setLoadingUser] = useState(false);
 
   // Admin States
@@ -47,6 +49,19 @@ export const AppProvider = ({ children }) => {
       console.error('Error fetching recipes:', err);
     } finally {
       setLoadingRecipes(false);
+    }
+  };
+
+  // Fetch Categories
+  const fetchCategories = async () => {
+    try {
+      setLoadingCategories(true);
+      const { data } = await axios.get(`${API_URL}/categories`);
+      setCategories(data);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    } finally {
+      setLoadingCategories(false);
     }
   };
 
@@ -80,7 +95,7 @@ export const AppProvider = ({ children }) => {
           title: item.product?.title,
           price: item.product?.price,
           quantity: item.qty,
-          image: item.product?.image,
+          image: item.product?.images && item.product?.images.length > 0 ? item.product?.images[0] : item.product?.image,
           volume: item.product?.volume,
           region: item.product?.region
         }));
@@ -99,6 +114,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     fetchProducts();
     fetchRecipes();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -179,7 +195,7 @@ export const AppProvider = ({ children }) => {
                   title: item.product.title,
                   price: item.product.price,
                   quantity: item.qty,
-                  image: item.product.image,
+                  image: item.product.images && item.product.images.length > 0 ? item.product.images[0] : item.product.image,
                   volume: item.product.volume,
                   region: item.product.region
                 });
@@ -195,7 +211,7 @@ export const AppProvider = ({ children }) => {
           title: item.product?.title,
           price: item.product?.price,
           quantity: item.qty,
-          image: item.product?.image,
+          image: item.product?.images && item.product?.images.length > 0 ? item.product?.images[0] : item.product?.image,
           volume: item.product?.volume,
           region: item.product?.region
         }));
@@ -308,7 +324,7 @@ export const AppProvider = ({ children }) => {
             title: product.title,
             price: product.price,
             quantity: qty,
-            image: product.image,
+            image: product.images && product.images.length > 0 ? product.images[0] : product.image,
             volume: product.volume,
             region: product.region
           }
@@ -520,6 +536,66 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const createCategory = async (categoryData) => {
+    if (!token || !user?.isAdmin) return { success: false };
+    try {
+      const { data } = await axios.post(`${API_URL}/categories`, categoryData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCategories(prev => [...prev, data].sort((a, b) => a.name.localeCompare(b.name)));
+      toast.success(`Category "${data.name}" created successfully!`);
+      return { success: true, category: data };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
+  const updateCategory = async (categoryId, categoryData) => {
+    if (!token || !user?.isAdmin) return { success: false };
+    try {
+      const { data } = await axios.put(`${API_URL}/categories/${categoryId}`, categoryData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCategories(prev => prev.map(c => c._id === categoryId ? data : c).sort((a, b) => a.name.localeCompare(b.name)));
+      setProducts(prev => prev.map(p => {
+        if (p.category && (p.category._id === categoryId || p.category === categoryId)) {
+          return { ...p, category: data };
+        }
+        return p;
+      }));
+      toast.success(`Category "${data.name}" updated successfully!`);
+      return { success: true, category: data };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
+  const deleteCategory = async (categoryId) => {
+    if (!token || !user?.isAdmin) return { success: false };
+    try {
+      await axios.delete(`${API_URL}/categories/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCategories(prev => prev.filter(c => c._id !== categoryId));
+      toast.success('Category removed successfully');
+      return { success: true };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -527,11 +603,13 @@ export const AppProvider = ({ children }) => {
         user,
         products,
         recipes,
+        categories,
         cart,
         wishlist,
         orders,
         loadingProducts,
         loadingRecipes,
+        loadingCategories,
         loadingUser,
         adminOrders,
         adminUsers,
@@ -551,7 +629,11 @@ export const AppProvider = ({ children }) => {
         createProduct,
         updateProduct,
         deleteProduct,
+        createCategory,
+        updateCategory,
+        deleteCategory,
         refreshProducts: fetchProducts,
+        refreshCategories: fetchCategories,
       }}
     >
       {children}

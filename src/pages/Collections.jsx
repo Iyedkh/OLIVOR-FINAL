@@ -11,7 +11,7 @@ const collectionsData = [
     tag: 'Artisan',
     tagColor: 'text-secondary border-secondary/30',
     description: 'The everyday luxury of Tunisian olives. Balanced, vibrant, and essential for the modern kitchen.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfk38iDiNnltXttTi_O8BR_cjBe99uD1Ld9h8yLj95MJNO8XKFZuFiKFHnM-9ggBIPOv7Sf_6xo2vxreWOZi2ij3uppC34c-Jc21mkqIG_XPBpvHHIAX46AJcf2TL3GROS-u2BeUVeU4V-tADpJekmoCxOD7mv6VoCW7Rui9RniPpzkb3zum1OIi4jDhBjEqvn2bmN_3z8UUuhx7f3yOQK8puyyBuLqiefbmMZtfPav2_nAHABn-UgbQ'
+    image: '/C1.png'
   },
   {
     id: 'reserve',
@@ -20,7 +20,7 @@ const collectionsData = [
     tag: 'Estate',
     tagColor: 'text-secondary border-secondary/30',
     description: 'Single-estate, limited harvest liquid gold. Hand-selected for exceptional depth and character.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAhaZPqV7PBfmr1i8vwsFeekydrtgmk_WUG08xDxRcjxF5lVffz_K6RQAS5P1s6WzPzU_QgBupBqzrdjFi4v3TX8XVpQz6gEHHIaScPgAhEf58UZDTVtxXhNsIY36gWAeE84LRRqAkuDIhx2HUGKbj9hFG9RTl7pV9caKkC4GSgigGiKvLb3uyVcVD-h8-XxpccYe8LhbE2nUuc3RywBtZ0WU-l6eXP4Wfw-bz0P5oZNJzP9Jet9Li83w'
+    image: '/C2.png'
   },
   {
     id: 'organic',
@@ -29,7 +29,7 @@ const collectionsData = [
     tag: 'Bio-Certified',
     tagColor: 'text-tertiary border-tertiary/30',
     description: 'Certified bio-dynamic farming excellence. Purity and sustainability in every single drop.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAi6jF9nhiE_1qXxcbtCxjSpBEHLVO6ohHmcUALtlHxI2jpvB_YsqJDV1tMCBijnI1hgFEaWVlIiAXkS0F8stKVP6WTO6EcxJGQ5nClNvT7lqbmqnUNMlb-3fAGNld9An78pKHnN-Fp0_RLgo5JdtSyQXoc3vnbNccis_EQEAftrGHUJ5ZQBVvjkKwwEY4vrO01_Ww2faSUWt_bTaykBPEkQ9hqhkELCwMHcR0lVMb6kckt2irbhZhWJg'
+    image: '/C3.png'
   },
   {
     id: 'gifts',
@@ -38,7 +38,7 @@ const collectionsData = [
     tag: 'Curated',
     tagColor: 'text-secondary border-secondary/30',
     description: 'Curated sets for the discerning palate. The perfect gesture of Mediterranean hospitality.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAjNyZSAmruU_FXLu0QvsDUlxaoFYleZ_G2kCm-sbKuuF7yt60Nxy5rk5P3AZB6crOjJ3zT_3r4EK-I0Sun_eEH1TigK8huKYzm1gFBUFU6My4pMEll9zP9p7UTjFCskvY7amNLgB_m3Nvhlg0ZI8zQiJLAej9d9qzyPdCNbepCvM6jjPFKowXhIo29_HzLSPe5pXNAyklWUjjbbeuAqcj2PRor3PwjgO9h07CkUMh53sP39ph8irahiQ'
+    image: '/gift.jpeg'
   },
   {
     id: 'restaurant',
@@ -47,7 +47,7 @@ const collectionsData = [
     tag: 'Professional',
     tagColor: 'text-outline border-outline/30',
     description: 'Professional-grade formats for fine dining. Trusted by world-renowned chefs for culinary perfection.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCzhjbMT8uRtSdFIMLRggOD8bCx4nGtYzMjXLUVACIZCsX-xhniYnPnH6R6nAvb8rV5IE3tq6FZ8cJFRio3IM9qGXQT9Xy4lm1xWMmIlYQvqZ7o-hZqMWg2SibEsYC5lredbHdHEjadTtb0E-g3OPnHm2IgYDgoxxX9oXb-gNhocqRFHkFgDyK-VNMOhgwAuf5yYsMU3Xxz9jLwQUNXgG6alfBD_Lq7uMPXjIp1I3IlS2FfUHdsPWfp0Q'
+    image: '/C5.jpeg'
   },
   {
     id: 'limited-editions',
@@ -56,7 +56,7 @@ const collectionsData = [
     tag: 'Rare',
     tagColor: 'text-white border-none bg-secondary',
     description: 'Hand-numbered bottles and rare infusions. Exceptional batches that honor the seasons.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuClBrMIorxrcMbcaZWZM8HRwXNses6El-n89zK89YI6ieCrWz1NqAc4W2WnzeYFHWeSzETrrKM3ykjrFWP6h3WDHf29mVC5TdK3omTLgv-sObdnlKz40HMwge85tg93oKbTjLnpQLceUcqtqPkgQwOUVicgbFtzdF275_Hw7nJNEGHXzJaZ4STFLDbca1o8WIeJfHEqYdR84YkCLpOjb1ui_UHCd8cnf0XBh5TD_mV099pBcFqBwhpXxw'
+    image: '/C6.png'
   }
 ];
 

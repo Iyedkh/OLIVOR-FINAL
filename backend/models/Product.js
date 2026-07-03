@@ -36,10 +36,6 @@ const productSchema = mongoose.Schema(
       type: String,
       default: null,
     },
-    image: {
-      type: String,
-      required: true,
-    },
     images: {
       type: [String],
       default: [],
@@ -50,9 +46,9 @@ const productSchema = mongoose.Schema(
       default: 10,
     },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
       required: true,
-      default: 'Reserve Estate',
     }
   },
   {

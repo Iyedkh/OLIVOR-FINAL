@@ -57,9 +57,9 @@ const Navbar = () => {
             <Link to="/recipes" className={`font-label-lg text-label-lg transition-colors duration-300 ${activeClass('/recipes')}`}>
               Recipes
             </Link>
-            <a href="#" className="font-label-lg text-label-lg text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300">
+            <Link to="/blog" className={`font-label-lg text-label-lg transition-colors duration-300 ${activeClass('/blog')}`}>
               Blog
-            </a>
+            </Link>
           </div>
           
           <div className="flex items-center gap-4 text-primary">
@@ -120,13 +120,13 @@ const Navbar = () => {
           >
             Recipes
           </Link>
-          <a 
-            href="#" 
+          <Link 
+            to="/blog" 
             onClick={() => setIsOpen(false)}
             className="font-label-lg text-label-lg text-primary hover:text-secondary py-2 border-b border-outline-variant/10"
           >
             Blog
-          </a>
+          </Link>
 
           {/* Mobile Utility Actions (Search, Wishlist, Bag, Profile) */}
           <div className="flex justify-between items-center pt-4 border-t border-outline-variant/20 mt-2 text-primary">

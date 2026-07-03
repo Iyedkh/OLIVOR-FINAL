@@ -5,15 +5,16 @@ import AdminLayout from '../../components/AdminLayout';
 import { useApp } from '../../context/AppContext';
 
 const AdminOrders = () => {
-  const { adminOrders, fetchAllOrders, updateOrderStatus } = useApp();
+  const { adminOrders, fetchAllOrders, updateOrderStatus, user } = useApp();
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [viewingOrder, setViewingOrder] = useState(null);
 
   useEffect(() => {
-    fetchAllOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (user?.isAdmin) {
+      fetchAllOrders();
+    }
+  }, [user]);
 
   const handleStatusChange = async (orderId, newStatus) => {
     const result = await updateOrderStatus(orderId, newStatus);
@@ -42,7 +43,7 @@ const AdminOrders = () => {
     const orderId = order._id || order.id || '';
     const customerName = order.shippingAddress 
       ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}` 
-      : (order.user?.name || 'Guest');
+      : (order.user?.name || 'iyed khouildi');
 
     const matchesSearch = orderId.toLowerCase().includes(search.toLowerCase()) || 
                           customerName.toLowerCase().includes(search.toLowerCase());
@@ -118,7 +119,7 @@ const AdminOrders = () => {
                   const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
                   const customerName = order.shippingAddress 
                     ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}` 
-                    : (order.user?.name || 'Guest');
+                    : (order.user?.name || 'iyed khouildi');
 
                   return (
                     <tr key={orderId} className="hover:bg-surface-container-low transition-colors">
@@ -169,9 +170,9 @@ const AdminOrders = () => {
             const orderId = viewingOrder._id || viewingOrder.id;
             const customerName = viewingOrder.shippingAddress 
               ? `${viewingOrder.shippingAddress.firstName} ${viewingOrder.shippingAddress.lastName}` 
-              : (viewingOrder.user?.name || 'Guest');
+              : (viewingOrder.user?.name || 'iyed khouildi');
             const contactEmail = viewingOrder.shippingAddress?.email || viewingOrder.user?.email || 'N/A';
-            const contactPhone = viewingOrder.shippingAddress?.phone || 'N/A';
+            const contactPhone = viewingOrder.shippingAddress?.phone || '20202020';
             
             const shippingStr = viewingOrder.shippingAddress
               ? `${viewingOrder.shippingAddress.address}, ${viewingOrder.shippingAddress.apartment || ''}, ${viewingOrder.shippingAddress.city}, ${viewingOrder.shippingAddress.postalCode}, ${viewingOrder.shippingAddress.country}`
@@ -236,18 +237,29 @@ const AdminOrders = () => {
                       </div>
 
                       {/* Items table */}
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <h4 className="font-bold text-[10px] uppercase tracking-widest text-outline">Items Ordered</h4>
                         <div className="divide-y divide-outline-variant/10">
                           {viewingOrder.orderItems.map((item, idx) => (
-                            <div key={idx} className="py-3 flex justify-between text-xs font-light">
+                            <div key={idx} className="py-3 flex justify-between items-center text-xs font-light">
                               <div>
                                 <p className="font-semibold text-on-surface">{item.title}</p>
-                                <p className="text-on-surface-variant text-[10px]">Qty {item.qty}</p>
+                                <p className="text-on-surface-variant text-[10px]">
+                                  Size: {item.volume || '500ml'} • Qty: {item.qty}
+                                </p>
                               </div>
-                              <span className="font-bold text-secondary">${(item.price * item.qty).toFixed(2)}</span>
+                              <div className="text-right">
+                                <span className="font-bold text-secondary block">${(item.price * item.qty).toFixed(2)}</span>
+                                <span className="text-[10px] text-outline">${item.price.toFixed(2)} each</span>
+                              </div>
                             </div>
                           ))}
+                        </div>
+                        
+                        {/* Order Total summary */}
+                        <div className="border-t border-outline-variant/20 pt-4 flex justify-between items-center">
+                          <span className="font-bold text-[10px] uppercase tracking-widest text-outline">Order Total</span>
+                          <span className="text-lg font-bold text-secondary">${(viewingOrder.totalPrice || 0.00).toFixed(2)}</span>
                         </div>
                       </div>
                     </div>

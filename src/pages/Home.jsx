@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag } from 'lucide-react';
@@ -7,6 +7,19 @@ import { useApp } from '../context/AppContext';
 const Home = () => {
   const { products, addToCart, wishlist, toggleWishlist } = useApp();
   const scrollerRef = useRef(null);
+  
+  const [bgIndex, setBgIndex] = useState(0);
+  const heroBackgrounds = [
+    { url: '/bg.png', position: 'center -20%' },
+    { url: '/mediterranean_olive_grove_1782986766051.jpg', position: 'center' }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % heroBackgrounds.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   const scrollLeft = () => {
     if (scrollerRef.current) {
@@ -22,8 +35,8 @@ const Home = () => {
 
   // Animation variants
   const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } }
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
   };
 
   const staggerContainer = {
@@ -37,61 +50,56 @@ const Home = () => {
   };
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden bg-surface-container-low">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-[103vh] flex items-center justify-center overflow-hidden rounded-b-[3.5rem] md:rounded-b-[5rem] lg:rounded-b-[8rem] ">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-black/30 z-10"></div>
-          <div 
-            className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: "url('/mediterranean_olive_grove_1782986766051.jpg')" }}
-          ></div>
+          <div className="absolute inset-0 bg-black/35 z-10"></div>
+          {heroBackgrounds.map((bgObj, idx) => (
+            <div 
+              key={bgObj.url}
+              className={`absolute inset-0 w-full h-full bg-cover transition-opacity duration-[1500ms] ease-in-out ${
+                bgIndex === idx ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{ 
+                backgroundImage: `url('${bgObj.url}')`,
+                backgroundPosition: bgObj.position 
+              }}
+
+              ></div>
+          ))}
         </div>
         
-        <div className="relative z-20 flex flex-col md:flex-row items-center justify-between w-full max-w-[1440px] px-container-padding mt-20">
+        <div className="relative z-20 flex flex-col items-center justify-center w-full max-w-4xl px-container-padding mt-20 text-center mx-auto">
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-center md:text-left md:max-w-2xl text-white"
+            className="text-white flex flex-col items-center justify-center space-y-6"
           >
-            <span className="font-label-lg text-label-lg uppercase tracking-widest text-secondary-container mb-4 block">
+            <span className="font-label-lg text-label-lg uppercase tracking-widest text-secondary-container mb-2 block">
               Harvested by hand
             </span>
-            <h1 className="font-display-lg text-display-lg mb-6 leading-tight text-4xl md:text-6xl lg:text-7xl">
+            <h1 className="font-display-lg text-display-lg leading-tight text-4xl md:text-6xl lg:text-7xl max-w-3xl mx-auto">
               From the Heart of Tunisia to Your Table
             </h1>
-            <p className="font-body-lg text-body-lg mb-10 opacity-90 leading-relaxed max-w-lg">
+            <p className="font-body-lg text-body-lg opacity-90 leading-relaxed max-w-2xl mx-auto mb-6">
               Experience the liquid gold of the Mediterranean, harvested by hand and cold-pressed with ancestral devotion.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center w-full sm:w-auto">
               <Link 
                 to="/shop" 
-                className="bg-primary hover:bg-primary-container text-white font-label-lg text-label-lg px-10 py-5 rounded-full hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20 text-center"
+                className="bg-primary hover:bg-primary-container text-white font-label-lg text-label-lg px-10 py-5 rounded-full hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20 text-center min-w-[200px]"
               >
                 Shop Collection
               </Link>
               <Link 
                 to="/heritage" 
-                className="border border-white/50 backdrop-blur-md text-white font-label-lg text-label-lg px-10 py-5 rounded-full hover:bg-white hover:text-primary transition-all duration-300 text-center"
+                className="border border-white/50 backdrop-blur-md text-white font-label-lg text-label-lg px-10 py-5 rounded-full hover:bg-white hover:text-primary transition-all duration-300 text-center min-w-[200px]"
               >
                 Discover Our Story
               </Link>
             </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: 'easeOut', delay: 0.4 }}
-            className="hidden md:block relative animate-float"
-          >
-            <div className="absolute -inset-10 bg-secondary-container/20 blur-3xl organic-shape"></div>
-            <img 
-              className="h-[600px] w-auto relative z-10 drop-shadow-2xl rounded-4xl" 
-              alt="OLIV'OR Premium Bottle"
-              src='/1L.png'
-            />
           </motion.div>
         </div>
       </section>
@@ -198,7 +206,7 @@ const Home = () => {
                       <img 
                         className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out" 
                         alt={product.title}
-                        src={product.image}
+                        src={product.images && product.images.length > 0 ? product.images[0] : product.image}
                       />
                       {product.badge && (
                         <div className="absolute top-3 left-3 bg-secondary text-white font-label-sm px-2.5 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase">
@@ -273,7 +281,7 @@ const Home = () => {
               <img 
                 className="w-full h-full object-cover" 
                 alt="Tunisian olive harvester hands"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAERq1q-2QFbFFDTLKTzYWVEJc967-0C1uNt-E8U_57cNbtxuo7V6Wy3NA_FLOQzfWl72JS2cfnTxekD0KXr1i3S6K3P2M79eYtDE3XNbk_7xItXL9qM9RjhypMxw_qGZsKW8VISoY38ezheBcjt9V3a0HHMD5cgXKQ03qpxysjSP4nEXXB6qGm9bD2LwVBGJ5bxF3VafQUxi6-aZpG4Ka7zr5gdUdzHCboSLdBGXdO-OCfvIOXMPZs6Q"
+                src='/story.png'
               />
             </motion.div>
             <motion.div 
@@ -320,12 +328,19 @@ const Home = () => {
       {/* Best Sellers Bento Grid */}
       <section className="py-section-gap-lg bg-surface-container">
         <div className="max-w-[1440px] mx-auto px-container-padding text-center mb-16">
-          <h2 className="font-headline-xl text-headline-xl text-primary">
-            Customer Favorites
-          </h2>
-          <p className="text-on-surface-variant mt-4 font-body-md">
-            The bottles that define the Mediterranean palate.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h2 className="font-headline-xl text-headline-xl text-primary">
+              Customer Favorites
+            </h2>
+            <p className="text-on-surface-variant mt-4 font-body-md">
+              The bottles that define the Mediterranean palate.
+            </p>
+          </motion.div>
         </div>
 
         <div className="max-w-[1440px] mx-auto px-container-padding grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-gutter h-auto md:h-[800px]">
@@ -335,10 +350,10 @@ const Home = () => {
             const p1Id = p1 ? (p1._id || p1.id) : '';
             return (
               <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 className="md:col-span-2 md:row-span-2 bg-white rounded-3xl overflow-hidden group relative flex flex-col justify-end p-10 cursor-pointer min-h-[400px] md:min-h-auto shadow-sm border border-outline-variant/10"
               >
                 {p1 && (
@@ -346,7 +361,7 @@ const Home = () => {
                     <img 
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
                       alt={p1.title}
-                      src={p1.image}
+                      src={p1.images && p1.images.length > 0 ? p1.images[0] : p1.image}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                     <div className="relative z-10 text-white">
@@ -375,10 +390,10 @@ const Home = () => {
             const p2Id = p2 ? (p2._id || p2.id) : '';
             return (
               <motion.div 
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 className="md:col-span-2 bg-white rounded-3xl overflow-hidden group relative p-10 flex items-center justify-between cursor-pointer min-h-[200px] md:min-h-auto shadow-sm border border-outline-variant/10"
               >
                 {p2 && (
@@ -398,7 +413,7 @@ const Home = () => {
                     <img 
                       className="absolute right-0 top-0 h-full w-1/2 object-contain group-hover:scale-105 transition-transform duration-700 p-4" 
                       alt={p2.title}
-                      src={p2.image}
+                      src={p2.images && p2.images.length > 0 ? p2.images[0] : p2.image}
                     />
                   </>
                 )}
@@ -408,16 +423,16 @@ const Home = () => {
 
           {/* Side Card 2 */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             className="bg-white rounded-3xl overflow-hidden group relative p-8 flex flex-col justify-end cursor-pointer min-h-[200px] md:min-h-auto shadow-sm border border-outline-variant/10"
           >
             <img 
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
               alt="Servingware accessories"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk-4XA7GkwIxuXhoIvHHyexIq8Phes2_un7_i9rdQqiXVp5l014ih17GTWuzIovSomdMUxo_sSfhk6Aa4UNmf77ST-iobFhONHrbpAzyRfN5RyT44mV8TmlpF_A_f-jMSLIcSEOo7_wQmUMR4t3W9eD5rA6KBhjYfSpzZDQwiB0miFUBd45X6tjnLhojDlbApTliuR0RJ-f46epT5JSbYjE0lZbsWNx8FpZgtcbe-Tq6q1UZ0pTPJJKw"
+              src="/cera.png"
             />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300"></div>
             <div className="relative z-10 text-white text-center">
@@ -427,16 +442,16 @@ const Home = () => {
 
           {/* Side Card 3 */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className="bg-white rounded-3xl overflow-hidden group relative p-8 flex flex-col justify-end cursor-pointer min-h-[200px] md:min-h-auto shadow-sm border border-outline-variant/10"
           >
             <img 
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
               alt="Gifts box set"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu2gFgoF_mACBViCMcQpq4UxwliDQtYpAmjt5mDA_-qEkiA3bAkqKvMhgmEY-l52QiYxWuuuYjpv_2ENWHSpCsyEsyvQfK8Xfa5ZhWtKaoQ6ggecnwkd8o-udfFKULXOfOgAAts9nNDk6IlNZ0LrYB3cGmLYDQzZk2YjxozkjxCGvcZqk_MDHygGVR7uIQiE9pTMSM6OIIT7Qa8B_t_6jw8zdzhGv_d2Ji8R6bhuohTYICBipEEZWeDg"
+              src="/gift.jpeg"
             />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300"></div>
             <div className="relative z-10 text-white text-center">

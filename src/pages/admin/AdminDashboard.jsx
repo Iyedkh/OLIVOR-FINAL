@@ -11,15 +11,17 @@ const AdminDashboard = () => {
     adminUsers, 
     fetchAllUsers,
     products,
-    refreshProducts
+    refreshProducts,
+    user
   } = useApp();
 
   useEffect(() => {
-    fetchAllOrders();
-    fetchAllUsers();
-    refreshProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (user?.isAdmin) {
+      fetchAllOrders();
+      fetchAllUsers();
+      refreshProducts();
+    }
+  }, [user]);
 
   // Compute Metrics from Real Backend Data
   const totalRevenue = adminOrders.reduce((acc, order) => acc + (order.totalPrice || 0), 0);

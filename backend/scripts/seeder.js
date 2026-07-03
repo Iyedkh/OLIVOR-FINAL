@@ -9,6 +9,7 @@ import User from '../models/User.js';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import Recipe from '../models/Recipe.js';
+import Category from '../models/Category.js';
 import connectDB from '../config/db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,13 +26,38 @@ const importData = async () => {
     await Product.deleteMany();
     await User.deleteMany();
     await Recipe.deleteMany();
+    await Category.deleteMany();
+
+    // Collect all unique categories from products
+    const uniqueCategoryNames = [...new Set(products.map(p => p.category))];
+
+    // Create Category documents
+    const createdCategories = [];
+    for (const name of uniqueCategoryNames) {
+      const cat = await Category.create({
+        name,
+        description: `${name} premium collection.`
+      });
+      createdCategories.push(cat);
+    }
+
+    // Map category name to its ID
+    const categoryMap = {};
+    createdCategories.forEach(cat => {
+      categoryMap[cat.name] = cat._id;
+    });
+
+    // Update products array to use Category ObjectIds
+    const updatedProducts = products.map(product => ({
+      ...product,
+      category: categoryMap[product.category]
+    }));
 
     // Insert new users
-    const createdUsers = await User.create(users);
+    await User.create(users);
 
-    // Get Admin User ID to associate with products if needed, but in our schema product doesn't strictly have a user ref.
-    // If it does, we associate it. Let's look at Product schema: it doesn't have user, so we can insert directly.
-    await Product.insertMany(products);
+    // Insert products with their category references
+    await Product.insertMany(updatedProducts);
 
     // Insert recipes
     await Recipe.insertMany(recipes);
@@ -50,6 +76,7 @@ const destroyData = async () => {
     await Product.deleteMany();
     await User.deleteMany();
     await Recipe.deleteMany();
+    await Category.deleteMany();
 
     console.log('Data Destroyed successfully!');
     process.exit();

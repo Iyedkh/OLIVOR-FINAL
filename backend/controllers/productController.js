@@ -5,7 +5,8 @@ import Product from '../models/Product.js';
 // @access  Public
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+
+    const products = await Product.find({}).populate('category');
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -17,7 +18,7 @@ const getProducts = async (req, res) => {
 // @access  Public
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('category');
 
     if (product) {
       res.json(product);
@@ -56,7 +57,6 @@ const createProduct = async (req, res) => {
       title,
       price,
       description,
-      image,
       images,
       volume,
       region,
@@ -66,15 +66,18 @@ const createProduct = async (req, res) => {
       countInStock
     } = req.body;
 
+    if (!category) {
+      return res.status(400).json({ message: 'Category is required' });
+    }
+
     const product = new Product({
       title: title || 'Sample Product',
       price: price || 0,
       description: description || 'Sample Description',
-      image: image || 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5',
-      images: images || [],
+      images: images && images.length > 0 ? images : ['https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5'],
       volume: volume || '500ml',
       region: region || 'Tunisia',
-      category: category || 'Reserve Estate',
+      category,
       badge: badge || null,
       badgeType: badgeType || null,
       countInStock: countInStock || 10,
@@ -82,7 +85,8 @@ const createProduct = async (req, res) => {
     });
 
     const createdProduct = await product.save();
-    res.status(201).json(createdProduct);
+    const populatedProduct = await Product.findById(createdProduct._id).populate('category');
+    res.status(201).json(populatedProduct);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -96,7 +100,6 @@ const updateProduct = async (req, res) => {
     title,
     price,
     description,
-    image,
     images,
     volume,
     region,
@@ -114,7 +117,6 @@ const updateProduct = async (req, res) => {
       product.title = title !== undefined ? title : product.title;
       product.price = price !== undefined ? price : product.price;
       product.description = description !== undefined ? description : product.description;
-      product.image = image !== undefined ? image : product.image;
       product.images = images !== undefined ? images : product.images;
       product.volume = volume !== undefined ? volume : product.volume;
       product.region = region !== undefined ? region : product.region;
@@ -125,7 +127,8 @@ const updateProduct = async (req, res) => {
       product.rating = rating !== undefined ? rating : product.rating;
 
       const updatedProduct = await product.save();
-      res.json(updatedProduct);
+      const populatedProduct = await Product.findById(updatedProduct._id).populate('category');
+      res.json(populatedProduct);
     } else {
       res.status(404).json({ message: 'Product not found' });
     }

@@ -9,6 +9,7 @@ import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import recipeRoutes from './routes/recipeRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/categories', categoryRoutes);
 
 app.get('/', (req, res) => {
   res.send('OLIVOR Luxury API is running...');

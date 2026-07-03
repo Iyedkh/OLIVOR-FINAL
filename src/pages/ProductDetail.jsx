@@ -55,7 +55,7 @@ const ProductDetail = () => {
 
   const productImages = product.images && product.images.length > 0 
     ? product.images 
-    : (product.image ? [product.image, ...galleryImages.slice(1)] : galleryImages);
+    : (product.image ? [product.image] : galleryImages);
 
   const handleQtyChange = (type) => {
     if (type === 'inc') {
@@ -94,22 +94,24 @@ const ProductDetail = () => {
           <div className="lg:col-span-7 flex flex-col md:flex-row gap-6">
             
             {/* Vertical Thumbnails */}
-            <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-x-visible scroller-hide select-none">
-              {productImages.map((imgUrl, idx) => (
-                <button 
-                  key={idx}
-                  onClick={() => setSelectedImgIdx(idx)}
-                  className={`w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-300 focus:outline-none ${
-                    selectedImgIdx === idx ? 'border-primary' : 'border-outline-variant hover:border-primary'
-                  }`}
-                >
-                  <div 
-                    className="w-full h-full bg-cover bg-center" 
-                    style={{ backgroundImage: `url('${imgUrl}')` }}
-                  ></div>
-                </button>
-              ))}
-            </div>
+            {productImages.length > 1 && (
+              <div className="order-2 md:order-1 flex md:flex-col gap-4 overflow-x-auto md:overflow-x-visible scroller-hide select-none">
+                {productImages.map((imgUrl, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => setSelectedImgIdx(idx)}
+                    className={`w-20 h-24 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-300 focus:outline-none ${
+                      selectedImgIdx === idx ? 'border-primary' : 'border-outline-variant hover:border-primary'
+                    }`}
+                  >
+                    <div 
+                      className="w-full h-full bg-cover bg-center" 
+                      style={{ backgroundImage: `url('${imgUrl}')` }}
+                    ></div>
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Main Display with Active Thumbnail */}
             <div className="order-1 md:order-2 flex-grow relative aspect-[3/4] rounded-2xl overflow-hidden bg-surface-container-low group cursor-crosshair select-none border border-outline-variant/10">
@@ -166,11 +168,11 @@ const ProductDetail = () => {
                   Select Size
                 </label>
                 <div className="flex gap-4">
-                  {['250ml', '500ml', '750ml'].map((size) => (
+                  {[product.volume].filter(Boolean).map((size) => (
                     <button 
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`flex-1 py-3 border-2 font-semibold rounded-xl transition-all focus:outline-none text-sm ${
+                      className={`flex-1 py-3 border-2 font-semibold rounded-xl transition-all focus:outline-none text-sm max-w-[150px] ${
                         selectedSize === size 
                           ? 'border-primary bg-primary/10 text-primary' 
                           : 'border-outline-variant hover:border-primary text-on-surface-variant'
@@ -396,7 +398,7 @@ const ProductDetail = () => {
         <section className="mt-section-gap-lg grid grid-cols-1 lg:grid-cols-2 gap-24 text-left">
           {/* Testimonials */}
           <div className="space-y-12">
-            <h3 class="font-headline-lg text-headline-lg text-primary text-xl md:text-3xl">
+            <h3 className="font-headline-lg text-headline-lg text-primary text-xl md:text-3xl">
               Customer Reflections
             </h3>
             
@@ -532,7 +534,7 @@ const ProductDetail = () => {
                     <img 
                       className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105" 
                       alt={prod.title}
-                      src={prod.image}
+                      src={prod.images}
                     />
                   </div>
                   <h4 className="font-headline-md text-headline-md text-primary mb-1 text-lg truncate">
