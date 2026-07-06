@@ -43,7 +43,7 @@ const AdminOrders = () => {
     const orderId = order._id || order.id || '';
     const customerName = order.shippingAddress 
       ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}` 
-      : (order.user?.name || 'iyed khouildi');
+      : (order.user?.name || 'Guest');
 
     const matchesSearch = orderId.toLowerCase().includes(search.toLowerCase()) || 
                           customerName.toLowerCase().includes(search.toLowerCase());
@@ -119,7 +119,7 @@ const AdminOrders = () => {
                   const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
                   const customerName = order.shippingAddress 
                     ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}` 
-                    : (order.user?.name || 'iyed khouildi');
+                    : (order.user?.name || 'Guest');
 
                   return (
                     <tr key={orderId} className="hover:bg-surface-container-low transition-colors">
@@ -170,7 +170,7 @@ const AdminOrders = () => {
             const orderId = viewingOrder._id || viewingOrder.id;
             const customerName = viewingOrder.shippingAddress 
               ? `${viewingOrder.shippingAddress.firstName} ${viewingOrder.shippingAddress.lastName}` 
-              : (viewingOrder.user?.name || 'iyed khouildi');
+              : (viewingOrder.user?.name || 'Guest');
             const contactEmail = viewingOrder.shippingAddress?.email || viewingOrder.user?.email || 'N/A';
             const contactPhone = viewingOrder.shippingAddress?.phone || '20202020';
             

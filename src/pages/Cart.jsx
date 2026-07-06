@@ -25,12 +25,20 @@ const initialCartItems = [
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { cart, updateCartQty, removeFromCart } = useApp();
+  const { cart, updateCartQty, removeFromCart, validateCouponCode } = useApp();
   const cartItems = cart;
   const [promoCode, setPromoCode] = useState('');
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState(() => {
+    return Number(localStorage.getItem('checkout_discount_value')) || 0;
+  });
   const [promoError, setPromoError] = useState('');
-  const [promoSuccess, setPromoSuccess] = useState('');
+  const [promoSuccess, setPromoSuccess] = useState(() => {
+    const savedCode = localStorage.getItem('checkout_coupon_code');
+    const savedDiscount = localStorage.getItem('checkout_discount_value');
+    return savedCode && savedDiscount 
+      ? `Promo code ${savedCode} applied: ${(Number(savedDiscount) * 100).toFixed(0)}% discount!`
+      : '';
+  });
 
   const updateQuantity = (id, change) => {
     const item = cart.find(x => x.id === id);
@@ -46,16 +54,25 @@ const Cart = () => {
     removeFromCart(id);
   };
 
-  const handleApplyPromo = () => {
+  const handleApplyPromo = async () => {
     setPromoError('');
     setPromoSuccess('');
-    if (promoCode.trim().toUpperCase() === 'HARVEST10') {
-      setDiscount(0.10); // 10% discount
-      setPromoSuccess('Promo code HARVEST10 applied: 10% discount!');
-    } else if (promoCode.trim() === '') {
+    if (promoCode.trim() === '') {
       setPromoError('Please enter a code.');
+      return;
+    }
+
+    const res = await validateCouponCode(promoCode.trim());
+    if (res.success) {
+      setDiscount(res.discount);
+      setPromoSuccess(`Promo code ${res.code} applied: ${(res.discount * 100).toFixed(0)}% discount!`);
+      localStorage.setItem('checkout_coupon_code', res.code);
+      localStorage.setItem('checkout_discount_value', res.discount.toString());
     } else {
-      setPromoError('Invalid coupon code. Try "HARVEST10".');
+      setPromoError(res.message || 'Invalid coupon code.');
+      setDiscount(0);
+      localStorage.removeItem('checkout_coupon_code');
+      localStorage.removeItem('checkout_discount_value');
     }
   };
 

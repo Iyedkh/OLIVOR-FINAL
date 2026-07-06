@@ -608,6 +608,30 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const validateCouponCode = async (code) => {
+    try {
+      const { data } = await axios.post(`${API_URL}/coupons/validate`, { code });
+      return { success: true, code: data.code, discount: data.discount };
+    } catch (err) {
+      const message = err.response && err.response.data.message
+        ? err.response.data.message
+        : err.message;
+      return { success: false, message };
+    }
+  };
+
+  const createProductReview = async (productId, reviewData) => {
+    try {
+      const { data } = await axios.post(`${API_URL}/products/${productId}/reviews`, reviewData);
+      return { success: true, message: data.message };
+    } catch (err) {
+      const message = err.response && err.response.data.message
+        ? err.response.data.message
+        : err.message;
+      return { success: false, message };
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -645,6 +669,8 @@ export const AppProvider = ({ children }) => {
         updateCategory,
         deleteCategory,
         fetchShopProducts,
+        validateCouponCode,
+        createProductReview,
         refreshProducts: fetchProducts,
         refreshCategories: fetchCategories,
       }}

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Calendar, Filter, Download, ChevronRight, User, Receipt, RefreshCw, Heart, Settings, HelpCircle, Package, ArrowRight, Clock, Box } from 'lucide-react';
+import { Search, Calendar, Filter, Download, ChevronRight, HelpCircle, ArrowRight, Clock, Box } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import DashboardLayout from '../components/DashboardLayout';
 
 const initialOrders = [
   {
@@ -123,77 +124,11 @@ const OrderHistory = () => {
   );
 
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-screen">
-      
-      {/* Wrapper */}
-      <div className="pt-24 max-w-[1440px] mx-auto px-gutter relative flex flex-col md:flex-row gap-12">
-        
-        {/* Left Sidebar (Sticky Sidebar) */}
-        <aside className="w-full md:w-72 shrink-0 bg-surface p-8 rounded-2xl border border-outline-variant/10 md:h-[calc(100vh-140px)] sticky top-24 self-start flex flex-col justify-between text-left select-none">
-          <div className="space-y-8">
-            <div className="flex flex-col gap-2">
-              <span className="font-headline-md text-headline-md text-primary text-xl font-bold">Alessandro Rossi</span>
-              <p className="font-label-sm text-on-surface-variant opacity-70 text-xs font-semibold uppercase tracking-wider">Connoisseur Member</p>
-            </div>
-
-            <nav className="flex flex-col gap-2">
-              <Link 
-                to="/dashboard" 
-                className="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-container rounded-full transition-transform hover:translate-x-1 duration-200 text-sm font-semibold group"
-              >
-                <User className="h-4.5 w-4.5 text-outline group-hover:text-primary transition-colors" />
-                <span>My Profile</span>
-              </Link>
-              
-              <Link 
-                to="/orders" 
-                className="flex items-center gap-3 py-3 px-4 bg-secondary-container text-on-secondary-container rounded-full transition-transform hover:translate-x-1 duration-200 text-sm font-bold"
-              >
-                <Receipt className="h-4.5 w-4.5 text-secondary" />
-                <span>Order History</span>
-              </Link>
-              
-              <a 
-                href="#" 
-                className="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-container rounded-full transition-transform hover:translate-x-1 duration-200 text-sm font-semibold group"
-              >
-                <RefreshCw className="h-4.5 w-4.5 text-outline group-hover:text-primary transition-colors" />
-                <span>Subscriptions</span>
-              </a>
-
-              <a 
-                href="#" 
-                className="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-container rounded-full transition-transform hover:translate-x-1 duration-200 text-sm font-semibold group"
-              >
-                <Heart className="h-4.5 w-4.5 text-outline group-hover:text-primary transition-colors" />
-                <span>Saved Harvests</span>
-              </a>
-
-              <a 
-                href="#" 
-                className="flex items-center gap-3 py-3 px-4 text-on-surface-variant hover:bg-surface-container rounded-full transition-transform hover:translate-x-1 duration-200 text-sm font-semibold group"
-              >
-                <Settings className="h-4.5 w-4.5 text-outline group-hover:text-primary transition-colors" />
-                <span>Settings</span>
-              </a>
-            </nav>
-          </div>
-
-          <div className="mt-8 md:mt-auto p-4 bg-surface-container-high/30 rounded-2xl border border-outline-variant/10 text-left">
-            <p className="font-label-sm text-on-surface-variant mb-3 text-xs font-semibold uppercase tracking-wider">Need assistance?</p>
-            <button className="w-full py-2 bg-primary hover:bg-primary-container text-white rounded-full font-label-lg hover:scale-[1.02] active:scale-95 transition-all text-xs font-bold uppercase tracking-wider shadow shadow-primary/10">
-              Contact Sommelier
-            </button>
-          </div>
-        </aside>
-
-        {/* Main Content Area */}
-        <main className="flex-1 pb-section-gap-lg text-left">
-          
-          <header className="mb-12">
-            <h1 className="font-display-lg text-headline-xl text-primary mb-8 text-3xl md:text-5xl font-bold">
-              Your Archives
-            </h1>
+    <DashboardLayout>
+      <header className="mb-12">
+        <h1 className="font-display-lg text-headline-xl text-primary mb-8 text-3xl md:text-5xl font-bold">
+          Your Archives
+        </h1>
             
             {/* Search & Filters */}
             <div className="flex flex-col md:flex-row gap-4 items-center bg-white p-2 rounded-2xl border border-outline-variant/10 shadow-sm">
@@ -356,10 +291,7 @@ const OrderHistory = () => {
             </button>
           </div>
 
-        </main>
-      </div>
-
-    </div>
+    </DashboardLayout>
   );
 };
 

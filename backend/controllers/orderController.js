@@ -10,6 +10,7 @@ const addOrderItems = async (req, res) => {
     shippingAddress,
     paymentMethod,
     shippingPrice,
+    couponCode,
   } = req.body;
 
   try {
@@ -44,7 +45,23 @@ const addOrderItems = async (req, res) => {
       });
     }
 
-    const calculatedTaxPrice = Number((0.08 * calculatedItemsPrice).toFixed(2));
+    // Process and validate coupon discount from backend
+    let discountPrice = 0;
+    let appliedCoupon = null;
+
+    if (couponCode) {
+      const Coupon = (await import('../models/Coupon.js')).default;
+      const couponObj = await Coupon.findOne({ code: couponCode.toUpperCase() });
+      if (couponObj && couponObj.active && (!couponObj.expirationDate || new Date(couponObj.expirationDate) > new Date())) {
+        appliedCoupon = couponObj.code;
+        discountPrice = Number((calculatedItemsPrice * couponObj.discount).toFixed(2));
+      } else {
+        return res.status(400).json({ message: 'Invalid or expired coupon code applied' });
+      }
+    }
+
+    const discountedSubtotal = calculatedItemsPrice - discountPrice;
+    const calculatedTaxPrice = Number((0.08 * discountedSubtotal).toFixed(2));
     
     // Validate shipping price matches accepted configurations (standard=0, express=15)
     let calculatedShippingPrice = Number(shippingPrice) || 0;
@@ -52,7 +69,7 @@ const addOrderItems = async (req, res) => {
       return res.status(400).json({ message: 'Invalid shipping price configuration' });
     }
 
-    const calculatedTotalPrice = Number((calculatedItemsPrice + calculatedTaxPrice + calculatedShippingPrice).toFixed(2));
+    const calculatedTotalPrice = Number((discountedSubtotal + calculatedTaxPrice + calculatedShippingPrice).toFixed(2));
 
     // Decrement stock atomically with manual rollback capability on failure (concurrency protection)
     const updatedProducts = [];
@@ -82,6 +99,8 @@ const addOrderItems = async (req, res) => {
         orderItems: verifiedOrderItems,
         shippingAddress,
         paymentMethod,
+        discountPrice,
+        couponCode: appliedCoupon,
         itemsPrice: Number(calculatedItemsPrice.toFixed(2)),
         taxPrice: calculatedTaxPrice,
         shippingPrice: calculatedShippingPrice,

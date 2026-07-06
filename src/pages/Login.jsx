@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Extract redirect query parameter from URL (e.g. ?redirect=checkout)
+  const queryParams = new URLSearchParams(location.search);
+  const redirect = queryParams.get('redirect');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +29,7 @@ const Login = () => {
       if (res.isAdmin) {
         navigate('/admin');
       } else {
-        navigate('/dashboard');
+        navigate(redirect ? `/${redirect}` : '/dashboard');
       }
     } else {
       setError(res.message || 'Invalid credentials');

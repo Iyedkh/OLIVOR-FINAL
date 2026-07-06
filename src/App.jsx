@@ -43,12 +43,12 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/bag" element={<Cart />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Protected Customer Routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/checkout" element={<Checkout />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/order-history" element={<OrderHistory />} />
             <Route path="/orders" element={<OrderHistory />} />

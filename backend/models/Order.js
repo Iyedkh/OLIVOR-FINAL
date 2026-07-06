@@ -42,6 +42,14 @@ const orderSchema = mongoose.Schema(
       update_time: { type: String },
       email_address: { type: String },
     },
+    discountPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    couponCode: {
+      type: String,
+    },
     itemsPrice: {
       type: Number,
       required: true,

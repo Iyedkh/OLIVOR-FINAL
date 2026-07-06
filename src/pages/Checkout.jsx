@@ -28,25 +28,69 @@ const Checkout = () => {
   const { token, cart, placeOrder } = useApp();
   const [step, setStep] = useState(1); // 1: Shipping, 2: Delivery, 3: Payment, 4: Review, 5: Success
   const [loading, setLoading] = useState(false);
-  const [shippingForm, setShippingForm] = useState({
-    email: '',
-    subscribe: true,
-    firstName: '',
-    lastName: '',
-    address: '',
-    apartment: '',
-    city: '',
-    postalCode: '',
-    phone: ''
+  const [shippingForm, setShippingForm] = useState(() => {
+    try {
+      const saved = localStorage.getItem('checkout_shipping_draft');
+      return saved ? JSON.parse(saved) : {
+        email: '',
+        subscribe: true,
+        firstName: '',
+        lastName: '',
+        address: '',
+        apartment: '',
+        city: '',
+        postalCode: '',
+        phone: ''
+      };
+    } catch {
+      return {
+        email: '',
+        subscribe: true,
+        firstName: '',
+        lastName: '',
+        address: '',
+        apartment: '',
+        city: '',
+        postalCode: '',
+        phone: ''
+      };
+    }
   });
   
-  const [deliveryMethod, setDeliveryMethod] = useState('standard'); // standard, express
-  const [paymentForm, setPaymentForm] = useState({
-    cardName: '',
-    cardNumber: '',
-    expiry: '',
-    cvc: ''
+  const [deliveryMethod, setDeliveryMethod] = useState(() => {
+    return localStorage.getItem('checkout_delivery_draft') || 'standard';
   });
+
+  const [paymentForm, setPaymentForm] = useState(() => {
+    try {
+      const saved = localStorage.getItem('checkout_payment_draft');
+      return saved ? JSON.parse(saved) : {
+        cardName: '',
+        cardNumber: '',
+        expiry: '',
+        cvc: ''
+      };
+    } catch {
+      return {
+        cardName: '',
+        cardNumber: '',
+        expiry: '',
+        cvc: ''
+      };
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('checkout_shipping_draft', JSON.stringify(shippingForm));
+  }, [shippingForm]);
+
+  useEffect(() => {
+    localStorage.setItem('checkout_delivery_draft', deliveryMethod);
+  }, [deliveryMethod]);
+
+  useEffect(() => {
+    localStorage.setItem('checkout_payment_draft', JSON.stringify(paymentForm));
+  }, [paymentForm]);
 
   useEffect(() => {
     if (cart.length === 0 && step !== 5) {
@@ -70,13 +114,17 @@ const Checkout = () => {
 
   // Calculations
   const subtotal = cart.reduce((acc, p) => acc + p.price * p.quantity, 0);
+  const couponCode = localStorage.getItem('checkout_coupon_code') || '';
+  const discountValue = Number(localStorage.getItem('checkout_discount_value')) || 0;
+  const discountAmount = subtotal * discountValue;
+  const taxableAmount = subtotal - discountAmount;
   const shippingCost = deliveryMethod === 'express' ? 15.00 : 0.00;
-  const total = subtotal + shippingCost;
+  const total = taxableAmount + (taxableAmount * 0.08) + shippingCost;
 
   const handlePlaceOrder = async () => {
     if (!token) {
       alert('Please log in or register an account to place an order.');
-      navigate('/login');
+      navigate('/login?redirect=checkout');
       return;
     }
     
@@ -101,8 +149,9 @@ const Checkout = () => {
         phone: shippingForm.phone
       },
       paymentMethod: 'Credit Card',
+      couponCode: couponCode || undefined,
       itemsPrice: subtotal,
-      taxPrice: subtotal * 0.08,
+      taxPrice: taxableAmount * 0.08,
       shippingPrice: shippingCost,
       totalPrice: total
     };
@@ -111,6 +160,11 @@ const Checkout = () => {
     setLoading(false);
     
     if (res.success) {
+      localStorage.removeItem('checkout_shipping_draft');
+      localStorage.removeItem('checkout_delivery_draft');
+      localStorage.removeItem('checkout_payment_draft');
+      localStorage.removeItem('checkout_coupon_code');
+      localStorage.removeItem('checkout_discount_value');
       setStep(5);
     } else {
       alert(res.message || 'Failed to place order. Please try again.');
@@ -560,6 +614,13 @@ const Checkout = () => {
                     <span>${subtotal.toFixed(2)}</span>
                   </div>
                   
+                  {discountValue > 0 && (
+                    <div className="flex justify-between text-primary">
+                      <span>Discount ({couponCode})</span>
+                      <span>-${discountAmount.toFixed(2)}</span>
+                    </div>
+                  )}
+
                   <div className="flex justify-between text-on-surface-variant">
                     <span>Shipping</span>
                     {shippingCost === 0 ? (
@@ -567,6 +628,11 @@ const Checkout = () => {
                     ) : (
                       <span>${shippingCost.toFixed(2)}</span>
                     )}
+                  </div>
+                  
+                  <div className="flex justify-between text-on-surface-variant">
+                    <span>Estimated Tax (8%)</span>
+                    <span>${(taxableAmount * 0.08).toFixed(2)}</span>
                   </div>
                   
                   <div className="flex justify-between items-end pt-4 border-t border-outline-variant/30 mt-4">

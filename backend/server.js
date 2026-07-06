@@ -12,13 +12,29 @@ import orderRoutes from './routes/orderRoutes.js';
 import recipeRoutes from './routes/recipeRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import couponRoutes from './routes/couponRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-connectDB();
+connectDB().then(async () => {
+  try {
+    const Coupon = (await import('./models/Coupon.js')).default;
+    const couponExists = await Coupon.findOne({ code: 'HARVEST10' });
+    if (!couponExists) {
+      await Coupon.create({
+        code: 'HARVEST10',
+        discount: 0.10,
+        active: true,
+      });
+      console.log('Seeded default coupon code HARVEST10.');
+    }
+  } catch (err) {
+    console.error('Error seeding default coupon:', err);
+  }
+});
 
 const app = express();
 
@@ -51,6 +67,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/coupons', couponRoutes);
 
 app.get('/', (req, res) => {
   res.send('OLIVOR Luxury API is running...');

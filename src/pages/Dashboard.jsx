@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Package, MapPin, CreditCard, Settings, LogOut, Award, Navigation, Trash2, ArrowRight } from 'lucide-react';
+import { Award, Navigation, Trash2, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import DashboardLayout from '../components/DashboardLayout';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, logout, wishlist, toggleWishlist } = useApp();
+  const { user, logout, wishlist, toggleWishlist, orders, fetchMyOrders } = useApp();
+
+  useEffect(() => {
+    if (fetchMyOrders) {
+      fetchMyOrders();
+    }
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -24,90 +31,9 @@ const Dashboard = () => {
   const strokeDashoffset = circumference - (progressPercent * circumference);
 
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-screen">
-      
-      {/* Wrapper */}
-      <div className="pt-24 max-w-[1440px] mx-auto px-gutter relative flex flex-col md:flex-row gap-12">
-        
-        {/* Left Sidebar (Sticky Sidebar) */}
-        <aside className="w-full md:w-72 shrink-0 sticky top-24 self-start bg-surface p-8 rounded-2xl border border-outline-variant/10 md:h-[calc(100vh-140px)] flex flex-col justify-between text-left">
-          <div className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/30 select-none">
-                <img 
-                  className="w-full h-full object-cover" 
-                  alt="Alessandro profile"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1KAi9GR0BkFg0H-_lvt1xszFfyCuyAqzQeR-6vkd0QHU-VL0IYnciKwKc5VynAVcxCgZ3hXbBUrpw-MEQaVbHyazADXz3dC80s5VMwXNGjCS_VSpKWUcxyFWzTcq8fvHv66cbmk5Rvr1Peg6gy5SseASF4ccVY4DzXjju2gkHzToVjEWJJd2WxG7CQ7cNClWj0bmqbd82zFWoh0L6pVbWTxBMqBog1z-pHNZrzSz3s1kLbOimKVHK3w"
-                />
-              </div>
-              <div>
-                <p className="font-bold text-sm text-primary">{user?.name || 'Guest User'}</p>
-                <p className="text-xs text-outline font-semibold uppercase tracking-wider">{user?.isAdmin ? 'Admin Concierge' : 'Connoisseur'}</p>
-              </div>
-            </div>
-
-            <nav className="flex flex-col gap-2">
-              <Link 
-                to="/dashboard" 
-                className="flex items-center gap-4 text-primary bg-primary/10 px-4 py-3 rounded-lg font-bold text-sm transition-all"
-              >
-                <LayoutDashboard className="h-4 w-4 shrink-0 text-primary" />
-                <span>Dashboard</span>
-              </Link>
-              
-              <Link 
-                to="/orders" 
-                className="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container px-4 py-3 rounded-lg font-semibold text-sm transition-all group"
-              >
-                <Package className="h-4 w-4 shrink-0 text-outline group-hover:text-primary transition-colors" />
-                <span>Orders</span>
-              </Link>
-              
-              <a 
-                href="#" 
-                className="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container px-4 py-3 rounded-lg font-semibold text-sm transition-all group"
-              >
-                <MapPin className="h-4 w-4 shrink-0 text-outline group-hover:text-primary transition-colors" />
-                <span>Addresses</span>
-              </a>
-
-              <a 
-                href="#" 
-                className="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container px-4 py-3 rounded-lg font-semibold text-sm transition-all group"
-              >
-                <CreditCard className="h-4 w-4 shrink-0 text-outline group-hover:text-primary transition-colors" />
-                <span>Payment Methods</span>
-              </a>
-
-              <a 
-                href="#" 
-                className="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container px-4 py-3 rounded-lg font-semibold text-sm transition-all group"
-              >
-                <Settings className="h-4 w-4 shrink-0 text-outline group-hover:text-primary transition-colors" />
-                <span>Settings</span>
-              </a>
-            </nav>
-          </div>
-
-          <div className="pt-6 border-t border-outline-variant/30 mt-8 md:mt-auto space-y-4">
-            <button 
-              onClick={handleLogout}
-              className="w-full text-left flex items-center gap-4 text-on-surface-variant hover:bg-surface-container px-4 py-3 rounded-lg font-semibold text-sm transition-all group focus:outline-none"
-            >
-              <LogOut className="h-4 w-4 shrink-0 text-outline group-hover:text-error transition-colors" />
-              <span>Logout</span>
-            </button>
-            <button className="w-full py-4 px-6 rounded-full bg-primary hover:bg-primary-container text-white font-label-lg transition-all active:scale-95 shadow shadow-primary/10 text-xs font-bold uppercase tracking-wider">
-              Contact Concierge
-            </button>
-          </div>
-        </aside>
-
-        {/* Main Content Area */}
-        <main className="flex-grow pb-section-gap-lg text-left">
-          
-          {/* Header / Welcome Card */}
-          <header className="mb-12">
+    <DashboardLayout>
+      {/* Header / Welcome Card */}
+      <header className="mb-12">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
               <div>
                 <h1 className="font-headline-xl text-headline-xl text-primary tracking-tight mb-2 text-2xl md:text-4xl font-bold">
@@ -213,41 +139,58 @@ const Dashboard = () => {
                 </Link>
               </div>
 
-              <div className="bg-surface rounded-[2rem] p-8 flex flex-col md:flex-row gap-10 items-center border border-outline-variant/10 shadow-sm">
-                <div className="w-full md:w-48 h-48 rounded-2xl overflow-hidden shrink-0 bg-surface-container-low border border-outline-variant/10 select-none">
-                  <img 
-                    className="w-full h-full object-cover" 
-                    alt="Reserve collection order preview"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBD40OoiWVv_xnC5dw4-hB_yQVZnH7DePYsUumNALvU3I-9BozEsc-BPnlRwX8iVP6djedR-XmvR-Xb-Qzqu3iEVOemKQPvT9O0Xi8EU1dfhkGrTA-fAaJhwVQ61t-JbTRjtHXzJUlqTlH2jgAU2MYnyxZNOFRv26tgLJ5UYCqShqVgXCOXyubReG95p64TyH5tyoW4gCx42kReNuaOD9BHNWEuui49PB0Gq-Pv-Zl05-Wc0KCNKCGxVg"
-                  />
+              {(!orders || orders.length === 0) ? (
+                <div className="bg-surface rounded-[2rem] p-8 text-center border border-outline-variant/10 shadow-sm text-on-surface-variant font-light text-sm">
+                  No orders placed yet. Make your first purchase in our shop!
                 </div>
-                
-                <div className="flex-grow grid grid-cols-2 md:grid-cols-4 gap-8 w-full text-left">
-                  <div className="space-y-1">
-                    <span className="text-label-sm font-label-sm text-outline-variant uppercase tracking-widest text-[9px] font-bold">Order ID</span>
-                    <p className="font-headline-md text-headline-md text-primary font-bold text-base md:text-lg">#OL-88902</p>
+              ) : (() => {
+                const latestOrder = orders[0];
+                const orderId = latestOrder._id || latestOrder.id;
+                const orderDate = new Date(latestOrder.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+                const firstItem = latestOrder.orderItems?.[0] || {};
+                const firstImage = firstItem.image || firstItem.images?.[0] || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBD40OoiWVv_xnC5dw4-hB_yQVZnH7DePYsUumNALvU3I-9BozEsc-BPnlRwX8iVP6djedR-XmvR-Xb-Qzqu3iEVOemKQPvT9O0Xi8EU1dfhkGrTA-fAaJhwVQ61t-JbTRjtHXzJUlqTlH2jgAU2MYnyxZNOFRv26tgLJ5UYCqShqVgXCOXyubReG95p64TyH5tyoW4gCx42kReNuaOD9BHNWEuui49PB0Gq-Pv-Zl05-Wc0KCNKCGxVg';
+                return (
+                  <div className="bg-surface rounded-[2rem] p-8 flex flex-col md:flex-row gap-10 items-center border border-outline-variant/10 shadow-sm">
+                    <div className="w-full md:w-48 h-48 rounded-2xl overflow-hidden shrink-0 bg-surface-container-low border border-outline-variant/10 select-none">
+                      <img 
+                        className="w-full h-full object-cover" 
+                        alt="Order preview"
+                        src={firstImage}
+                      />
+                    </div>
+                    
+                    <div className="flex-grow grid grid-cols-2 md:grid-cols-4 gap-8 w-full text-left">
+                      <div className="space-y-1">
+                        <span className="text-label-sm font-label-sm text-outline-variant uppercase tracking-widest text-[9px] font-bold">Order ID</span>
+                        <p className="font-headline-md text-headline-md text-primary font-bold text-base md:text-lg">#{orderId.slice(-6).toUpperCase()}</p>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <span className="text-label-sm font-label-sm text-outline-variant uppercase tracking-widest text-[9px] font-bold">Status</span>
+                        <p className="flex items-center gap-2 text-primary font-bold text-xs uppercase">
+                          <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${latestOrder.status === 'Delivered' ? 'bg-primary' : 'bg-secondary animate-pulse'}`}></span>
+                          {latestOrder.status || 'Pending'}
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <span className="text-label-sm font-label-sm text-outline-variant uppercase tracking-widest text-[9px] font-bold">Order Date</span>
+                        <p className="text-on-surface font-semibold text-sm">{orderDate}</p>
+                      </div>
+                      
+                      <div className="flex items-center md:justify-end">
+                        <Link to="/orders" className="w-full md:w-auto px-8 py-3 rounded-full border border-secondary text-secondary font-label-lg hover:bg-secondary hover:text-white transition-all text-xs font-bold uppercase tracking-widest text-center">
+                          View Order
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="space-y-1">
-                    <span className="text-label-sm font-label-sm text-outline-variant uppercase tracking-widest text-[9px] font-bold">Status</span>
-                    <p className="flex items-center gap-2 text-primary font-bold text-xs uppercase">
-                      <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse shrink-0"></span>
-                      In Transit
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <span className="text-label-sm font-label-sm text-outline-variant uppercase tracking-widest text-[9px] font-bold">Est. Delivery</span>
-                    <p className="text-on-surface font-semibold text-sm">May 24, 2024</p>
-                  </div>
-                  
-                  <div className="flex items-center md:justify-end">
-                    <button className="w-full md:w-auto px-8 py-3 rounded-full border border-secondary text-secondary font-label-lg hover:bg-secondary hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
-                      Track Package
-                    </button>
-                  </div>
-                </div>
-              </div>
+                );
+              })()}
             </section>
 
             {/* Wishlist Preview */}
@@ -351,10 +294,7 @@ const Dashboard = () => {
             </section>
 
           </div>
-        </main>
-      </div>
-
-    </div>
+    </DashboardLayout>
   );
 };
 

@@ -14,9 +14,44 @@ const galleryImages = [
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, addToCart, loadingProducts, wishlist, toggleWishlist } = useApp();
+  const { products, addToCart, loadingProducts, wishlist, toggleWishlist, createProductReview, token, refreshProducts } = useApp();
   
   const product = products.find(p => (p._id || p.id) === id);
+
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+  const [reviewSuccess, setReviewSuccess] = useState('');
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!reviewComment.trim()) {
+      setReviewError('Please write a comment.');
+      return;
+    }
+    setSubmittingReview(true);
+    setReviewError('');
+    setReviewSuccess('');
+
+    const res = await createProductReview(product._id || product.id, {
+      rating: reviewRating,
+      comment: reviewComment
+    });
+
+    setSubmittingReview(false);
+
+    if (res.success) {
+      setReviewSuccess('Thank you! Your review has been added.');
+      setReviewComment('');
+      setReviewRating(5);
+      if (refreshProducts) {
+        refreshProducts();
+      }
+    } else {
+      setReviewError(res.message || 'Failed to submit review.');
+    }
+  };
 
   const isInWishlist = product && (wishlist || []).some(
     item => (item._id || item.id || item) === (product._id || product.id)
@@ -144,14 +179,19 @@ const ProductDetail = () => {
               
               <div className="flex items-center gap-4">
                 <div className="flex text-secondary select-none">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      {i < Math.floor(product.rating || 5) ? 'star' : 'star_half'}
-                    </span>
-                  ))}
+                  {[...Array(5)].map((_, i) => {
+                    const ratingValue = product.rating || 0;
+                    if (ratingValue >= i + 1) {
+                      return <span key={i} className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>;
+                    } else if (ratingValue > i && ratingValue < i + 1) {
+                      return <span key={i} className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star_half</span>;
+                    } else {
+                      return <span key={i} className="material-symbols-outlined">star</span>;
+                    }
+                  })}
                 </div>
                 <span className="text-outline font-label-lg text-label-lg text-xs font-semibold uppercase tracking-wider">
-                  {product.rating || 5.0} / 5 (128 Reviews)
+                  {(product.rating || 0).toFixed(1)} / 5 ({product.reviews?.length || 0} {product.reviews?.length === 1 ? 'Review' : 'Reviews'})
                 </span>
               </div>
               <div className="text-3xl font-headline-md text-primary font-bold">${(product.price || 0.00).toFixed(2)}</div>
@@ -496,6 +536,134 @@ const ProductDetail = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Reviews Section */}
+        <section className="mt-section-gap-lg text-left border-t border-outline-variant/20 pt-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            {/* Reviews List */}
+            <div className="lg:col-span-7 space-y-8">
+              <div>
+                <span className="text-secondary font-label-lg text-label-lg uppercase tracking-[0.2em] mb-2 block text-xs font-bold">
+                  Testimonials
+                </span>
+                <h3 className="font-headline-lg text-headline-lg text-primary text-xl md:text-3xl font-bold">
+                  Connoisseur Feedback
+                </h3>
+              </div>
+
+              <div className="space-y-6">
+                {!product.reviews || product.reviews.length === 0 ? (
+                  <p className="text-on-surface-variant font-light text-sm italic">
+                    No reviews yet. Be the first to share your experience with this harvest.
+                  </p>
+                ) : (
+                  product.reviews.map((rev) => (
+                    <div key={rev._id || rev.id} className="p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm space-y-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold text-primary text-sm">{rev.name}</h4>
+                          <p className="text-outline-variant text-[10px] font-semibold">{new Date(rev.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex text-secondary select-none">
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} className="material-symbols-outlined text-sm" style={{ fontVariationSettings: i < rev.rating ? "'FILL' 1" : "" }}>
+                              {i < rev.rating ? 'star' : 'star_outline'}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-body-md text-on-surface-variant leading-relaxed text-sm font-light">
+                        {rev.comment}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Leave a Review Form */}
+            <div className="lg:col-span-5">
+              <div className="bg-surface p-8 rounded-2xl border border-outline-variant/10 shadow-sm space-y-6">
+                <div>
+                  <h4 className="font-headline-md text-primary text-lg md:text-xl font-bold">Share Your Experience</h4>
+                  <p className="text-xs text-outline font-semibold uppercase tracking-wider mt-1">Review this heritage oil</p>
+                </div>
+
+                {reviewSuccess && (
+                  <div className="p-4 bg-primary/10 text-primary rounded-xl text-xs font-semibold">
+                    {reviewSuccess}
+                  </div>
+                )}
+
+                {reviewError && (
+                  <div className="p-4 bg-red-500/10 text-red-500 rounded-xl text-xs font-semibold">
+                    {reviewError}
+                  </div>
+                )}
+
+                {token ? (
+                  <form onSubmit={handleReviewSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-outline uppercase tracking-wider">Rating</label>
+                      <div className="flex gap-2 text-secondary">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setReviewRating(star)}
+                            className="focus:outline-none transition-transform hover:scale-110"
+                          >
+                            <span 
+                              className="material-symbols-outlined text-3xl"
+                              style={{ fontVariationSettings: star <= reviewRating ? "'FILL' 1" : "" }}
+                            >
+                              {star <= reviewRating ? 'star' : 'star_outline'}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="comment" className="block text-xs font-bold text-outline uppercase tracking-wider">Your Comment</label>
+                      <textarea
+                        id="comment"
+                        rows="4"
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        placeholder="Describe the notes, aroma, and mouthfeel of this harvest..."
+                        className="w-full rounded-xl border border-outline-variant p-4 bg-surface text-sm text-on-surface focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                        required
+                      ></textarea>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={submittingReview}
+                      className="w-full bg-primary hover:bg-primary-container text-white py-4 rounded-full font-label-lg uppercase tracking-widest text-xs font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 animate-pulse"
+                    >
+                      {submittingReview ? 'Submitting...' : 'Submit Review'}
+                    </button>
+                  </form>
+                ) : (
+                  <div className="space-y-4">
+                    <p className="text-on-surface-variant font-light text-sm">
+                      Only authenticated connoisseurs can submit reviews for our premium harvests.
+                    </p>
+                    <Link
+                      to={`/login?redirect=product/${product._id || product.id}`}
+                      className="w-full py-4 text-center border-2 border-primary text-primary hover:bg-primary/5 rounded-full font-label-lg uppercase tracking-widest text-xs font-bold block animate-pulse"
+                    >
+                      Log in to review
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+            
           </div>
         </section>
 
