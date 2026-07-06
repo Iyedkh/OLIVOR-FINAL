@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 const AppContext = createContext();
 
 const API_URL = 'http://localhost:5000/api';
+axios.defaults.withCredentials = true;
 
 export const AppProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);

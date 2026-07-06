@@ -20,7 +20,7 @@ const authUser = async (req, res) => {
         isAdmin: user.isAdmin,
         wishlist: user.wishlist,
         cart: user.cart,
-        token: generateToken(user._id),
+        token: generateToken(res, user._id),
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
@@ -57,7 +57,7 @@ const registerUser = async (req, res) => {
         isAdmin: user.isAdmin,
         wishlist: user.wishlist,
         cart: user.cart,
-        token: generateToken(user._id),
+        token: generateToken(res, user._id),
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -114,7 +114,7 @@ const updateUserProfile = async (req, res) => {
         isAdmin: updatedUser.isAdmin,
         wishlist: updatedUser.wishlist,
         cart: updatedUser.cart,
-        token: generateToken(updatedUser._id),
+        token: generateToken(res, updatedUser._id),
       });
     } else {
       res.status(404).json({ message: 'User not found' });
