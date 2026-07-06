@@ -21,7 +21,7 @@ export const AppProvider = ({ children }) => {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingRecipes, setLoadingRecipes] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [loadingUser, setLoadingUser] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(() => !!localStorage.getItem('token'));
 
   // Admin States
   const [adminOrders, setAdminOrders] = useState([]);
@@ -134,6 +134,7 @@ export const AppProvider = ({ children }) => {
       fetchUserProfile(token);
     } else {
       setUser(null);
+      setLoadingUser(false);
       // Load cart/wishlist from localStorage if guest
       const localCart = localStorage.getItem('cart');
       if (localCart) setCart(JSON.parse(localCart));

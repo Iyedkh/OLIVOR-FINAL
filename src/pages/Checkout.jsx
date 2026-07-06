@@ -25,7 +25,7 @@ const checkoutProducts = [
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { token, cart, placeOrder } = useApp();
+  const { token, cart, placeOrder, user } = useApp();
   const [step, setStep] = useState(1); // 1: Shipping, 2: Delivery, 3: Payment, 4: Review, 5: Success
   const [loading, setLoading] = useState(false);
   const [shippingForm, setShippingForm] = useState(() => {
@@ -83,6 +83,15 @@ const Checkout = () => {
   useEffect(() => {
     localStorage.setItem('checkout_shipping_draft', JSON.stringify(shippingForm));
   }, [shippingForm]);
+
+  useEffect(() => {
+    if (user && !shippingForm.email) {
+      setShippingForm(prev => ({
+        ...prev,
+        email: user.email || ''
+      }));
+    }
+  }, [user, shippingForm.email]);
 
   useEffect(() => {
     localStorage.setItem('checkout_delivery_draft', deliveryMethod);
@@ -255,9 +264,15 @@ const Checkout = () => {
                     <section className="space-y-6">
                       <div className="flex justify-between items-end">
                         <h2 className="font-headline-lg text-headline-lg text-primary text-xl md:text-2xl font-bold">Contact Information</h2>
-                        <span onClick={() => navigate('/login')} className="text-label-sm font-label-sm text-secondary cursor-pointer hover:underline text-xs font-semibold uppercase tracking-wider">
-                          Log in
-                        </span>
+                        {!user ? (
+                          <span onClick={() => navigate('/login?redirect=checkout')} className="text-label-sm font-label-sm text-secondary cursor-pointer hover:underline text-xs font-semibold uppercase tracking-wider">
+                            Log in
+                          </span>
+                        ) : (
+                          <span className="text-[11px] text-primary font-semibold uppercase tracking-wider">
+                            Logged in as {user.name || user.email}
+                          </span>
+                        )}
                       </div>
                       <div className="grid grid-cols-1 gap-6">
                         <div className="flex flex-col gap-2">
