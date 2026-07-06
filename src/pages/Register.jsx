@@ -41,15 +41,15 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-screen">
-      <main className="min-h-screen flex flex-col md:flex-row overflow-hidden text-left">
+    <div className="bg-background text-on-surface font-body-md h-screen">
+      <main className="h-screen flex flex-col md:flex-row overflow-hidden text-left">
         
         {/* Left Side: Visual Narrative */}
         <section className="relative hidden md:flex w-1/2 h-screen overflow-hidden select-none">
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] hover:scale-105" 
             style={{ 
-              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuASQTfMu-0xiKhrcnfa-XJN62fDDJuh1dIIeTAdUiIZFxSiwIbWcM1TZtKtNZY6lz9DmP7EOGWJhSdtdTXpUzqOHp0KOpw_V-E4VtQbjcMRS9Y68yNN9vgPYjEQOrxnlOyvB7NQMtg2K2TLP6ovakcn7GE1Ur3d5QYeRCL45eM8d0GeK4VTZA7vy95g5eoMSq5nIJUFPc1TA6kGIWb8qFRYLIw93_JGA0bePPrMquuKehCvMsR-RO3AuQ')` 
+              backgroundImage: `url('/Register.jpeg')` 
             }}
           ></div>
           {/* Branding Overlay */}

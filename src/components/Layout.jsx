@@ -6,6 +6,7 @@ import Footer from './Footer';
 const Layout = ({ children }) => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
+  const isAuthPage = ['/login', '/register'].includes(location.pathname);
 
   if (isAdmin) {
     return <>{children}</>;
@@ -13,11 +14,11 @@ const Layout = ({ children }) => {
 
   return (
     <div className="bg-background text-on-surface font-body-md overflow-x-hidden min-h-screen flex flex-col">
-      <Navbar />
+      {!isAuthPage && <Navbar />}
       <main className="flex-grow">
         {children}
       </main>
-      <Footer />
+      {!isAuthPage && <Footer />}
     </div>
   );
 };

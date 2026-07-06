@@ -40,7 +40,7 @@ const Login = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] hover:scale-105" 
             style={{ 
-              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuASQTfMu-0xiKhrcnfa-XJN62fDDJuh1dIIeTAdUiIZFxSiwIbWcM1TZtKtNZY6lz9DmP7EOGWJhSdtdTXpUzqOHp0KOpw_V-E4VtQbjcMRS9Y68yNN9vgPYjEQOrxnlOyvB7NQMtg2K2TLP6ovakcn7GE1Ur3d5QYeRCL45eM8d0GeK4VTZA7vy95g5eoMSq5nIJUFPc1TA6kGIWb8qFRYLIw93_JGA0bePPrMquuKehCvMsR-RO3AuQ')` 
+              backgroundImage: `url('/Login.png')` 
             }}
           ></div>
           {/* Branding Overlay */}
