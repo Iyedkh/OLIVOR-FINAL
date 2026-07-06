@@ -9,44 +9,93 @@ const addOrderItems = async (req, res) => {
     orderItems,
     shippingAddress,
     paymentMethod,
-    itemsPrice,
-    taxPrice,
     shippingPrice,
-    totalPrice,
   } = req.body;
 
   try {
-    if (orderItems && orderItems.length === 0) {
+    if (!orderItems || orderItems.length === 0) {
       res.status(400).json({ message: 'No order items' });
       return;
-    } else {
+    }
+
+    let calculatedItemsPrice = 0;
+    const verifiedOrderItems = [];
+
+    // Verify products exist, check stock, and calculate prices using server DB values
+    for (const item of orderItems) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        return res.status(404).json({ message: `Product not found: ${item.product}` });
+      }
+
+      if (product.countInStock < item.qty) {
+        return res.status(400).json({ message: `Insufficient stock for product: ${product.title}` });
+      }
+
+      calculatedItemsPrice += product.price * item.qty;
+
+      verifiedOrderItems.push({
+        title: product.title,
+        qty: item.qty,
+        image: product.images[0] || product.image,
+        price: product.price,
+        volume: product.volume || '500ml',
+        product: product._id,
+      });
+    }
+
+    const calculatedTaxPrice = Number((0.08 * calculatedItemsPrice).toFixed(2));
+    
+    // Validate shipping price matches accepted configurations (standard=0, express=15)
+    let calculatedShippingPrice = Number(shippingPrice) || 0;
+    if (calculatedShippingPrice !== 0 && calculatedShippingPrice !== 15) {
+      return res.status(400).json({ message: 'Invalid shipping price configuration' });
+    }
+
+    const calculatedTotalPrice = Number((calculatedItemsPrice + calculatedTaxPrice + calculatedShippingPrice).toFixed(2));
+
+    // Decrement stock atomically with manual rollback capability on failure (concurrency protection)
+    const updatedProducts = [];
+    try {
+      for (const item of verifiedOrderItems) {
+        const updateResult = await Product.updateOne(
+          { _id: item.product, countInStock: { $gte: item.qty } },
+          { $inc: { countInStock: -item.qty } }
+        );
+        if (updateResult.modifiedCount === 0) {
+          throw new Error(`Insufficient stock or concurrent purchase for product: ${item.title}`);
+        }
+        updatedProducts.push({ product: item.product, qty: item.qty });
+      }
+    } catch (err) {
+      // Rollback already decremented products
+      for (const rolled of updatedProducts) {
+        await Product.updateOne({ _id: rolled.product }, { $inc: { countInStock: rolled.qty } });
+      }
+      return res.status(400).json({ message: err.message });
+    }
+
+    // Create and save the order
+    try {
       const order = new Order({
         user: req.user._id,
-        orderItems: orderItems.map((x) => ({
-          ...x,
-          product: x.product,
-          _id: undefined,
-        })),
+        orderItems: verifiedOrderItems,
         shippingAddress,
         paymentMethod,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
+        itemsPrice: Number(calculatedItemsPrice.toFixed(2)),
+        taxPrice: calculatedTaxPrice,
+        shippingPrice: calculatedShippingPrice,
+        totalPrice: calculatedTotalPrice,
       });
 
       const createdOrder = await order.save();
-
-      // Decrement stock for ordered items
-      for (const item of orderItems) {
-        const product = await Product.findById(item.product);
-        if (product) {
-          product.countInStock = Math.max(0, product.countInStock - item.qty);
-          await product.save();
-        }
-      }
-
       res.status(201).json(createdOrder);
+    } catch (orderSaveError) {
+      // Rollback stock updates if order saving fails
+      for (const rolled of updatedProducts) {
+        await Product.updateOne({ _id: rolled.product }, { $inc: { countInStock: rolled.qty } });
+      }
+      throw orderSaveError;
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
