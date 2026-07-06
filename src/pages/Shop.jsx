@@ -5,7 +5,13 @@ import { ChevronRight, ChevronDown, Star, Layers, CreditCard, Package2, Ruler, V
 import { useApp } from '../context/AppContext';
 
 const Shop = () => {
-  const { products, wishlist, toggleWishlist, addToCart, loadingProducts, categories, loadingCategories } = useApp();
+  const { fetchShopProducts, wishlist, toggleWishlist, addToCart, categories, loadingCategories } = useApp();
+  const [shopProducts, setShopProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [loadingShop, setLoadingShop] = useState(true);
+  const [sortOption, setSortOption] = useState('newest');
+
   const [selectedCollections, setSelectedCollections] = useState({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +45,62 @@ const Shop = () => {
       setCurrentPage(1);
     }
   }, [categories]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setLoadingShop(true);
+      const params = {
+        page: currentPage,
+        limit: PRODUCTS_PER_PAGE,
+        sort: sortOption
+      };
+
+      const activeCategoryIds = [];
+      Object.keys(selectedCollections).forEach(catName => {
+        if (selectedCollections[catName]) {
+          const categoryObj = categories.find(c => c.name === catName);
+          if (categoryObj) {
+            activeCategoryIds.push(categoryObj._id);
+          }
+        }
+      });
+      if (activeCategoryIds.length > 0) {
+        params.category = activeCategoryIds.join(',');
+      }
+
+      const activePrices = [];
+      if (selectedPrices.under50) activePrices.push({ min: 0, max: 49.99 });
+      if (selectedPrices.fiftyToHundred) activePrices.push({ min: 50, max: 100 });
+      if (selectedPrices.overHundred) activePrices.push({ min: 100.01, max: 99999 });
+
+      if (activePrices.length > 0 && activePrices.length < 3) {
+        const minVal = Math.min(...activePrices.map(p => p.min));
+        const maxVal = Math.max(...activePrices.map(p => p.max));
+        params.minPrice = minVal;
+        params.maxPrice = maxVal;
+      }
+
+      const activeVolumes = Object.keys(selectedVolumes).filter(vol => selectedVolumes[vol]);
+      if (activeVolumes.length > 0) {
+        params.volume = activeVolumes.join(',');
+      }
+
+      const activeRegions = Object.keys(selectedRegions).filter(reg => selectedRegions[reg]);
+      if (activeRegions.length > 0) {
+        params.region = activeRegions.join(',');
+      }
+
+      const result = await fetchShopProducts(params);
+      setShopProducts(result.products || []);
+      setTotalPages(result.pages || 1);
+      setTotalProducts(result.total || 0);
+      setLoadingShop(false);
+    };
+
+    if (categories && categories.length > 0) {
+      loadProducts();
+    }
+  }, [currentPage, selectedCollections, selectedPrices, selectedVolumes, selectedRegions, sortOption, categories]);
 
   const handleCheckboxChange = (name) => {
     setSelectedCollections(prev => ({
@@ -77,51 +139,6 @@ const Shop = () => {
 
     setCurrentPage(1);
   };
-
-  const filteredProducts = (products || []).filter(p => {
-    // 1. Category/Collection filter
-    const catName = p.category?.name || p.category;
-    const hasCategoryFilters = Object.values(selectedCollections).some(v => v);
-    if (hasCategoryFilters && !selectedCollections[catName]) {
-      return false;
-    }
-
-    // 2. Price filter
-    const hasPriceFilters = Object.values(selectedPrices).some(v => v);
-    if (hasPriceFilters) {
-      let matchPrice = false;
-      if (selectedPrices.under50 && p.price < 50) matchPrice = true;
-      if (selectedPrices.fiftyToHundred && p.price >= 50 && p.price <= 100) matchPrice = true;
-      if (selectedPrices.overHundred && p.price > 100) matchPrice = true;
-      if (!matchPrice) return false;
-    }
-
-    // 3. Volume/Bottle Size filter
-    const hasVolumeFilters = Object.values(selectedVolumes).some(v => v);
-    if (hasVolumeFilters) {
-      let matchVolume = false;
-      const vol = p.volume?.toLowerCase() || '';
-      if (selectedVolumes['250ml'] && vol.includes('250ml')) matchVolume = true;
-      if (selectedVolumes['500ml'] && vol.includes('500ml')) matchVolume = true;
-      if (selectedVolumes['750ml'] && vol.includes('750ml')) matchVolume = true;
-      if (selectedVolumes['1000ml'] && (vol.includes('1000ml') || vol.includes('1l'))) matchVolume = true;
-      if (!matchVolume) return false;
-    }
-
-    // 4. Region filter
-    const hasRegionFilters = Object.values(selectedRegions).some(v => v);
-    if (hasRegionFilters) {
-      const region = p.region || '';
-      if (!selectedRegions[region]) return false;
-    }
-
-    return true;
-  });
-
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE) || 1;
-  const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
-  const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const handlePageClick = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -163,10 +180,19 @@ const Shop = () => {
             </div>
             
             <div className="flex items-center justify-between md:justify-end gap-6 border-b border-outline-variant pb-2 min-w-[300px]">
-              <span className="text-label-lg text-label-lg text-outline">{filteredProducts.length} {filteredProducts.length === 1 ? 'Masterpiece' : 'Masterpieces'}</span>
-              <div className="flex items-center gap-2 cursor-pointer group">
-                <span className="text-label-lg font-label-lg text-primary uppercase text-sm font-semibold">Sort: Newest</span>
-                <ChevronDown className="h-4 w-4 text-secondary group-hover:translate-y-0.5 transition-transform" />
+              <span className="text-label-lg text-label-lg text-outline">{totalProducts} {totalProducts === 1 ? 'Masterpiece' : 'Masterpieces'}</span>
+              <div className="flex items-center gap-2 group">
+                <span className="text-label-lg font-label-lg text-primary uppercase text-sm font-semibold mr-1">Sort:</span>
+                <select 
+                  value={sortOption} 
+                  onChange={(e) => { setSortOption(e.target.value); setCurrentPage(1); }} 
+                  className="bg-transparent border-none text-primary uppercase text-sm font-bold focus:outline-none cursor-pointer focus:ring-0"
+                >
+                  <option className="bg-surface text-on-surface" value="newest">Newest</option>
+                  <option className="bg-surface text-on-surface" value="price_asc">Price: Low to High</option>
+                  <option className="bg-surface text-on-surface" value="price_desc">Price: High to Low</option>
+                  <option className="bg-surface text-on-surface" value="rating">Rating</option>
+                </select>
               </div>
             </div>
           </div>
@@ -344,18 +370,18 @@ const Shop = () => {
 
           {/* Product Grid */}
           <section className="flex-grow">
-            {loadingProducts || loadingCategories ? (
+            {loadingShop || loadingCategories ? (
               <div className="flex items-center justify-center min-h-[400px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
-            ) : filteredProducts.length === 0 ? (
+            ) : shopProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center min-h-[400px] text-on-surface-variant">
                 <span className="material-symbols-outlined text-6xl opacity-30 mb-4">inventory_2</span>
                 <p className="font-body-lg">No masterpieces found in our collection.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-12 gap-x-8">
-                {currentProducts.map((product) => {
+                {shopProducts.map((product) => {
                   const productId = product._id || product.id;
                   const isFavorite = wishlist.some(item => (item._id || item.id || item) === productId);
                   return (

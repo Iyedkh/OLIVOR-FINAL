@@ -5,9 +5,81 @@ import Product from '../models/Product.js';
 // @access  Public
 const getProducts = async (req, res) => {
   try {
+    const query = {};
 
-    const products = await Product.find({}).populate('category');
-    res.json(products);
+    // 1. Keyword search (regex match on title)
+    if (req.query.keyword) {
+      query.title = {
+        $regex: req.query.keyword,
+        $options: 'i',
+      };
+    }
+
+    // 2. Category filtering
+    if (req.query.category) {
+      const categories = req.query.category.split(',');
+      query.category = { $in: categories };
+    }
+
+    // 3. Price range filtering
+    if (req.query.minPrice || req.query.maxPrice) {
+      query.price = {};
+      if (req.query.minPrice) {
+        query.price.$gte = Number(req.query.minPrice);
+      }
+      if (req.query.maxPrice) {
+        query.price.$lte = Number(req.query.maxPrice);
+      }
+    }
+
+    // 4. Volume filtering
+    if (req.query.volume) {
+      const volumes = req.query.volume.split(',').map(v => new RegExp(v.trim(), 'i'));
+      query.volume = { $in: volumes };
+    }
+
+    // 5. Region filtering
+    if (req.query.region) {
+      const regions = req.query.region.split(',').map(r => r.trim());
+      query.region = { $in: regions };
+    }
+
+    // 6. Sorting
+    let sort = { createdAt: -1 }; // default newest
+    if (req.query.sort) {
+      if (req.query.sort === 'price_asc') {
+        sort = { price: 1 };
+      } else if (req.query.sort === 'price_desc') {
+        sort = { price: -1 };
+      } else if (req.query.sort === 'rating') {
+        sort = { rating: -1 };
+      } else if (req.query.sort === 'newest') {
+        sort = { createdAt: -1 };
+      }
+    }
+
+    // Return the raw list as an array for backward compatibility if no page/limit is provided
+    if (req.query.all === 'true' || (!req.query.page && !req.query.limit)) {
+      const products = await Product.find(query).populate('category').sort(sort);
+      return res.json(products);
+    }
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 6;
+
+    const count = await Product.countDocuments(query);
+    const products = await Product.find(query)
+      .populate('category')
+      .sort(sort)
+      .limit(limit)
+      .skip(limit * (page - 1));
+
+    res.json({
+      products,
+      page,
+      pages: Math.ceil(count / limit),
+      total: count,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

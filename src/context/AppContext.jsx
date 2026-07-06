@@ -39,6 +39,17 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // Fetch shop products (paginated/filtered/sorted)
+  const fetchShopProducts = async (params = {}) => {
+    try {
+      const { data } = await axios.get(`${API_URL}/products`, { params });
+      return data; // returns { products, page, pages, total }
+    } catch (err) {
+      console.error('Error fetching shop products:', err);
+      return { products: [], page: 1, pages: 1, total: 0 };
+    }
+  };
+
   // Fetch Recipes
   const fetchRecipes = async () => {
     try {
@@ -632,6 +643,7 @@ export const AppProvider = ({ children }) => {
         createCategory,
         updateCategory,
         deleteCategory,
+        fetchShopProducts,
         refreshProducts: fetchProducts,
         refreshCategories: fetchCategories,
       }}

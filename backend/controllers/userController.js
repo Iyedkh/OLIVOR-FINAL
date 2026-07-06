@@ -172,16 +172,17 @@ const updateCart = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (user) {
-      // Filter out any cart items that have invalid ObjectIds or refer to deleted products
-      const validCartItems = [];
-      for (const item of cartItems) {
-        if (item.product && mongoose.Types.ObjectId.isValid(item.product)) {
-          const productExists = await Product.exists({ _id: item.product });
-          if (productExists) {
-            validCartItems.push(item);
-          }
-        }
-      }
+      // Filter out invalid product IDs and avoid N+1 queries using a single $in query
+      const productIds = cartItems
+        .map(item => item.product)
+        .filter(id => id && mongoose.Types.ObjectId.isValid(id));
+
+      const existingProducts = await Product.find({ _id: { $in: productIds } }).select('_id');
+      const existingProductIds = existingProducts.map(p => p._id.toString());
+
+      const validCartItems = cartItems.filter(
+        item => item.product && existingProductIds.includes(item.product.toString())
+      );
 
       user.cart = validCartItems;
       await user.save();
