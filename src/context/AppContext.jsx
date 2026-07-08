@@ -93,6 +93,7 @@ export const AppProvider = ({ children }) => {
         name: data.name,
         email: data.email,
         isAdmin: data.isAdmin,
+        isVerified: data.isVerified,
       });
       
       // Sync wishlist
@@ -188,6 +189,7 @@ export const AppProvider = ({ children }) => {
         name: data.name,
         email: data.email,
         isAdmin: data.isAdmin,
+        isVerified: data.isVerified,
       });
 
       // Handle backend wishlist
@@ -251,6 +253,7 @@ export const AppProvider = ({ children }) => {
         name: data.name,
         email: data.email,
         isAdmin: data.isAdmin,
+        isVerified: data.isVerified,
       });
       setWishlist([]);
       
@@ -632,7 +635,41 @@ export const AppProvider = ({ children }) => {
       return { success: false, message };
     }
   };
+  const resendVerificationLink = async () => {
+    try {
+      const { data } = await axios.post(`${API_URL}/users/resend-verification`);
+      return { success: true, message: data.message };
+    } catch (err) {
+      const message = err.response && err.response.data.message
+        ? err.response.data.message
+        : err.message;
+      return { success: false, message };
+    }
+  };
 
+  const forgotPassword = async (email) => {
+    try {
+      const { data } = await axios.post(`${API_URL}/users/forgot-password`, { email });
+      return { success: true, message: data.message };
+    } catch (err) {
+      const message = err.response && err.response.data.message
+        ? err.response.data.message
+        : err.message;
+      return { success: false, message };
+    }
+  };
+
+  const resetPassword = async (token, password) => {
+    try {
+      const { data } = await axios.put(`${API_URL}/users/reset-password/${token}`, { password });
+      return { success: true, message: data.message };
+    } catch (err) {
+      const message = err.response && err.response.data.message
+        ? err.response.data.message
+        : err.message;
+      return { success: false, message };
+    }
+  };
   return (
     <AppContext.Provider
       value={{
@@ -672,6 +709,9 @@ export const AppProvider = ({ children }) => {
         fetchShopProducts,
         validateCouponCode,
         createProductReview,
+        resendVerificationLink,
+        forgotPassword,
+        resetPassword,
         refreshProducts: fetchProducts,
         refreshCategories: fetchCategories,
       }}

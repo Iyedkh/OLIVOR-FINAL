@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 @import "tailwindcss";
@@ -39,11 +39,12 @@
   --color-on-error-container: #93000a;
 
   /* Font Families */
-  --font-display-lg: "Playfair Display", serif;
-  --font-headline-xl: "Playfair Display", serif;
-  --font-headline-lg: "Playfair Display", serif;
-  --font-headline-md: "Playfair Display", serif;
-  --font-headline-lg-mobile: "Playfair Display", serif;
+  --font-serif: "Fraunces", serif;
+  --font-display-lg: "Fraunces", serif;
+  --font-headline-xl: "Fraunces", serif;
+  --font-headline-lg: "Fraunces", serif;
+  --font-headline-md: "Fraunces", serif;
+  --font-headline-lg-mobile: "Fraunces", serif;
   --font-body-lg: "Inter", sans-serif;
   --font-body-md: "Inter", sans-serif;
   --font-label-lg: "Inter", sans-serif;

@@ -44,7 +44,7 @@ app.use(helmet());
 // Rate limiting to protect API endpoints
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per window
+  max: process.env.NODE_ENV === 'development' ? 5000 : 100, // limit each IP to 5000 requests in development, 100 in production
   message: 'Too many requests from this IP, please try again after 15 minutes',
   standardHeaders: true,
   legacyHeaders: false,

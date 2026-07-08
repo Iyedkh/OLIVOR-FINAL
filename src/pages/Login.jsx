@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 import { useApp } from '../context/AppContext';
 
 const Login = () => {
@@ -16,6 +17,16 @@ const Login = () => {
   // Extract redirect query parameter from URL (e.g. ?redirect=checkout)
   const queryParams = new URLSearchParams(location.search);
   const redirect = queryParams.get('redirect');
+  const verified = queryParams.get('verified');
+  const [verifiedToastShown, setVerifiedToastShown] = useState(false);
+
+  useEffect(() => {
+    if (verified === 'true' && !verifiedToastShown) {
+      toast.success('Your email has been successfully verified! Please sign in.', { toastId: 'verify-success' });
+      setVerifiedToastShown(true);
+      navigate('/login', { replace: true });
+    }
+  }, [verified, verifiedToastShown, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -119,9 +130,9 @@ const Login = () => {
                     <label className="text-[10px] font-bold uppercase tracking-widest text-outline">
                       Password
                     </label>
-                    <a className="font-label-sm text-label-sm uppercase tracking-widest text-outline hover:text-primary transition-colors text-[9px] font-bold" href="#">
+                    <Link className="font-label-sm text-label-sm uppercase tracking-widest text-outline hover:text-primary transition-colors text-[9px] font-bold" to="/forgot-password">
                       Forgot Password?
-                    </a>
+                    </Link>
                   </div>
                   <input 
                     value={password}

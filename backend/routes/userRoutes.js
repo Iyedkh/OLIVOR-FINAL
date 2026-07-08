@@ -10,6 +10,10 @@ import {
   deleteUser,
   getUserById,
   updateUser,
+  verifyEmail,
+  resendVerificationEmail,
+  forgotPassword,
+  resetPassword,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/auth.js';
 
@@ -24,6 +28,11 @@ router.post('/login', authUser);
 router.route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+router.get('/verify/:token', verifyEmail);
+router.post('/resend-verification', protect, resendVerificationEmail);
+router.post('/forgot-password', forgotPassword);
+router.put('/reset-password/:token', resetPassword);
 
 router.route('/wishlist')
   .post(protect, toggleWishlist);

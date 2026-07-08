@@ -34,6 +34,23 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    isVerified: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
+    verificationTokenExpire: {
+      type: Date,
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpire: {
+      type: Date,
+    },
     wishlist: [
       {
         type: mongoose.Schema.Types.ObjectId,
