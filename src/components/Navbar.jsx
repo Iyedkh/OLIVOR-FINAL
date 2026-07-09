@@ -43,8 +43,28 @@ const Navbar = () => {
 
         {/* Center Logo */}
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
-          <Link to="/" className="font-logo text-[#F6BE3C] text-2xl md:text-3xl tracking-widest font-bold hover:scale-105 transition-transform duration-300 select-none">
-            OLIV'OR
+          <Link to="/" className="flex items-center gap-2 md:gap-3 group">
+            {/* Custom SVG Logo Mark */}
+            <svg className="h-7 w-7 md:h-8 md:w-8 group-hover:rotate-12 transition-transform duration-500 ease-out shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="45" fill="#3e5219" fillOpacity="0.1" />
+              <path d="M50 20 C62 38 68 48 68 62 C68 74 58 82 50 82 C42 82 32 74 32 62 C32 48 38 38 50 20 Z" fill="url(#navGoldGradient)" />
+              <path d="M50 35 C52 45 42 55 42 62 C42 69 48 72 50 72 C52 72 58 69 58 62 C58 55 48 45 50 35 Z" fill="url(#navGreenGradient)" />
+              <path d="M48 28 C52 38 55 43 55 52 C55 57 52 60 48 60 C44 60 41 57 41 52 C41 43 44 38 48 28 Z" fill="#ffffff" fillOpacity="0.25" />
+              <defs>
+                <linearGradient id="navGoldGradient" x1="50" y1="20" x2="50" y2="82" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#FFEFA6" />
+                  <stop offset="50%" stopColor="#F6BE3C" />
+                  <stop offset="100%" stopColor="#B28212" />
+                </linearGradient>
+                <linearGradient id="navGreenGradient" x1="50" y1="35" x2="50" y2="72" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#8DA750" />
+                  <stop offset="100%" stopColor="#3E5219" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <span className="font-logo text-[#F6BE3C] text-xl md:text-2xl tracking-widest font-bold select-none transition-colors duration-300">
+              OLIV'OR
+            </span>
           </Link>
         </div>
 
