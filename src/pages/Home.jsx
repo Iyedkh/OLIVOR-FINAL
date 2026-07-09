@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, ShoppingBag, Leaf, Hand, Droplet, ArrowLeft, ArrowRight, ChevronDown, Star } from 'lucide-react';
+import { Heart, ShoppingBag, Leaf, Hand, Droplet, ArrowLeft, ArrowRight, ChevronDown, Star, Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 // Tab/section background texture (embedded data URI)
@@ -41,6 +41,28 @@ const Home = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isHeroScrolled, setIsHeroScrolled] = useState(false);
 
+  const [homeVideoPlaying, setHomeVideoPlaying] = useState(true);
+  const [homeVideoMuted, setHomeVideoMuted] = useState(true);
+  const homeVideoRef = useRef(null);
+
+  const toggleHomeVideoPlay = () => {
+    if (homeVideoRef.current) {
+      if (homeVideoPlaying) {
+        homeVideoRef.current.pause();
+      } else {
+        homeVideoRef.current.play();
+      }
+      setHomeVideoPlaying(!homeVideoPlaying);
+    }
+  };
+
+  const toggleHomeVideoMute = () => {
+    if (homeVideoRef.current) {
+      homeVideoRef.current.muted = !homeVideoMuted;
+      setHomeVideoMuted(!homeVideoMuted);
+    }
+  };
+
   // Rotating luxury backgrounds with unique title overlays and details
   const heroBackgrounds = [
     { 
@@ -49,12 +71,18 @@ const Home = () => {
       label: 'Reserve Collection Harvest',
       subline: 'First Full Moon of October'
     },
+    {
+      url:'/bg1.png',
+      position: 'center',
+      label: 'Premium Collection Harvest',
+      subline: 'First Full Moon of October'
+    },
     { 
       url: '/mediterranean_olive_grove_1782986766051.jpg', 
       position: 'center',
       label: 'The Sahel Terraces',
       subline: 'Sustained by Sea Breezes Since Antiquity'
-    }
+    }   
   ];
 
   // Rotating customer review quotes
@@ -188,7 +216,7 @@ const Home = () => {
           {heroBackgrounds.map((bgObj, idx) => (
             <div 
               key={bgObj.url}
-              className={`absolute inset-0 w-full h-full bg-cover transition-opacity duration-[1800ms] ease-in-out ${
+              className={`absolute inset-0 w-full h-full bg-cover transition-opacity duration-[1000ms] ease-in-out ${
                 bgIndex === idx ? 'opacity-100' : 'opacity-0'
               }`}
               style={{ 
@@ -367,6 +395,86 @@ const Home = () => {
             </p>
           </motion.div>
         </motion.div>
+      </section>
+
+      {/* Home Video Section */}
+      <section className="py-20 px-container-padding bg-background relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none opacity-20 bg-repeat" style={{ backgroundImage: `url("${noisePattern}")` }}></div>
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl mx-auto mb-16 text-center"
+          >
+            <span className="font-mono text-[10px] text-secondary uppercase tracking-widest block mb-2 font-bold">
+              Immersive Journey
+            </span>
+            <h2 
+              className="font-serif text-headline-xl text-primary font-bold tracking-tight text-3xl md:text-4xl"
+              style={{ fontFamily: "'Fraunces', serif" }}
+            >
+              The Golden Harvest
+            </h2>
+            <div className="h-[2px] w-24 bg-gradient-to-r from-[#d4af37] to-[#1e3d2f] mx-auto mt-4 mb-6"></div>
+            <p className="font-body-md text-on-surface-variant font-light leading-relaxed text-sm md:text-base">
+              Witness the passion, precision, and natural beauty that defines every stage of our harvest in the olive fields of Tunisia.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative aspect-video max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-outline-variant/30 bg-black group"
+          >
+            <video
+              ref={homeVideoRef}
+              className="w-full h-full object-cover"
+              src="/VD.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            {/* HUD & Control Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 flex flex-col justify-between p-6 md:p-8">
+              <div className="flex justify-between items-center w-full">
+                <span className="font-logo text-white text-base md:text-lg tracking-widest drop-shadow-md">OLIV'OR</span>
+                <span className="text-white/80 text-xs font-semibold uppercase tracking-widest drop-shadow-md bg-black/20 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10">Harvest Season</span>
+              </div>
+
+              {/* Center Play/Pause button */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <button
+                  onClick={toggleHomeVideoPlay}
+                  className="w-20 h-20 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all duration-300 hover:scale-110 pointer-events-auto shadow-lg"
+                  aria-label={homeVideoPlaying ? 'Pause Video' : 'Play Video'}
+                >
+                  {homeVideoPlaying ? <Pause className="h-8 w-8 text-white fill-white" /> : <Play className="h-8 w-8 text-white fill-white translate-x-0.5" />}
+                </button>
+              </div>
+
+              <div className="flex justify-between items-end w-full mt-auto">
+                <div className="text-left text-white max-w-xs md:max-w-md drop-shadow-md">
+                  <p className="text-xs uppercase tracking-widest text-[#d4af37] font-semibold mb-1">Liquid Gold</p>
+                  <h4 className="text-lg md:text-2xl font-serif italic font-medium">Tunisian Sun, Bottled</h4>
+                </div>
+                
+                {/* Mute button */}
+                <button
+                  onClick={toggleHomeVideoMute}
+                  className="w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition-colors pointer-events-auto"
+                  aria-label={homeVideoMuted ? 'Unmute Video' : 'Mute Video'}
+                >
+                  {homeVideoMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* Featured Products Scroller */}
@@ -755,7 +863,7 @@ const Home = () => {
             <img 
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
               alt="Gifts box set"
-              src="/gift.jpeg"
+              src="/GIFT.jpeg"
             />
             {/* Standardized gradient-to-black overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent"></div>

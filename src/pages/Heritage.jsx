@@ -1,8 +1,30 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Flag, Eye, Heart, ScrollText, ShieldCheck, Leaf, ChevronDown } from 'lucide-react';
+import { Flag, Eye, Heart, ScrollText, ShieldCheck, Leaf, ChevronDown, Play, Pause, Volume2, VolumeX } from 'lucide-react';
 
 const Heritage = () => {
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef(null);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   // Animation variants
   const fadeIn = {
     hidden: { opacity: 0, y: 30 },
@@ -20,11 +42,11 @@ const Heritage = () => {
   return (
     <div className="bg-background text-on-surface font-body-md min-h-screen">
       {/* Hero Banner */}
-      <header className="relative h-[80vh] w-full flex items-center justify-center overflow-hidden pt-20">
+      <header className="relative h-[95vh] w-full flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-primary/20 mix-blend-multiply z-10"></div>
           <div 
-            className="w-full h-full bg-cover bg-bottom" 
+            className="w-full h-full bg-cover bg-center" 
             style={{ backgroundImage: "url('/HERI.png')" }}
           ></div>
         </div>
@@ -57,45 +79,212 @@ const Heritage = () => {
         </div>
       </header>
 
-      {/* Brand Story */}
-      <section className="py-section-gap-lg px-container-padding max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={fadeIn}
-          className="space-y-6"
-        >
-          <span className="text-primary font-label-lg uppercase tracking-widest mb-4 block text-xs font-bold">
-            Our Origin
-          </span>
-          <h2 className="font-display-lg text-headline-xl text-primary mb-8 italic text-3xl md:text-5xl">
-            Roots in the Sahel
-          </h2>
-          <div className="space-y-6 font-body-lg text-body-lg text-on-surface-variant text-base md:text-lg font-light">
-            <p>
-              Born from the sun-drenched coastal plains of the Tunisian Sahel, OLIV'OR is more than a brand; it is a testament to three thousand years of Mediterranean heritage. Our story begins in the ancient groves where the air carries the scent of salt and earth.
+      {/* Brand Story / Our History */}
+      <section className="py-section-gap-lg px-container-padding max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-center mb-20">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeIn}
+            className="space-y-6"
+          >
+            <span className="text-primary font-label-lg uppercase tracking-widest mb-2 block text-xs font-bold">
+              Our History
+            </span>
+              <div className="space-y-6 font-body-lg text-body-lg text-on-surface-variant text-base md:text-lg font-light leading-relaxed">
+              <p>
+                For generations, at the heart of the sun-drenched lands of Tunisia, our family has cultivated the olive tree with passion, patience, and respect for Mediterranean traditions.
+              </p>
+              <p>
+                Much more than a tree, the olive tree represents a living heritage for us, passed down from generation to generation. Each harvest tells a story of expertise, authenticity, and love for the land.
+              </p>
+              <p>
+                It is from this family tradition that <strong>OlivOr</strong> was born: an exceptional extra virgin olive oil, crafted from olives carefully selected and harvested at the peak of their maturity.
+              </p>
+            </div>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative aspect-[4/5] bg-surface-container overflow-hidden rounded-xl shadow-2xl border border-outline-variant/10"
+          >
+            <div 
+              className="w-full h-full bg-cover bg-center hover:scale-105 transition-transform duration-700" 
+              style={{ 
+                backgroundImage: `url('/H1.png')` 
+              }}
+            ></div>
+          </motion.div>
+        </div>
+
+        {/* Second Part: Methods & Reflections */}
+        <div className="grid md:grid-cols-2 gap-16 items-start mt-20 pt-16 border-t border-outline-variant/20">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeIn}
+            className="space-y-6"
+          >
+            <h3 className="font-display-lg text-headline-lg text-primary italic text-2xl md:text-3xl">
+              Our Sacred Methods
+            </h3>
+            <p className="font-body-md text-on-surface-variant font-light leading-relaxed">
+              Our methods remain faithful to the values that have always guided us:
             </p>
-            <p>
-              Tunisia is the world's leading orchard of organic olives, a land where trees are treated as family members and the harvest is a sacred dance. We founded OLIV'OR to bring this unadulterated excellence—once reserved for local masters—to the world's most discerning tables.
+            <ul className="space-y-4">
+              <li className="flex items-center space-x-3 text-on-surface-variant">
+                <span className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-primary font-semibold text-xs">✓</span>
+                <span className="font-light">Careful, selective harvesting</span>
+              </li>
+              <li className="flex items-center space-x-3 text-on-surface-variant">
+                <span className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-primary font-semibold text-xs">✓</span>
+                <span className="font-light">First cold pressing to retain all nutrients</span>
+              </li>
+              <li className="flex items-center space-x-3 text-on-surface-variant">
+                <span className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-primary font-semibold text-xs">✓</span>
+                <span className="font-light">Preserved natural, unadulterated quality</span>
+              </li>
+              <li className="flex items-center space-x-3 text-on-surface-variant">
+                <span className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-primary font-semibold text-xs">✓</span>
+                <span className="font-light">Deep respect for the unique Tunisian terroir</span>
+              </li>
+            </ul>
+
+            <div className="pt-6 font-body-lg text-body-lg text-on-surface-variant text-base md:text-lg font-light leading-relaxed">
+              <p>
+                Inspired by the richness of the Mediterranean and driven by a modern vision of luxury, OlivOr today combines tradition and elegance to offer a refined olive oil destined for lovers of authentic and high-end products.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeIn}
+            className="space-y-8 bg-surface-container-low p-8 md:p-12 rounded-2xl border border-outline-variant/30"
+          >
+            <h3 className="font-display-lg text-headline-lg text-primary italic text-2xl md:text-3xl">
+              A Reflection of Excellence
+            </h3>
+            <p className="font-body-md text-on-surface-variant font-light leading-relaxed">
+              Each bottle of OlivOr is a reflection of:
             </p>
-          </div>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative aspect-[4/5] bg-surface-container overflow-hidden rounded-xl shadow-2xl border border-outline-variant/10"
-        >
-          <div 
-            className="w-full h-full bg-cover bg-center hover:scale-105 transition-transform duration-700" 
-            style={{ 
-              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuD7Ik6YPDOG3PYgDGO1tuqycGCxGFQLsTWPDEJd19aLQWcjvCMJpweHbwQEjfB5UOaNLLj4nk3Jswqxyv1tOt__tIwpwtu3vxn7rDzjm-PdyGjGyenqxbtAIOWFVMeeCDAOtJRlMrp7pqqJtXy2rynI8CeBzqaS-Ipbh9SPVsvA_A-7N5e-QIxmY8I-HDN0jO2R-V5JgYRBt8WkLQOYSxaJZ2IEHMKFx-lMZIZKDzv8qxujXmoZf8ly2w')` 
-            }}
-          ></div>
-        </motion.div>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <div className="w-10 h-10 rounded-full bg-secondary/15 flex items-center justify-center text-secondary-container text-amber-700 font-bold shrink-0">I</div>
+                <div>
+                  <h4 className="font-semibold text-primary">An Ancestral Heritage</h4>
+                  <p className="text-sm font-light text-on-surface-variant mt-1">Passed down from generation to generation, keeping our family customs alive.</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-10 h-10 rounded-full bg-secondary/15 flex items-center justify-center text-secondary-container text-amber-700 font-bold shrink-0">II</div>
+                <div>
+                  <h4 className="font-semibold text-primary">An Exceptional Terroir</h4>
+                  <p className="text-sm font-light text-on-surface-variant mt-1">Sourced from the sun-drenched fields of Tunisia, famous for superior olive growing.</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-10 h-10 rounded-full bg-secondary/15 flex items-center justify-center text-secondary-container text-amber-700 font-bold shrink-0">III</div>
+                <div>
+                  <h4 className="font-semibold text-primary">A Family Passion</h4>
+                  <p className="text-sm font-light text-on-surface-variant mt-1">A deep, unconditional love for the land and the olive trees that transcends time.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-outline-variant/20 text-center">
+              <span className="font-logo text-xl md:text-2xl text-primary tracking-wider block">
+                OlivOr
+              </span>
+              <span className="text-secondary text-xs uppercase tracking-widest block mt-1 font-bold">
+                The Gold of the Mediterranean
+              </span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Video Showcase Section */}
+      <section className="py-section-gap-lg bg-surface-container-lowest overflow-hidden">
+        <div className="px-container-padding max-w-7xl mx-auto text-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeIn}
+            className="max-w-3xl mx-auto mb-16 text-center"
+          >
+            <span className="text-primary font-label-lg uppercase tracking-widest mb-2 block text-xs font-bold">
+              Cinematic Experience
+            </span>
+            <h2 className="font-display-lg text-headline-xl text-primary mb-6 italic text-3xl md:text-5xl">
+              The Essence in Motion
+            </h2>
+            <div className="h-0.5 w-24 bg-secondary-container mx-auto mb-6"></div>
+            <p className="font-body-md text-on-surface-variant font-light leading-relaxed text-base md:text-lg">
+              Step into our groves and experience the patience, tradition, and artistry that goes into every single drop of OlivOr liquid gold.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative aspect-video max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-outline-variant/30 bg-black group"
+          >
+            <video
+              ref={videoRef}
+              className="w-full h-full object-cover"
+              src="/VD2.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            {/* Elegant HUD & Interactive Controls Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 flex flex-col justify-between p-6 md:p-8">
+              <div className="flex justify-between items-center w-full">
+                <span className="font-logo text-white text-base md:text-lg tracking-widest drop-shadow-md">OLIV'OR</span>
+                <span className="text-white/80 text-xs font-semibold uppercase tracking-widest drop-shadow-md bg-black/20 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10">Tunisia</span>
+              </div>
+
+              {/* Center Play/Pause Indicator (large) */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <button
+                  onClick={togglePlay}
+                  className="w-20 h-20 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all duration-300 hover:scale-110 pointer-events-auto shadow-lg"
+                  aria-label={isPlaying ? 'Pause Video' : 'Play Video'}
+                >
+                  {isPlaying ? <Pause className="h-8 w-8 text-white fill-white" /> : <Play className="h-8 w-8 text-white fill-white translate-x-0.5" />}
+                </button>
+              </div>
+
+              <div className="flex justify-between items-end w-full mt-auto">
+                <div className="text-left text-white max-w-xs md:max-w-md drop-shadow-md">
+                  <p className="text-xs uppercase tracking-widest text-[#F6BE3C] font-semibold mb-1">Our Groves</p>
+                  <h4 className="text-lg md:text-2xl font-serif italic font-medium">A Legacy Transmitted in Gold</h4>
+                </div>
+                
+                {/* Mute/Unmute toggle button */}
+                <button
+                  onClick={toggleMute}
+                  className="w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition-colors pointer-events-auto"
+                  aria-label={isMuted ? 'Unmute Video' : 'Mute Video'}
+                >
+                  {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* Mission, Vision, Values */}

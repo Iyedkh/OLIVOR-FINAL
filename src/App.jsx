@@ -13,7 +13,6 @@ import Heritage from './pages/Heritage';
 import Recipes from './pages/Recipes';
 import ProductDetail from './pages/ProductDetail';
 import RecipeDetail from './pages/RecipeDetail';
-import Blog from './pages/Blog';
 import Wishlist from './pages/Wishlist';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
@@ -40,7 +39,6 @@ function App() {
           <Route path="/collections" element={<Collections />} />
           <Route path="/heritage" element={<Heritage />} />
           <Route path="/recipes" element={<Recipes />} />
-          <Route path="/blog" element={<Blog />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/recipe/:id" element={<RecipeDetail />} />
           <Route path="/wishlist" element={<Wishlist />} />

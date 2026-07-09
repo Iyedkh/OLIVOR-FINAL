@@ -38,7 +38,7 @@ const collectionsData = [
     tag: 'Curated',
     tagColor: 'text-secondary border-secondary/30',
     description: 'Curated sets for the discerning palate. The perfect gesture of Mediterranean hospitality.',
-    image: '/gift.jpeg'
+    image: '/GIFT.jpeg'
   },
   {
     id: 'restaurant',

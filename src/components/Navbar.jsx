@@ -38,9 +38,6 @@ const Navbar = () => {
             <Link to="/collections" className={`font-label-lg text-label-lg transition-colors duration-300 ${activeClass('/collections')}`}>
               Collections
             </Link>
-            <Link to="/heritage" className={`font-label-lg text-label-lg transition-colors duration-300 ${activeClass('/heritage')}`}>
-              About
-            </Link>
           </div>
         </div>
 
@@ -54,11 +51,11 @@ const Navbar = () => {
         {/* Right Links & Icons */}
         <div className="hidden md:flex items-center gap-6">
           <div className="hidden md:flex gap-6 items-center mr-6">
+            <Link to="/heritage" className={`font-label-lg text-label-lg transition-colors duration-300 ${activeClass('/heritage')}`}>
+              About
+            </Link>
             <Link to="/recipes" className={`font-label-lg text-label-lg transition-colors duration-300 ${activeClass('/recipes')}`}>
               Recipes
-            </Link>
-            <Link to="/blog" className={`font-label-lg text-label-lg transition-colors duration-300 ${activeClass('/blog')}`}>
-              Blog
             </Link>
           </div>
           
@@ -119,13 +116,6 @@ const Navbar = () => {
             className="font-label-lg text-label-lg text-primary hover:text-secondary py-2 border-b border-outline-variant/10"
           >
             Recipes
-          </Link>
-          <Link 
-            to="/blog" 
-            onClick={() => setIsOpen(false)}
-            className="font-label-lg text-label-lg text-primary hover:text-secondary py-2 border-b border-outline-variant/10"
-          >
-            Blog
           </Link>
 
           {/* Mobile Utility Actions (Search, Wishlist, Bag, Profile) */}
