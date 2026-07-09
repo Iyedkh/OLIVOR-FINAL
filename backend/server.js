@@ -41,23 +41,23 @@ const app = express();
 // Secure HTTP headers
 app.use(helmet());
 
+// Enable CORS for frontend integration (supporting HttpOnly cookies)
+app.use(
+  cors({
+    origin: ["https://olivor.netlify.app", "http://localhost:5173", "http://localhost:3000"],
+    credentials: true,
+  }),
+);
+
 // Rate limiting to protect API endpoints
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === "development" ? 5000 : 100, // limit each IP to 5000 requests in development, 100 in production
+  max: process.env.NODE_ENV === "development" ? 5000 : 300, // limit each IP to 5000 requests in development, 300 in production
   message: "Too many requests from this IP, please try again after 15 minutes",
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use("/api", limiter);
-
-// Enable CORS for frontend integration (supporting HttpOnly cookies)
-app.use(
-  cors({
-    origin:["https://olivor.netlify.app", "http://localhost:5173"],
-    credentials: true,
-  }),
-);
 
 // Parse JSON request body
 app.use(express.json());

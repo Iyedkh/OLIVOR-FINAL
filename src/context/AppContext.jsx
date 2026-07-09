@@ -4,7 +4,9 @@ import { toast } from 'react-toastify';
 
 const AppContext = createContext();
 
-const API_URL = 'https://olivor-final.onrender.com/api' ;
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000/api' 
+  : 'https://olivor-final.onrender.com/api';
 axios.defaults.withCredentials = true;
 
 export const AppProvider = ({ children }) => {
