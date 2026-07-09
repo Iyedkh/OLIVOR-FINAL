@@ -54,7 +54,7 @@ app.use("/api", limiter);
 // Enable CORS for frontend integration (supporting HttpOnly cookies)
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin:["https://olivor.netlify.app", "http://localhost:5173"],
     credentials: true,
   }),
 );
