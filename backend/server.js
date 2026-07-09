@@ -1,38 +1,38 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import connectDB from './config/db.js';
-import userRoutes from './routes/userRoutes.js';
-import productRoutes from './routes/productRoutes.js';
-import orderRoutes from './routes/orderRoutes.js';
-import recipeRoutes from './routes/recipeRoutes.js';
-import uploadRoutes from './routes/uploadRoutes.js';
-import categoryRoutes from './routes/categoryRoutes.js';
-import couponRoutes from './routes/couponRoutes.js';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import recipeRoutes from "./routes/recipeRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import couponRoutes from "./routes/couponRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 connectDB().then(async () => {
   try {
-    const Coupon = (await import('./models/Coupon.js')).default;
-    const couponExists = await Coupon.findOne({ code: 'HARVEST10' });
+    const Coupon = (await import("./models/Coupon.js")).default;
+    const couponExists = await Coupon.findOne({ code: "HARVEST10" });
     if (!couponExists) {
       await Coupon.create({
-        code: 'HARVEST10',
-        discount: 0.10,
+        code: "HARVEST10",
+        discount: 0.1,
         active: true,
       });
-      console.log('Seeded default coupon code HARVEST10.');
+      console.log("Seeded default coupon code HARVEST10.");
     }
   } catch (err) {
-    console.error('Error seeding default coupon:', err);
+    console.error("Error seeding default coupon:", err);
   }
 });
 
@@ -44,33 +44,35 @@ app.use(helmet());
 // Rate limiting to protect API endpoints
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 5000 : 100, // limit each IP to 5000 requests in development, 100 in production
-  message: 'Too many requests from this IP, please try again after 15 minutes',
+  max: process.env.NODE_ENV === "development" ? 5000 : 100, // limit each IP to 5000 requests in development, 100 in production
+  message: "Too many requests from this IP, please try again after 15 minutes",
   standardHeaders: true,
   legacyHeaders: false,
 });
-app.use('/api', limiter);
+app.use("/api", limiter);
 
 // Enable CORS for frontend integration (supporting HttpOnly cookies)
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 // Parse JSON request body
 app.use(express.json());
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/recipes', recipeRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/coupons', couponRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/recipes", recipeRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/coupons", couponRoutes);
 
-app.get('/', (req, res) => {
-  res.send('OLIVOR Luxury API is running...');
+app.get("/", (req, res) => {
+  res.send("OLIVOR Luxury API is running...");
 });
 
 // 404 Not Found handler
@@ -86,7 +88,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode);
   res.json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 });
 

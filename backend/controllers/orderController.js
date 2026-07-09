@@ -1,5 +1,250 @@
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
+import sendEmail from '../utils/sendEmail.js';
+
+// Send Order Confirmation Email Helper
+const sendOrderConfirmationEmail = async (order, user) => {
+  try {
+    const itemsHtml = order.orderItems.map(item => `
+      <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #eae8e2; text-align: left; font-size: 13px; color: #45483c;">
+          <strong>${item.title}</strong><br>
+          <span style="font-size: 11px; color: #75796b;">Qty: ${item.qty} &bull; ${item.volume || '500ml'}</span>
+        </td>
+        <td style="padding: 12px 0; border-bottom: 1px solid #eae8e2; text-align: right; font-size: 13px; color: #1b1c19; font-weight: bold;">
+          $${(item.price * item.qty).toFixed(2)}
+        </td>
+      </tr>
+    `).join('');
+
+    const emailHtml = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - OLIV'OR</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500;600&display=swap');
+      body {
+        background-color: #fbf9f3;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrapper {
+        background-color: #fbf9f3;
+        padding: 40px 20px;
+      }
+      .container {
+        max-width: 580px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border: 1px solid #eae8e2;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(62, 82, 25, 0.05);
+      }
+      .header {
+        background-color: #1e3d2f;
+        padding: 40px 20px;
+        text-align: center;
+      }
+      .header-logo {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 26px;
+        font-weight: 500;
+        color: #d4af37;
+        letter-spacing: 0.1em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+      .header-sub {
+        font-size: 9px;
+        font-weight: 600;
+        color: #ffffff;
+        opacity: 0.6;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        margin-top: 6px;
+      }
+      .content {
+        padding: 40px 30px;
+      }
+      .title {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #1e3d2f;
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .subtitle {
+        font-size: 11px;
+        font-weight: 600;
+        color: #75796b;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .greeting {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #1b1c19;
+        margin-bottom: 25px;
+      }
+      .order-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+      .summary-row td {
+        padding: 8px 0;
+        font-size: 13px;
+        color: #45483c;
+      }
+      .total-row td {
+        padding: 16px 0;
+        border-top: 2px solid #1e3d2f;
+        font-size: 16px;
+        font-weight: bold;
+        color: #1e3d2f;
+      }
+      .meta-box {
+        background-color: #f7f5ef;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        border: 1px solid #eae8e2;
+      }
+      .meta-title {
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #1e3d2f;
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+      .meta-text {
+        font-size: 13px;
+        line-height: 1.5;
+        color: #45483c;
+        margin: 0 0 15px 0;
+      }
+      .meta-text:last-child {
+        margin-bottom: 0;
+      }
+      .footer {
+        background-color: #f7f5ef;
+        border-top: 1px solid #eae8e2;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .footer-text {
+        font-size: 10px;
+        color: #75796b;
+        line-height: 1.5;
+        margin: 4px 0;
+      }
+      .footer-divider {
+        width: 40px;
+        height: 1px;
+        background-color: #d4af37;
+        margin: 15px auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="header">
+          <h1 class="header-logo">OLIV'OR</h1>
+          <div class="header-sub">Tunisian Reserve</div>
+        </div>
+        <div class="content">
+          <h2 class="title">Thank You For Your Order</h2>
+          <div class="subtitle">Order ID: #${order._id}</div>
+          
+          <p class="greeting">Dear ${user.name || 'Valued Customer'},</p>
+          <p class="greeting" style="margin-top: -15px; color: #45483c; font-size: 13.5px; font-weight: 300;">
+            We are pleased to confirm that your order has been received and is currently being prepared for shipping by our estate keepers. Here is a summary of your luxury selection:
+          </p>
+          
+          <table class="order-table">
+            <thead>
+              <tr>
+                <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #1e3d2f; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: #1e3d2f;">Item</th>
+                <th style="text-align: right; padding-bottom: 10px; border-bottom: 2px solid #1e3d2f; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: #1e3d2f;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+              <tr class="summary-row">
+                <td style="padding-top: 15px;">Subtotal</td>
+                <td style="text-align: right; padding-top: 15px;">$${order.itemsPrice.toFixed(2)}</td>
+              </tr>
+              ${order.discountPrice > 0 ? `
+              <tr class="summary-row">
+                <td style="color: #785a00;">Discount ${order.couponCode ? `(${order.couponCode})` : ''}</td>
+                <td style="text-align: right; color: #785a00;">-$${order.discountPrice.toFixed(2)}</td>
+              </tr>
+              ` : ''}
+              <tr class="summary-row">
+                <td>Shipping</td>
+                <td style="text-align: right;">$${order.shippingPrice.toFixed(2)}</td>
+              </tr>
+              <tr class="summary-row" style="padding-bottom: 15px;">
+                <td>Tax</td>
+                <td style="text-align: right;">$${order.taxPrice.toFixed(2)}</td>
+              </tr>
+              <tr class="total-row">
+                <td>Grand Total</td>
+                <td style="text-align: right;">$${order.totalPrice.toFixed(2)}</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div class="meta-box">
+            <div style="width: 48%; display: inline-block; vertical-align: top; text-align: left;">
+              <h4 class="meta-title">Shipping Address</h4>
+              <p class="meta-text">
+                ${order.shippingAddress.address}<br>
+                ${order.shippingAddress.city}, ${order.shippingAddress.postalCode}<br>
+                ${order.shippingAddress.country}
+              </p>
+            </div>
+            <div style="width: 48%; display: inline-block; vertical-align: top; text-align: left; margin-left: 3%;">
+              <h4 class="meta-title">Payment Method</h4>
+              <p class="meta-text">${order.paymentMethod}</p>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <p class="footer-text"><strong>OLIV'OR Reserve Collection</strong></p>
+          <p class="footer-text">Pure Single-Estate Olive Oil &bull; Hand-Harvested in Sahel, Tunisia</p>
+          <div class="footer-divider"></div>
+          <p class="footer-text" style="font-size: 9px; opacity: 0.7;">For any inquiries regarding your shipment, contact us at keepers@olivor.com</p>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
+    `;
+
+    await sendEmail({
+      to: user.email,
+      subject: `Your OLIV'OR Order Confirmation [#${order._id}]`,
+      text: `Thank you for your order, ${user.name || 'Valued Customer'}!\n\nOrder ID: #${order._id}\nTotal: $${order.totalPrice.toFixed(2)}\nWe are preparing your items for delivery.`,
+      html: emailHtml
+    });
+  } catch (error) {
+    console.error('❌ Failed to dispatch order confirmation email:', error.message);
+  }
+};
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -108,6 +353,12 @@ const addOrderItems = async (req, res) => {
       });
 
       const createdOrder = await order.save();
+      
+      // Send order confirmation email asynchronously
+      sendOrderConfirmationEmail(createdOrder, req.user).catch(err => {
+        console.error('❌ Failed to send order confirmation email:', err.message);
+      });
+
       res.status(201).json(createdOrder);
     } catch (orderSaveError) {
       // Rollback stock updates if order saving fails
