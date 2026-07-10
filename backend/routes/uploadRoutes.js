@@ -53,4 +53,36 @@ router.post('/', protect, admin, upload.array('images', 10), async (req, res) =>
   }
 });
 
+// @desc    Upload user avatar image to Cloudinary
+// @route   POST /api/upload/avatar
+// @access  Private
+router.post('/avatar', protect, upload.single('avatar'), async (req, res) => {
+  try {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const base64Format = req.file.mimetype + ';base64,' + req.file.buffer.toString('base64');
+    const dataUri = `data:${base64Format}`;
+    
+    const result = await cloudinary.uploader.upload(dataUri, {
+      folder: 'olivor_avatars',
+      transformation: [
+        { width: 300, height: 300, crop: 'fill', gravity: 'face' }
+      ]
+    });
+
+    res.json({ url: result.secure_url });
+  } catch (error) {
+    console.error('Cloudinary avatar upload error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

@@ -19,22 +19,7 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
-connectDB().then(async () => {
-  try {
-    const Coupon = (await import("./models/Coupon.js")).default;
-    const couponExists = await Coupon.findOne({ code: "HARVEST10" });
-    if (!couponExists) {
-      await Coupon.create({
-        code: "HARVEST10",
-        discount: 0.1,
-        active: true,
-      });
-      console.log("Seeded default coupon code HARVEST10.");
-    }
-  } catch (err) {
-    console.error("Error seeding default coupon:", err);
-  }
-});
+connectDB();
 
 const app = express();
 

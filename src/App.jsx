@@ -27,6 +27,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminCustomers from './pages/admin/AdminCustomers';
 import AdminCategories from './pages/admin/AdminCategories';
+import AdminCoupons from './pages/admin/AdminCoupons';
 import ScrollToTop from './components/ScrollToTop';
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
             <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/customers" element={<AdminCustomers />} />
             <Route path="/admin/categories" element={<AdminCategories />} />
+            <Route path="/admin/coupons" element={<AdminCoupons />} />
           </Route>
         </Routes>
       </Layout>

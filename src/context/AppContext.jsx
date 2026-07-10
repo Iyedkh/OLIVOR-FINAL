@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -28,6 +28,7 @@ export const AppProvider = ({ children }) => {
   // Admin States
   const [adminOrders, setAdminOrders] = useState([]);
   const [adminUsers, setAdminUsers] = useState([]);
+  const [coupons, setCoupons] = useState([]);
 
   // Fetch Products
   const fetchProducts = async () => {
@@ -96,6 +97,7 @@ export const AppProvider = ({ children }) => {
         email: data.email,
         isAdmin: data.isAdmin,
         isVerified: data.isVerified,
+        avatar: data.avatar,
       });
       
       // Sync wishlist
@@ -192,6 +194,7 @@ export const AppProvider = ({ children }) => {
         email: data.email,
         isAdmin: data.isAdmin,
         isVerified: data.isVerified,
+        avatar: data.avatar,
       });
 
       // Handle backend wishlist
@@ -256,6 +259,7 @@ export const AppProvider = ({ children }) => {
         email: data.email,
         isAdmin: data.isAdmin,
         isVerified: data.isVerified,
+        avatar: data.avatar,
       });
       setWishlist([]);
       
@@ -271,6 +275,32 @@ export const AppProvider = ({ children }) => {
       return { success: false, message };
     }
   };
+
+  // Update User Profile
+  const updateUserProfile = useCallback(async (userData) => {
+    if (!token) return { success: false, message: 'Not logged in' };
+    try {
+      const { data } = await axios.put(`${API_URL}/users/profile`, userData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser({
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        isAdmin: data.isAdmin,
+        isVerified: data.isVerified,
+        avatar: data.avatar,
+      });
+      toast.success('Profile updated successfully!');
+      return { success: true, user: data };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
+    }
+  }, [token]);
 
   // Logout
   const logout = () => {
@@ -614,6 +644,56 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const fetchCoupons = useCallback(async () => {
+    if (!token || !user?.isAdmin) return;
+    try {
+      const { data } = await axios.get(`${API_URL}/coupons`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCoupons(data);
+    } catch (err) {
+      console.error('Error fetching coupons:', err);
+    }
+  }, [token, user]);
+
+  const createCoupon = useCallback(async (couponData) => {
+    if (!token || !user?.isAdmin) return { success: false };
+    try {
+      const { data } = await axios.post(`${API_URL}/coupons`, couponData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCoupons(prev => [data, ...prev]);
+      toast.success(`Coupon "${data.code}" created successfully!`);
+      return { success: true, coupon: data };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
+    }
+  }, [token, user]);
+
+  const deleteCoupon = useCallback(async (couponId) => {
+    if (!token || !user?.isAdmin) return { success: false };
+    try {
+      await axios.delete(`${API_URL}/coupons/${couponId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCoupons(prev => prev.filter(c => c._id !== couponId));
+      toast.success('Coupon removed successfully');
+      return { success: true };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return { success: false, message };
+    }
+  }, [token, user]);
+
   const validateCouponCode = async (code) => {
     try {
       const { data } = await axios.post(`${API_URL}/coupons/validate`, { code });
@@ -689,6 +769,7 @@ export const AppProvider = ({ children }) => {
         loadingUser,
         adminOrders,
         adminUsers,
+        coupons,
         login,
         register,
         logout,
@@ -701,6 +782,7 @@ export const AppProvider = ({ children }) => {
         payOrder,
         fetchAllOrders,
         fetchAllUsers,
+        fetchCoupons,
         updateOrderStatus,
         createProduct,
         updateProduct,
@@ -708,6 +790,10 @@ export const AppProvider = ({ children }) => {
         createCategory,
         updateCategory,
         deleteCategory,
+        createCoupon,
+        deleteCoupon,
+        updateUserProfile,
+        API_URL,
         fetchShopProducts,
         validateCouponCode,
         createProductReview,

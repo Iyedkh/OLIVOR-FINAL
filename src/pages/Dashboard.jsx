@@ -1,19 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Award, Navigation, Trash2, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Award, Navigation, Trash2, ArrowRight, X, Camera, Loader2, Info } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import DashboardLayout from '../components/DashboardLayout';
+import axios from 'axios';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, logout, wishlist, toggleWishlist, orders, fetchMyOrders } = useApp();
+  const { user, logout, wishlist, toggleWishlist, orders, fetchMyOrders, updateUserProfile, token, API_URL } = useApp();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [formState, setFormState] = useState({
+    name: '',
+    email: '',
+    password: '',
+    avatar: '',
+  });
 
   useEffect(() => {
     if (fetchMyOrders) {
       fetchMyOrders();
     }
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFormState({
+        name: user.name || '',
+        email: user.email || '',
+        password: '',
+        avatar: user.avatar || '',
+      });
+    }
+  }, [user, isModalOpen]);
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      setIsUploading(true);
+      const { data } = await axios.post(`${API_URL}/upload/avatar`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setFormState(prev => ({ ...prev, avatar: data.url }));
+    } catch (err) {
+      console.error('Avatar upload failed:', err);
+      alert(err.response?.data?.message || 'Failed to upload avatar image.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!formState.name.trim() || !formState.email.trim()) {
+      alert('Name and Email are required');
+      return;
+    }
+
+    const userData = {
+      name: formState.name.trim(),
+      email: formState.email.trim(),
+      avatar: formState.avatar,
+    };
+
+    if (formState.password) {
+      userData.password = formState.password;
+    }
+
+    const result = await updateUserProfile(userData);
+    if (result.success) {
+      setIsModalOpen(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -51,7 +119,10 @@ const Dashboard = () => {
               </div>
               
               <div className="flex gap-3">
-                <button className="px-6 py-3 rounded-full border border-secondary text-secondary font-label-lg hover:bg-secondary/5 transition-colors text-xs font-bold uppercase tracking-wider">
+                <button 
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-6 py-3 rounded-full border border-secondary text-secondary font-label-lg hover:bg-secondary/5 transition-colors text-xs font-bold uppercase tracking-wider focus:outline-none"
+                >
                   Edit Profile
                 </button>
                 <Link 
@@ -294,6 +365,136 @@ const Dashboard = () => {
             </section>
 
           </div>
+
+          {/* Profile Editor Drawer Modal */}
+          <AnimatePresence>
+            {isModalOpen && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-end bg-black/60 backdrop-blur-sm"
+              >
+                <motion.div 
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                  className="w-full max-w-lg h-full bg-surface border-l border-outline-variant/30 p-8 flex flex-col justify-between shadow-2xl relative overflow-y-auto"
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-10">
+                      <div>
+                        <span className="text-[10px] font-bold text-secondary uppercase tracking-widest bg-secondary/15 px-3 py-1.5 rounded-full border border-secondary/20 select-none">
+                          Account Profile
+                        </span>
+                        <h3 className="font-headline-lg text-headline-lg text-primary text-xl md:text-2xl mt-4 font-bold">
+                          Edit Profile Details
+                        </h3>
+                      </div>
+                      <button 
+                        onClick={() => setIsModalOpen(false)}
+                        className="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-colors focus:outline-none border border-outline-variant/10"
+                        aria-label="Close"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    </div>
+
+                    <form id="profileForm" onSubmit={handleFormSubmit} className="space-y-6">
+                      
+                      {/* Avatar Upload Container */}
+                      <div className="flex flex-col items-center gap-4 py-4">
+                        <div className="relative w-28 h-28 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/30 group shadow-md select-none flex items-center justify-center">
+                          <img 
+                            className="w-full h-full object-cover" 
+                            src={formState.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150&h=150'}
+                            alt="Avatar preview" 
+                          />
+                          {isUploading ? (
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white">
+                              <Loader2 className="h-6 w-6 animate-spin text-secondary" />
+                            </div>
+                          ) : (
+                            <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-[10px] uppercase font-bold tracking-widest cursor-pointer transition-opacity">
+                              <Camera className="h-5 w-5 mb-1 text-secondary" />
+                              Change Photo
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={handleAvatarChange} 
+                                className="hidden"
+                              />
+                            </label>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-outline uppercase tracking-wider font-bold">Upload avatar image (Cloudinary)</p>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Full Name</label>
+                        <input 
+                          value={formState.name}
+                          onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                          className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm font-semibold" 
+                          placeholder="Your Name" 
+                          required 
+                          type="text" 
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-outline">Email Address</label>
+                        <input 
+                          value={formState.email}
+                          onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                          className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm font-semibold" 
+                          placeholder="name@example.com" 
+                          required 
+                          type="email" 
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-outline">New Password (leave blank to keep current)</label>
+                        <input 
+                          value={formState.password}
+                          onChange={(e) => setFormState({ ...formState, password: e.target.value })}
+                          className="bg-surface-container-low border border-outline-variant/30 rounded-lg p-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary text-sm font-semibold" 
+                          placeholder="••••••••" 
+                          type="password" 
+                        />
+                      </div>
+
+                      <div className="flex gap-3 p-4 bg-primary/5 rounded-xl border border-primary/10">
+                        <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <p className="text-xs text-on-surface-variant font-light leading-relaxed">
+                          Your premium membership status and points history will remain secure when changing profile credentials.
+                        </p>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div className="border-t border-outline-variant/20 pt-6 flex gap-4 mt-8">
+                    <button 
+                      onClick={() => setIsModalOpen(false)}
+                      className="flex-1 py-3 border border-outline-variant hover:border-on-surface text-outline hover:text-on-surface rounded-lg transition-colors font-semibold uppercase text-xs tracking-wider"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      form="profileForm"
+                      type="submit"
+                      disabled={isUploading}
+                      className="flex-1 py-3 bg-primary hover:bg-primary-container disabled:bg-primary/50 text-white rounded-lg transition-colors font-bold uppercase text-xs tracking-wider shadow"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
     </DashboardLayout>
   );
 };

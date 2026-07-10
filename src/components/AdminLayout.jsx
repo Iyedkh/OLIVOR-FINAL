@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Users, Settings, LogOut, ArrowLeft, Shield, Tag } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Users, Settings, LogOut, ArrowLeft, Shield, Tag, Ticket } from 'lucide-react';
 
 const AdminLayout = ({ children }) => {
   const location = useLocation();
@@ -12,6 +12,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Categories', path: '/admin/categories', icon: Tag },
     { name: 'Orders', path: '/admin/orders', icon: Shield },
     { name: 'Customers', path: '/admin/customers', icon: Users },
+    { name: 'Coupons', path: '/admin/coupons', icon: Ticket },
   ];
 
   const handleLogout = () => {

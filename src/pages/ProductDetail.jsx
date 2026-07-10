@@ -40,7 +40,7 @@ const StarRating = ({ value = 0, size = 'md', interactive = false, onChange }) =
         const isHalf = !isFilled && value > i && value < starVal;
 
         if (interactive) {
-          return (
+          return (  
             <button
               key={i}
               type="button"
@@ -855,7 +855,7 @@ const ProductDetail = () => {
                   className="font-serif text-primary opacity-30 text-7xl select-none leading-none" 
                   style={{ fontFamily: "'Fraunces', serif" }}
                 >
-                  {product.vintageYear || '2024'}
+                  {product.vintageYear || '2025-2026'}
                 </div>
                 <div 
                   className="font-serif text-secondary text-xl font-bold italic" 
@@ -881,7 +881,7 @@ const ProductDetail = () => {
               className="font-serif text-3xl text-primary font-bold leading-tight" 
               style={{ fontFamily: "'Fraunces', serif" }}
             >
-              Vintage {product.vintageYear || '2024'} Micro-Harvest
+              Vintage {product.vintageYear || '2025-2026'} Micro-Harvest
             </h4>
             <p className="text-body-md text-on-surface-variant font-light text-sm leading-relaxed">
               Every bottle is individually hand-filled, sealed with traditional hot wax, and numbered. This select harvest comes exclusively from single-estate cultivars along the Tunisian shoreline.

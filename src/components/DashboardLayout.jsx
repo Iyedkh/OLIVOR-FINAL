@@ -36,11 +36,11 @@ const DashboardLayout = ({ children }) => {
         <aside className="w-full md:w-72 shrink-0 sticky top-24 self-start bg-surface p-8 rounded-2xl border border-outline-variant/10 md:h-[calc(100vh-140px)] flex flex-col justify-between text-left select-none">
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/30 select-none">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/30 select-none flex items-center justify-center">
                 <img 
                   className="w-full h-full object-cover" 
                   alt="profile"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1KAi9GR0BkFg0H-_lvt1xszFfyCuyAqzQeR-6vkd0QHU-VL0IYnciKwKc5VynAVcxCgZ3hXbBUrpw-MEQaVbHyazADXz3dC80s5VMwXNGjCS_VSpKWUcxyFWzTcq8fvHv66cbmk5Rvr1Peg6gy5SseASF4ccVY4DzXjju2gkHzToVjEWJJd2WxG7CQ7cNClWj0bmqbd82zFWoh0L6pVbWTxBMqBog1z-pHNZrzSz3s1kLbOimKVHK3w"
+                  src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150&h=150'}
                 />
               </div>
               <div>

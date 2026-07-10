@@ -22,6 +22,7 @@ const authUser = async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         isVerified: user.isVerified,
+        avatar: user.avatar,
         wishlist: user.wishlist,
         cart: user.cart,
         token: generateToken(res, user._id),
@@ -72,6 +73,7 @@ const registerUser = async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         isVerified: user.isVerified,
+        avatar: user.avatar,
         wishlist: user.wishlist,
         cart: user.cart,
         token: generateToken(res, user._id),
@@ -98,6 +100,7 @@ const getUserProfile = async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         isVerified: user.isVerified,
+        avatar: user.avatar,
         wishlist: user.wishlist,
         cart: user.cart,
       });
@@ -119,6 +122,9 @@ const updateUserProfile = async (req, res) => {
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
+      if (req.body.avatar !== undefined) {
+        user.avatar = req.body.avatar;
+      }
       if (req.body.password) {
         user.password = req.body.password;
       }
@@ -131,6 +137,7 @@ const updateUserProfile = async (req, res) => {
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
         isVerified: updatedUser.isVerified,
+        avatar: updatedUser.avatar,
         wishlist: updatedUser.wishlist,
         cart: updatedUser.cart,
         token: generateToken(res, updatedUser._id),

@@ -100,7 +100,7 @@ const Heritage = () => {
                 Much more than a tree, the olive tree represents a living heritage for us, passed down from generation to generation. Each harvest tells a story of expertise, authenticity, and love for the land.
               </p>
               <p>
-                It is from this family tradition that <strong>OlivOr</strong> was born: an exceptional extra virgin olive oil, crafted from olives carefully selected and harvested at the peak of their maturity.
+                It is from this family tradition that <strong>Oliv'Or</strong> was born: an exceptional extra virgin olive oil, crafted from olives carefully selected and harvested at the peak of their maturity.
               </p>
             </div>
           </motion.div>
@@ -157,7 +157,7 @@ const Heritage = () => {
 
             <div className="pt-6 font-body-lg text-body-lg text-on-surface-variant text-base md:text-lg font-light leading-relaxed">
               <p>
-                Inspired by the richness of the Mediterranean and driven by a modern vision of luxury, OlivOr today combines tradition and elegance to offer a refined olive oil destined for lovers of authentic and high-end products.
+                Inspired by the richness of the Mediterranean and driven by a modern vision of luxury, Oliv'Or today combines tradition and elegance to offer a refined olive oil destined for lovers of authentic and high-end products.
               </p>
             </div>
           </motion.div>
@@ -173,7 +173,7 @@ const Heritage = () => {
               A Reflection of Excellence
             </h3>
             <p className="font-body-md text-on-surface-variant font-light leading-relaxed">
-              Each bottle of OlivOr is a reflection of:
+              Each bottle of Oliv'Or is a reflection of:
             </p>
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
@@ -201,7 +201,7 @@ const Heritage = () => {
 
             <div className="pt-6 border-t border-outline-variant/20 text-center">
               <span className="font-logo text-xl md:text-2xl text-primary tracking-wider block">
-                OlivOr
+                Oliv'Or
               </span>
               <span className="text-secondary text-xs uppercase tracking-widest block mt-1 font-bold">
                 The Gold of the Mediterranean
@@ -229,7 +229,7 @@ const Heritage = () => {
             </h2>
             <div className="h-0.5 w-24 bg-secondary-container mx-auto mb-6"></div>
             <p className="font-body-md text-on-surface-variant font-light leading-relaxed text-base md:text-lg">
-              Step into our groves and experience the patience, tradition, and artistry that goes into every single drop of OlivOr liquid gold.
+              Step into our groves and experience the patience, tradition, and artistry that goes into every single drop of Oliv'Or liquid gold.
             </p>
           </motion.div>
 
@@ -452,7 +452,7 @@ const Heritage = () => {
             <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse">
               <div className="w-full md:w-1/2 px-8">
                 <span className="font-display-lg text-6xl md:text-8xl text-white/10 absolute -top-16 left-8 md:left-auto md:right-8 pointer-events-none italic">
-                  2024
+                  2026
                 </span>
                 <h4 className="font-headline-md text-headline-md mb-2 text-secondary-container text-xl md:text-2xl">
                   Global Recognition

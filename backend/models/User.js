@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    avatar: {
+      type: String,
+      default: '',
+    },
     verificationToken: {
       type: String,
     },
