@@ -28,6 +28,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminCustomers from './pages/admin/AdminCustomers';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminCoupons from './pages/admin/AdminCoupons';
+import TrackOrder from './pages/TrackOrder';
 import ScrollToTop from './components/ScrollToTop';
 function App() {
   return (
@@ -50,12 +51,14 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/track-order" element={<TrackOrder />} />
 
           {/* Protected Customer Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/order-history" element={<OrderHistory />} />
             <Route path="/orders" element={<OrderHistory />} />
+            <Route path="/orders/track/:id" element={<TrackOrder />} />
           </Route>
 
           {/* Protected Admin Routes */}

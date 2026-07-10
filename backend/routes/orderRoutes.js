@@ -7,6 +7,7 @@ import {
   getMyOrders,
   getOrders,
   updateOrderStatus,
+  trackOrderPublic,
 } from '../controllers/orderController.js';
 import { protect, admin } from '../middleware/auth.js';
 
@@ -15,6 +16,9 @@ const router = express.Router();
 router.route('/')
   .post(protect, addOrderItems)
   .get(protect, admin, getOrders);
+
+router.route('/track')
+  .post(trackOrderPublic);
 
 router.route('/myorders')
   .get(protect, getMyOrders);

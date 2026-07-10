@@ -463,6 +463,31 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const getOrderDetails = useCallback(async (id) => {
+    if (!token) return { success: false, message: 'Not logged in' };
+    try {
+      const { data } = await axios.get(`${API_URL}/orders/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return { success: true, order: data };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      return { success: false, message };
+    }
+  }, [token]);
+
+  const trackOrderPublicly = useCallback(async (orderId, email) => {
+    try {
+      const { data } = await axios.post(`${API_URL}/orders/track`, { orderId, email });
+      return { success: true, order: data };
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      return { success: false, message };
+    }
+  }, []);
+
   // Pay Order Simulation
   const payOrder = async (orderId) => {
     if (!token) return { success: false };
@@ -779,6 +804,8 @@ export const AppProvider = ({ children }) => {
         updateCartQty,
         placeOrder,
         fetchMyOrders,
+        getOrderDetails,
+        trackOrderPublicly,
         payOrder,
         fetchAllOrders,
         fetchAllUsers,

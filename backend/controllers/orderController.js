@@ -493,6 +493,39 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// @desc    Track order publicly
+// @route   POST /api/orders/track
+// @access  Public
+const trackOrderPublic = async (req, res) => {
+  const { orderId, email } = req.body;
+
+  try {
+    if (!orderId || !email) {
+      return res.status(400).json({ message: 'Order ID and Email are required' });
+    }
+
+    const mongoose = (await import('mongoose')).default;
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ message: 'Invalid Order ID format' });
+    }
+
+    const order = await Order.findById(orderId).populate('user', 'name email');
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const orderEmail = order.shippingAddress?.email || order.user?.email || '';
+    if (orderEmail.toLowerCase() !== email.toLowerCase()) {
+      return res.status(401).json({ message: 'Unauthorized. Email does not match this order' });
+    }
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   addOrderItems,
   getOrderById,
@@ -501,4 +534,5 @@ export {
   getMyOrders,
   getOrders,
   updateOrderStatus,
+  trackOrderPublic,
 };

@@ -268,7 +268,10 @@ const OrderHistory = () => {
                       </a>
                       
                       <div className="flex gap-4 w-full sm:w-auto">
-                        <button className="flex-1 sm:flex-none px-8 py-3 border border-secondary text-secondary rounded-full font-label-lg hover:bg-secondary/5 transition-all hover:scale-[1.02] text-xs font-bold uppercase tracking-wider">
+                        <button 
+                          onClick={() => navigate(`/orders/track/${order.id}`)}
+                          className="flex-1 sm:flex-none px-8 py-3 border border-secondary text-secondary rounded-full font-label-lg hover:bg-secondary/5 transition-all hover:scale-[1.02] text-xs font-bold uppercase tracking-wider"
+                        >
                           Track Package
                         </button>
                         <button className="flex-1 sm:flex-none px-8 py-3 bg-primary hover:bg-primary-container text-white rounded-full font-label-lg hover:scale-[1.02] transition-all text-xs font-bold uppercase tracking-wider shadow">
