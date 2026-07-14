@@ -29,7 +29,7 @@ app.use(helmet());
 // Enable CORS for frontend integration (supporting HttpOnly cookies)
 app.use(
   cors({
-    origin: ["https://olivor.netlify.app", "http://localhost:5173", "http://localhost:3000"],
+    origin: ["https://olivor.netlify.app", "http://localhost:5173", "https://olivor.tn"],
     credentials: true,
   }),
 );
