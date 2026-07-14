@@ -243,7 +243,7 @@ const Heritage = () => {
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
-              src="/VD2.mp4"
+              src="/VD1.mp4"
               autoPlay
               loop
               muted

@@ -790,7 +790,7 @@ const Home = () => {
                   className="font-serif text-3xl font-bold text-primary block"
                   style={{ fontFamily: "'Fraunces', serif" }}
                 >
-                  EST. 1991
+                  EST. 2024
                 </span>
                 <span className="text-[10px] uppercase font-mono tracking-widest text-outline font-bold">
                   Since Carthage Groves
@@ -801,7 +801,7 @@ const Home = () => {
                   className="font-serif text-3xl font-bold text-primary block"
                   style={{ fontFamily: "'Fraunces', serif" }}
                 >
-                  3th GEN
+                  1st GEN
                 </span>
                 <span className="text-[10px] uppercase font-mono tracking-widest text-outline font-bold">
                   Family Orchard
