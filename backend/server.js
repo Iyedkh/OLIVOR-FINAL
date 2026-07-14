@@ -29,7 +29,7 @@ app.use(helmet());
 // Enable CORS for frontend integration (supporting HttpOnly cookies)
 app.use(
   cors({
-    origin: ["https://olivor.netlify.app", "http://localhost:5173", "https://olivor.tn"],
+    origin: ["https://olivor.netlify.app", "http://localhost:5173", "https://olivor.tn", "https://www.olivor.tn"],
     credentials: true,
   }),
 );
@@ -48,15 +48,15 @@ app.use("/api", limiter);
 app.use(express.json());
 
 // Routes
-app.use("/api/users", userRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/recipes", recipeRoutes);
-app.use("/api/upload", uploadRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/coupons", couponRoutes);
+app.use(["/api/users", "/users"], userRoutes);
+app.use(["/api/products", "/products"], productRoutes);
+app.use(["/api/orders", "/orders"], orderRoutes);
+app.use(["/api/recipes", "/recipes"], recipeRoutes);
+app.use(["/api/upload", "/upload"], uploadRoutes);
+app.use(["/api/categories", "/categories"], categoryRoutes);
+app.use(["/api/coupons", "/coupons"], couponRoutes);
 
-app.get("/", (req, res) => {
+app.get(["/", "/api"], (req, res) => {
   res.send("OLIVOR Luxury API is running...");
 });
 
